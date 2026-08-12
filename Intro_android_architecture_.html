@@ -1,0 +1,1229 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-depth="technical">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>Android Architecture: Phone vs Vehicle — Interactive Reference</title>
+<style>
+:root{
+  --bg:#071019;--bg2:#0d1722;--panel:#111f2d;--panel2:#172a3a;--text:#ecf7ff;--muted:#a9bfd0;
+  --line:#2a4559;--accent:#7ce7b7;--accent2:#7eb8ff;--warn:#ffd166;--danger:#ff7b89;--ok:#68e0a3;
+  --shadow:0 18px 55px rgba(0,0,0,.32);--radius:20px;--code:#07131c;--road:#27394a;
+}
+html[data-theme="light"]{
+  --bg:#f4f8fb;--bg2:#eaf1f6;--panel:#ffffff;--panel2:#edf5f8;--text:#10212d;--muted:#506a7b;
+  --line:#cddde7;--accent:#087f5b;--accent2:#236dc4;--warn:#9a6500;--danger:#b42335;--ok:#147d50;
+  --shadow:0 18px 55px rgba(43,75,98,.13);--code:#10212d;--road:#cbd8e2;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:
+ radial-gradient(circle at 10% -10%,rgba(126,184,255,.18),transparent 32%),
+ radial-gradient(circle at 90% 0%,rgba(124,231,183,.15),transparent 30%),var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
+a{color:var(--accent2)}
+button,input{font:inherit}
+button{cursor:pointer}
+.skip{position:fixed;left:-9999px;top:8px;background:var(--accent);color:#06130e;padding:.7rem 1rem;border-radius:10px;z-index:9999}
+.skip:focus{left:8px}
+.topbar{position:sticky;top:0;z-index:30;backdrop-filter:blur(16px);background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1500px;margin:auto;display:flex;gap:12px;align-items:center;padding:10px 18px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}.brand b{color:var(--accent)}
+.search{flex:1;display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:0 14px}
+.search input{width:100%;background:transparent;color:var(--text);border:0;outline:0;padding:9px 0}
+.icon-btn,.small-btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:.55rem .8rem}
+.icon-btn:hover,.small-btn:hover{transform:translateY(-1px);border-color:var(--accent2)}
+.progressline{height:3px;background:transparent}.progressline span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.layout{max-width:1500px;margin:auto;display:grid;grid-template-columns:280px minmax(0,1fr);gap:24px;padding:24px 18px 80px}
+.sidebar{position:sticky;top:72px;align-self:start;max-height:calc(100vh - 90px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:15px;box-shadow:var(--shadow)}
+.sidebar h2{font-size:.9rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:.3rem .5rem .8rem}
+.sidebar a{display:block;text-decoration:none;color:var(--muted);padding:.52rem .65rem;border-radius:10px;font-size:.92rem}
+.sidebar a:hover,.sidebar a.active{background:var(--panel2);color:var(--text)}
+.side-meter{margin:12px 6px;background:var(--bg2);height:8px;border-radius:999px;overflow:hidden}.side-meter span{display:block;height:100%;width:0;background:var(--accent)}
+main{min-width:0}
+.hero{position:relative;overflow:hidden;min-height:520px;background:linear-gradient(135deg,color-mix(in srgb,var(--panel) 96%,#163458),color-mix(in srgb,var(--panel) 90%,#0c3d2f));border:1px solid var(--line);border-radius:30px;padding:clamp(28px,5vw,70px);box-shadow:var(--shadow)}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}.eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:.35rem .72rem;color:var(--accent);background:color-mix(in srgb,var(--panel2) 75%,transparent);font-weight:700;font-size:.87rem}
+h1{font-size:clamp(2.4rem,5vw,5.6rem);line-height:.98;margin:20px 0 18px;letter-spacing:-.055em}h1 span{color:var(--accent)}
+.lede{font-size:clamp(1rem,1.3vw,1.25rem);color:var(--muted);max-width:65ch}.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}.primary{background:var(--accent);color:#052319;border:0;border-radius:13px;padding:.8rem 1rem;font-weight:800}.secondary{background:transparent;color:var(--text);border:1px solid var(--line);border-radius:13px;padding:.8rem 1rem;font-weight:700}
+.hero-art{position:relative;min-height:330px}.phone{position:absolute;left:5%;top:20px;width:155px;height:290px;border:8px solid #061018;background:linear-gradient(160deg,#174369,#102437);border-radius:32px;box-shadow:0 22px 45px #0008;animation:float 5s ease-in-out infinite}.phone:before{content:"";position:absolute;width:56px;height:7px;background:#061018;border-radius:10px;top:7px;left:42px}.phone-screen{position:absolute;inset:23px 10px 12px;border-radius:19px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:18px 10px;background:linear-gradient(#1e6380,#0f2638)}.appdot{border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));opacity:.92}.car{position:absolute;right:0;bottom:32px;width:330px;height:150px;animation:float 5s ease-in-out infinite reverse}.car-body{position:absolute;inset:40px 5px 18px;background:linear-gradient(135deg,#76c8ff,#3776ba);border-radius:55px 75px 25px 25px;box-shadow:0 20px 38px #0008}.car-roof{position:absolute;left:78px;top:0;width:180px;height:100px;background:#3776ba;clip-path:polygon(22% 0,78% 0,100% 100%,0 100%);border-radius:55px 55px 0 0}.window{position:absolute;left:105px;top:14px;width:128px;height:58px;background:#aee3ff;clip-path:polygon(17% 0,83% 0,100% 100%,0 100%)}.wheel{position:absolute;bottom:0;width:58px;height:58px;border-radius:50%;background:#0a1016;border:11px solid #26323c}.w1{left:48px}.w2{right:44px}.road{position:absolute;right:-80px;bottom:8px;width:510px;height:12px;background:var(--road);border-radius:99px}.road:before{content:"";position:absolute;inset:4px 0;background:repeating-linear-gradient(90deg,transparent 0 35px,var(--warn) 35px 65px,transparent 65px 100px);animation:road 2.2s linear infinite}.signal{position:absolute;left:40%;top:55px;width:100px;height:100px;border:2px solid var(--accent);border-radius:50%;opacity:.2;animation:pulse 2s infinite}.signal.s2{animation-delay:.7s}.signal.s3{animation-delay:1.4s}
+@keyframes float{50%{transform:translateY(-10px)}}@keyframes pulse{from{transform:scale(.3);opacity:.7}to{transform:scale(1.7);opacity:0}}@keyframes road{to{background-position:100px 0}}
+.section{scroll-margin-top:90px;margin-top:28px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(22px,3vw,42px);box-shadow:var(--shadow)}
+.section h2{font-size:clamp(1.6rem,3vw,2.7rem);line-height:1.1;margin:.1rem 0 12px;letter-spacing:-.035em}.section h3{margin-top:1.4rem;line-height:1.2}.muted{color:var(--muted)}.kicker{color:var(--accent);font-size:.78rem;text-transform:uppercase;letter-spacing:.13em;font-weight:800}.callout{border-left:4px solid var(--accent2);background:var(--panel2);padding:1rem 1.1rem;border-radius:0 14px 14px 0}.callout.warn{border-color:var(--warn)}.callout.danger{border-color:var(--danger)}.callout strong{color:var(--text)}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:18px}.card{background:var(--panel2);border:1px solid var(--line);border-radius:16px;padding:18px;transition:.2s}.card:hover{transform:translateY(-3px);border-color:var(--accent2)}.card .num{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent);font-weight:900}.card h3{margin:.8rem 0 .35rem}.chip{display:inline-block;padding:.25rem .55rem;border:1px solid var(--line);border-radius:999px;font-size:.78rem;color:var(--muted);margin:.15rem}.chip.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 55%,var(--line))}.chip.warn{color:var(--warn)}
+.term-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.term{background:var(--panel2);border:1px solid var(--line);border-radius:15px;padding:16px}.term dt{font-weight:900;color:var(--accent)}.term dd{margin:.35rem 0 0;color:var(--muted)}
+.stack-wrap{display:grid;grid-template-columns:minmax(300px,.85fr) 1.15fr;gap:22px;align-items:start}.stack{display:flex;flex-direction:column;gap:8px}.layer{position:relative;border:1px solid var(--line);border-radius:14px;padding:15px;background:var(--panel2);text-align:left;color:var(--text);transition:.2s}.layer:hover,.layer.selected{border-color:var(--accent);transform:translateX(5px)}.layer small{display:block;color:var(--muted);margin-top:2px}.layer:after{content:"";position:absolute;left:50%;bottom:-9px;width:2px;height:9px;background:var(--line)}.layer:last-child:after{display:none}.detail-panel{min-height:410px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,var(--panel2),color-mix(in srgb,var(--panel) 80%,var(--accent2) 4%));padding:22px}.detail-panel h3{margin-top:0}.detail-panel ul{padding-left:1.15rem}.trace{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}.trace span{padding:.55rem .7rem;background:var(--bg2);border:1px solid var(--line);border-radius:10px}.arrow{color:var(--accent);font-weight:900}
+.svg-card{background:var(--panel2);border:1px solid var(--line);border-radius:18px;padding:12px;overflow:auto}.svg-card svg{display:block;width:100%;height:auto;min-width:640px}.svg-label{font:700 14px system-ui;fill:currentColor}.svg-small{font:500 11px system-ui;fill:currentColor;opacity:.78}
+.toggle-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.toggle-row button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:999px;padding:.5rem .8rem}.toggle-row button.active{background:var(--accent);color:#052319;border-color:transparent;font-weight:800}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:15px}.compare-col{border:1px solid var(--line);background:var(--panel2);border-radius:17px;padding:20px}.compare-col h3{margin-top:0}.compare-col.phonec{box-shadow:inset 0 4px 0 var(--accent2)}.compare-col.carc{box-shadow:inset 0 4px 0 var(--accent)}.comparison-table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:14px}.comparison-table th,.comparison-table td{text-align:left;padding:.8rem;border-bottom:1px solid var(--line);vertical-align:top}.comparison-table th{background:var(--panel2)}.comparison-table tr:last-child td{border-bottom:0}.comparison-table td:first-child{font-weight:800;width:20%}
+.flow-demo{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;align-items:stretch}.flow-node{position:relative;padding:14px 10px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;text-align:center;min-height:110px;display:grid;place-items:center}.flow-node:after{content:"➜";position:absolute;right:-18px;top:41%;color:var(--accent);z-index:2;font-size:1.4rem}.flow-node:last-child:after{display:none}.flow-node.active{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);transform:translateY(-4px)}
+.lab{border:1px solid var(--line);border-radius:18px;overflow:hidden;margin:18px 0;background:var(--panel2)}.lab-head{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:18px;border-bottom:1px solid var(--line)}.lab-title{display:flex;gap:12px;align-items:center}.lab-title .badge{display:grid;place-items:center;min-width:42px;height:42px;border-radius:13px;background:var(--accent);color:#052319;font-weight:900}.lab-body{padding:18px}.lab-meta{display:flex;flex-wrap:wrap;gap:7px;margin:.4rem 0 1rem}.safe{color:var(--ok)}.mutating{color:var(--warn)}
+pre{position:relative;background:var(--code);color:#d8f4ff;border:1px solid color-mix(in srgb,var(--line) 85%,#000);border-radius:14px;padding:18px;overflow:auto;line-height:1.5;font-size:.9rem}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,Liberation Mono,monospace}.copy{position:absolute;right:8px;top:8px;border:1px solid #426277;background:#132b3b;color:#dff7ff;border-radius:8px;padding:.32rem .55rem;font-size:.78rem}.expected{background:color-mix(in srgb,var(--ok) 10%,var(--panel));border:1px dashed color-mix(in srgb,var(--ok) 55%,var(--line));border-radius:14px;padding:14px;margin-top:10px}.expected strong{color:var(--ok)}.trouble{background:color-mix(in srgb,var(--warn) 9%,var(--panel));border:1px dashed color-mix(in srgb,var(--warn) 55%,var(--line));border-radius:14px;padding:14px;margin-top:10px}.checkline{display:flex;gap:10px;align-items:flex-start;margin:.6rem 0}.checkline input{margin-top:.34rem;accent-color:var(--accent);transform:scale(1.2)}
+.tabs{display:flex;gap:7px;flex-wrap:wrap}.tabs button{border:1px solid var(--line);background:transparent;color:var(--muted);padding:.45rem .7rem;border-radius:9px}.tabs button.active{background:var(--panel2);color:var(--text);border-color:var(--accent2)}.tabpane{display:none}.tabpane.active{display:block}.quiz{border:1px solid var(--line);border-radius:16px;padding:18px;background:var(--panel2);margin:14px 0}.quiz label{display:block;padding:.55rem;border-radius:10px}.quiz label:hover{background:var(--bg2)}.quiz .feedback{margin-top:10px;font-weight:800}.quiz button{margin-top:10px}.score{font-size:1.3rem;font-weight:900;color:var(--accent)}
+.flashcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.flash{height:190px;perspective:900px;cursor:pointer}.flash-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}.flash.flipped .flash-inner{transform:rotateY(180deg)}.front,.back{position:absolute;inset:0;backface-visibility:hidden;border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;place-items:center;text-align:center;background:var(--panel2)}.back{transform:rotateY(180deg);background:color-mix(in srgb,var(--panel2) 90%,var(--accent) 8%)}
+.validation-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.validation-item{padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}.validation-item b{display:block;color:var(--ok);font-size:1.3rem}.source-list li{margin:.7rem 0}.source-list a{word-break:break-word}.foot{margin-top:24px;text-align:center;color:var(--muted);font-size:.9rem}.hidden-by-search{display:none!important}
+.toast{position:fixed;right:18px;bottom:18px;z-index:99;background:var(--text);color:var(--bg);padding:.7rem 1rem;border-radius:12px;transform:translateY(120px);transition:.3s}.toast.show{transform:translateY(0)}
+
+/* === Learning Garage upgrade === */
+html[data-depth="simple"] [data-depth-item="technical"],
+html[data-depth="simple"] [data-depth-item="deep"],
+html[data-depth="technical"] [data-depth-item="deep"]{display:none!important}
+body.motion-off *,body.motion-off *:before,body.motion-off *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+.control-select{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:.55rem .7rem;max-width:155px}
+.mode-btn.active{background:var(--accent);color:#052319;border-color:transparent;font-weight:900}
+.mission-board{background:linear-gradient(135deg,color-mix(in srgb,var(--panel2) 88%,var(--accent2) 8%),color-mix(in srgb,var(--panel2) 88%,var(--accent) 8%));border:1px solid var(--line);border-radius:22px;padding:22px;display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+.case-file{border:1px dashed color-mix(in srgb,var(--warn) 65%,var(--line));border-radius:18px;padding:20px;background:color-mix(in srgb,var(--panel) 85%,var(--warn) 3%)}
+.case-id{display:inline-flex;align-items:center;gap:8px;color:var(--warn);font-weight:900;letter-spacing:.08em;text-transform:uppercase;font-size:.8rem}
+.evidence-board{border:1px solid var(--line);border-radius:18px;padding:18px;background:var(--panel)}
+.evidence-row{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:.65rem 0;border-bottom:1px solid var(--line)}.evidence-row:last-child{border-bottom:0}
+.evidence-icon{width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:var(--bg2);border:1px solid var(--line);font-size:.82rem}.evidence-row.done .evidence-icon{background:var(--ok);color:#062719;border-color:transparent}.evidence-status{font-size:.75rem;color:var(--muted)}
+.route-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:18px}.route-step{position:relative;background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center;font-size:.85rem}.route-step.done{border-color:var(--ok)}.route-step.current{outline:3px solid color-mix(in srgb,var(--accent2) 40%,transparent)}
+.level-demo{display:grid;gap:12px;margin-top:16px}.depth-card{border:1px solid var(--line);border-radius:15px;padding:15px;background:var(--panel2)}.depth-card b{color:var(--accent)}
+.character-tip{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:15px;padding:14px;background:var(--panel2);margin-top:14px}.character-avatar{width:45px;height:45px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#052319;font-size:1.45rem;flex:0 0 auto}
+.myth-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.myth-card{min-height:180px;text-align:left;border:1px solid var(--line);border-radius:17px;background:var(--panel2);color:var(--text);padding:18px;position:relative;overflow:hidden}.myth-card:hover{transform:translateY(-3px);border-color:var(--accent2)}.myth-card.answered.true{box-shadow:inset 0 5px 0 var(--ok)}.myth-card.answered.false{box-shadow:inset 0 5px 0 var(--danger)}.myth-choice{display:flex;gap:8px;margin-top:14px}.myth-vote{border:1px solid var(--line);background:var(--bg2);color:var(--text);padding:.42rem .7rem;border-radius:999px}.myth-vote:hover{border-color:var(--accent2)}.myth-result{display:none;margin-top:12px;color:var(--muted)}.myth-card.answered .myth-result{display:block}
+.builder-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:18px;align-items:start}.component-pool{display:flex;flex-wrap:wrap;gap:9px;padding:15px;border:1px dashed var(--line);border-radius:16px;min-height:135px;background:var(--bg2)}.component-chip{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:999px;padding:.55rem .72rem;cursor:grab}.component-chip.selected{outline:3px solid color-mix(in srgb,var(--accent2) 45%,transparent)}.component-chip.placed{opacity:.35;pointer-events:none}.builder-stack{display:grid;gap:8px}.drop-slot{min-height:62px;border:2px dashed var(--line);border-radius:14px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--panel2)}.drop-slot.correct{border-style:solid;border-color:var(--ok);background:color-mix(in srgb,var(--ok) 8%,var(--panel2))}.drop-slot.wrong{border-color:var(--danger);animation:shake .25s linear 2}.slot-label{font-size:.78rem;color:var(--muted)}.slot-value{font-weight:900;color:var(--accent)}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.game-status{margin-top:12px;border-radius:13px;padding:12px;background:var(--bg2);border:1px solid var(--line)}
+.cockpit-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}.cockpit-visual{border:1px solid var(--line);border-radius:24px;padding:18px;background:radial-gradient(circle at 50% 45%,#18344b,#08111b 70%);color:#eaf7ff;min-height:420px;position:relative;overflow:hidden}.cockpit-screen{border:1px solid #42647d;border-radius:18px;padding:18px;background:#0b1b28;box-shadow:inset 0 0 30px #0008}.gauge-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.gauge{border:1px solid #35566e;border-radius:50%;aspect-ratio:1;display:grid;place-items:center;text-align:center;background:radial-gradient(circle,#15334a,#08131d 68%)}.gauge strong{display:block;font-size:2rem;color:#7ce7b7}.cockpit-car{margin:18px auto 8px;max-width:360px}.door-shape{fill:#17354a;stroke:#7eb8ff;stroke-width:3}.door-shape.open{fill:#ff7b89}.lamp-on{filter:drop-shadow(0 0 9px #ffd166);fill:#ffd166!important}.cockpit-controls{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.cockpit-control{border:1px solid #35566e;background:#12283a;color:#eaf7ff;border-radius:13px;padding:.75rem}.cockpit-control:hover{border-color:#7ce7b7}.property-console{border:1px solid var(--line);border-radius:18px;padding:18px;background:var(--panel2)}.property-kv{display:grid;grid-template-columns:120px 1fr;gap:8px;padding:.45rem 0;border-bottom:1px solid var(--line)}.property-kv:last-child{border-bottom:0}.property-kv span:first-child{color:var(--muted)}.signal-path{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:15px}.signal-node{border:1px solid var(--line);background:var(--bg2);border-radius:12px;padding:10px 7px;text-align:center;font-size:.75rem;min-height:65px;display:grid;place-items:center}.signal-node.active{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent);transform:translateY(-3px)}
+.scenario-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.scenario-btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:14px;padding:15px;text-align:left}.scenario-btn.active{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--panel2))}.scenario-output{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}.scenario-panel{border:1px solid var(--line);border-radius:16px;padding:18px;background:var(--panel2)}.scenario-panel h3{margin-top:0}.difference-punchline{grid-column:1/-1;border-left:4px solid var(--warn);padding:14px;background:color-mix(in srgb,var(--warn) 7%,var(--panel2));border-radius:0 14px 14px 0}
+.sim-terminal{border-radius:18px;overflow:hidden;border:1px solid #335066;background:#07131c;color:#d8f4ff;box-shadow:0 18px 35px #0005}.terminal-bar{display:flex;align-items:center;gap:7px;padding:10px 13px;background:#102535}.terminal-dot{width:11px;height:11px;border-radius:50%;background:#ff7b89}.terminal-dot:nth-child(2){background:#ffd166}.terminal-dot:nth-child(3){background:#68e0a3}.terminal-screen{min-height:260px;max-height:420px;overflow:auto;padding:16px;font:14px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap}.terminal-line{margin:.2rem 0}.terminal-command{color:#7ce7b7}.terminal-error{color:#ff9aa5}.terminal-info{color:#8fc4ff}.terminal-input-row{display:flex;gap:8px;padding:12px;background:#0c1c28;border-top:1px solid #29465a}.terminal-prompt{color:#7ce7b7;font-family:monospace}.terminal-input{flex:1;background:transparent;border:0;color:#eaf7ff;outline:0;font-family:monospace}.terminal-quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.terminal-quick button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:999px;padding:.42rem .65rem;font-size:.82rem}
+.predict,.expected-reveal{border:1px dashed var(--line);border-radius:14px;padding:0;background:var(--bg2);margin:12px 0}.predict summary,.expected-reveal summary{cursor:pointer;padding:12px 14px;font-weight:900}.predict > div,.expected-reveal > div{margin:0 12px 12px}.predict-options{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.predict-option{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:.6rem;text-align:left}.predict-option.correct{border-color:var(--ok)}.predict-feedback{min-height:28px;margin-top:8px;color:var(--muted)}.mission-label{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);font-weight:900;margin-bottom:8px}
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.achievement{border:1px solid var(--line);border-radius:16px;padding:15px;text-align:center;background:var(--panel2);filter:grayscale(1);opacity:.5}.achievement.unlocked{filter:none;opacity:1;border-color:var(--accent)}.achievement .badge-emoji{font-size:2rem;display:block}.achievement b{display:block;margin-top:5px}.achievement small{color:var(--muted)}
+.trainer-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.trainer-card{border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--panel2)}.trainer-only{display:none}.trainer-mode .trainer-only{display:block}.trainer-banner{display:none;position:sticky;top:61px;z-index:20;background:var(--warn);color:#2b1c00;text-align:center;font-weight:900;padding:5px}.trainer-mode .trainer-banner{display:block}
+.certificate-wrap{border:1px solid var(--line);border-radius:20px;padding:22px;background:linear-gradient(135deg,var(--panel2),color-mix(in srgb,var(--panel2) 80%,var(--accent) 10%))}.certificate{display:none;border:8px double var(--accent);padding:38px;text-align:center;background:var(--panel);border-radius:10px}.certificate.show{display:block}.certificate h3{font-size:2rem;margin:.4rem 0}.certificate-name{font-size:1.8rem;color:var(--accent);font-weight:900;border-bottom:1px solid var(--line);display:inline-block;min-width:280px;padding:.3rem}.certificate-input{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.certificate-input input{flex:1;min-width:220px;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:12px;padding:.7rem}
+.floating-mission{position:fixed;right:18px;bottom:78px;z-index:25;width:min(310px,calc(100vw - 36px));border:1px solid var(--line);border-radius:16px;padding:13px;background:color-mix(in srgb,var(--panel) 94%,transparent);backdrop-filter:blur(12px);box-shadow:var(--shadow);transform:translateY(180%);transition:.35s}.floating-mission.show{transform:translateY(0)}.floating-mission strong{display:block}.floating-meter{height:7px;background:var(--bg2);border-radius:99px;overflow:hidden;margin-top:8px}.floating-meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.confetti-piece{position:fixed;z-index:999;top:-20px;font-size:18px;pointer-events:none;animation:confettiFall 1.8s ease-in forwards}@keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:.2}}
+@media(max-width:1050px){.mission-board,.builder-grid,.cockpit-grid{grid-template-columns:1fr}.myth-grid,.scenario-buttons,.badge-grid,.trainer-tools{grid-template-columns:repeat(2,1fr)}.route-strip{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.control-select{max-width:none;flex:1}.mission-board,.myth-grid,.builder-grid,.cockpit-grid,.scenario-buttons,.scenario-output,.badge-grid,.trainer-tools{grid-template-columns:1fr}.route-strip{grid-template-columns:1fr}.gauge-row{grid-template-columns:repeat(3,1fr)}.gauge strong{font-size:1.35rem}.signal-path{grid-template-columns:1fr}.predict-options{grid-template-columns:1fr}.floating-mission{display:none}}
+@media print{.floating-mission,.trainer-banner,.control-select,#modeBtn,#motionBtn,.sim-terminal,.terminal-quick,.myth-choice,.builder-actions,.cockpit-controls,.scenario-buttons,.certificate-input{display:none!important}.certificate.show{display:block!important}}
+
+@media(max-width:1050px){.layout{grid-template-columns:1fr}.sidebar{display:none}.hero-grid,.stack-wrap{grid-template-columns:1fr}.hero-art{min-height:340px}.cards{grid-template-columns:1fr 1fr}.flow-demo{grid-template-columns:repeat(3,1fr)}.flow-node:nth-child(3):after{display:none}.validation-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.topbar-inner{flex-wrap:wrap}.brand{width:100%}.hero{padding:25px}.hero-art{transform:scale(.82);transform-origin:left top;min-height:300px}.cards,.term-grid,.compare,.flashcards,.validation-grid{grid-template-columns:1fr}.flow-demo{grid-template-columns:1fr}.flow-node:after{content:"↓";right:auto;left:48%;top:auto;bottom:-22px}.flow-node:nth-child(3):after{display:block}.comparison-table{display:block;overflow-x:auto}.section{padding:20px}.lab-head{align-items:flex-start;flex-direction:column}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+@media print{.topbar,.sidebar,.copy,.hero-actions,.toggle-row,.tabs,.toast{display:none!important}body{background:white;color:black}.layout{display:block;padding:0}.section,.hero,.lab{box-shadow:none;break-inside:avoid;border:1px solid #bbb}.tabpane{display:block!important}pre{white-space:pre-wrap;color:black;background:#f5f5f5}.hero-art{display:none}}
+
+
+/* === Brain-Friendly Learning Adventure v2 === */
+.voice-group{display:flex;gap:6px;align-items:center;padding:4px;border:1px solid var(--line);background:var(--panel);border-radius:12px}
+.voice-group button{border:0;background:transparent;color:var(--text);padding:.38rem .5rem;border-radius:8px;min-width:34px}
+.voice-group button:hover{background:var(--panel2)}
+.voice-group button:disabled{opacity:.4;cursor:not-allowed}
+.section.narrating{outline:3px solid color-mix(in srgb,var(--accent2) 50%,transparent);outline-offset:5px}
+.learn-flow{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}.learn-flow span{padding:.45rem .65rem;border-radius:999px;border:1px solid var(--line);background:var(--panel2);font-size:.82rem}.learn-flow b{color:var(--accent)}
+.story-stage{border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,var(--panel2),color-mix(in srgb,var(--panel2) 88%,var(--accent2) 6%));padding:20px;overflow:hidden}
+.story-road{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;align-items:center;margin:18px 0}.story-stop{position:relative;min-height:92px;border:1px solid var(--line);border-radius:14px;background:var(--bg2);display:grid;place-items:center;text-align:center;padding:10px;transition:.25s}.story-stop:after{content:'→';position:absolute;right:-17px;color:var(--accent);font-weight:900}.story-stop:last-child:after{display:none}.story-stop.active{border-color:var(--accent);transform:translateY(-5px);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}.story-icon{font-size:1.6rem;display:block}.story-stop b,.story-stop small{display:block}.story-stop small{color:var(--muted);line-height:1.35;margin-top:4px}.story-caption{min-height:95px;border-left:4px solid var(--accent2);border-radius:0 14px 14px 0;background:var(--panel);padding:14px 16px}.story-controls{display:flex;gap:8px;flex-wrap:wrap}
+.transform-stage{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center}.mini-stack{display:grid;gap:7px}.mini-layer{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel2);font-weight:800}.aaos-addon{opacity:.2;transform:translateX(18px);transition:.45s}.transform-stage.transformed .aaos-addon{opacity:1;transform:none}.transform-arrow{font-size:2rem;color:var(--accent);text-align:center}.transform-callout{margin-top:14px;padding:14px;border-radius:14px;border:1px dashed var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--panel2))}
+.journey-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:16px 0}.journey-node{position:relative;border:1px solid var(--line);border-radius:13px;padding:12px 8px;background:var(--panel2);text-align:center;min-height:82px;display:grid;place-items:center}.journey-node:after{content:'➜';position:absolute;right:-15px;color:var(--accent)}.journey-node:last-child:after{display:none}.journey-node.active{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent);transform:translateY(-4px)}
+.pit-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.pit-card{border:1px solid var(--line);border-radius:16px;background:var(--panel2);padding:16px}.pit-answer{display:none;margin-top:10px;padding:10px;border-left:3px solid var(--ok);background:color-mix(in srgb,var(--ok) 7%,var(--panel));border-radius:0 10px 10px 0}.pit-card.revealed .pit-answer{display:block}.confidence{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.confidence button{border:1px solid var(--line);background:var(--bg2);color:var(--text);border-radius:999px;padding:.36rem .6rem}.confidence button.chosen{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--bg2))}.pit-score{margin-top:14px;font-weight:900;color:var(--accent)}
+.triage-layout{display:grid;grid-template-columns:.72fr 1.28fr;gap:16px}.incident-list{display:grid;gap:8px}.incident-btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:14px;text-align:left;padding:13px}.incident-btn.active{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 7%,var(--panel2))}.triage-panel{border:1px solid var(--line);border-radius:18px;background:var(--panel2);padding:18px}.decision-step{border-left:3px solid var(--line);padding:10px 12px;margin:8px 0;background:var(--bg2);border-radius:0 12px 12px 0}.decision-step b{color:var(--accent)}.triage-command{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--code);color:#d8f4ff;padding:.5rem .65rem;border-radius:8px;display:inline-block;margin:.25rem 0}
+.boss-wrap{margin-top:20px;border:1px solid var(--line);border-radius:20px;padding:20px;background:linear-gradient(145deg,color-mix(in srgb,var(--danger) 5%,var(--panel2)),var(--panel2))}.boss-clues{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.boss-clue{border:1px dashed var(--line);border-radius:13px;padding:12px;min-height:100px;background:var(--bg2)}.boss-clue .hidden-clue{filter:blur(6px);user-select:none}.boss-clue.revealed .hidden-clue{filter:none}.boss-verdicts{display:flex;flex-wrap:wrap;gap:8px}.boss-verdicts button{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:.65rem .8rem}.boss-feedback{margin-top:12px;padding:12px;border-radius:12px;background:var(--bg2);min-height:48px}.boss-feedback.good{border:1px solid var(--ok)}.boss-feedback.warn{border:1px solid var(--warn)}
+.memory-board{display:grid;grid-template-columns:.8fr 1.2fr;gap:16px}.memory-terms{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}.memory-term{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:999px;padding:.55rem .75rem}.memory-term.selected{outline:3px solid color-mix(in srgb,var(--accent2) 45%,transparent)}.memory-term.matched{opacity:.35;pointer-events:none}.memory-slots{display:grid;gap:8px}.memory-slot{border:2px dashed var(--line);border-radius:13px;padding:12px;text-align:left;background:var(--panel2);color:var(--text)}.memory-slot.correct{border-style:solid;border-color:var(--ok)}.memory-slot.wrong{border-color:var(--danger);animation:shake .25s linear 2}.memory-status{margin-top:12px;padding:11px;border-radius:12px;background:var(--bg2);border:1px solid var(--line)}
+.anatomy{position:absolute;right:64px;top:8px;border:1px solid #426277;background:#132b3b;color:#dff7ff;border-radius:8px;padding:.32rem .55rem;font-size:.78rem}.command-anatomy-panel{margin:-4px 0 14px;border:1px solid var(--line);border-radius:0 0 14px 14px;background:var(--panel2);padding:14px;display:none}.command-anatomy-panel.show{display:block}.anatomy-row{display:grid;grid-template-columns:minmax(95px,.32fr) 1fr;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}.anatomy-row:last-child{border-bottom:0}.anatomy-token{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent);font-weight:900;word-break:break-word}.field-use{margin-top:10px;border-left:3px solid var(--accent2);padding:8px 10px;background:var(--bg2);border-radius:0 10px 10px 0}
+.recall-ribbon{display:inline-flex;gap:7px;align-items:center;background:color-mix(in srgb,var(--warn) 9%,var(--panel2));border:1px solid color-mix(in srgb,var(--warn) 50%,var(--line));padding:.45rem .7rem;border-radius:999px;color:var(--warn);font-weight:850;font-size:.82rem}
+@media(max-width:1050px){.story-road{grid-template-columns:repeat(3,1fr)}.transform-stage,.triage-layout,.memory-board{grid-template-columns:1fr}.transform-arrow{transform:rotate(90deg)}.journey-strip{grid-template-columns:repeat(3,1fr)}.boss-clues{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.voice-group{width:100%;justify-content:center}.story-road,.journey-strip,.pit-grid,.boss-clues{grid-template-columns:1fr}.story-stop:after,.journey-node:after{content:'↓';right:auto;bottom:-20px}.anatomy{right:64px}.anatomy-row{grid-template-columns:1fr}.transform-stage{gap:10px}}
+@media print{.voice-group,.story-controls,.confidence,.incident-list,.boss-verdicts,.memory-terms,.anatomy,.command-anatomy-panel{display:none!important}}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">Android <b>Architecture Lab</b></div>
+    <label class="search" aria-label="Search document"><span>⌕</span><input id="searchInput" placeholder="Search concepts, labs, commands…"></label>
+    <select class="control-select" id="depthSelect" aria-label="Explanation depth">
+      <option value="simple">🌱 Simple</option><option value="technical" selected>🔧 Technical</option><option value="deep">🧠 Deep dive</option>
+    </select>
+    <button class="icon-btn mode-btn" id="modeBtn" aria-label="Toggle guided learning mode">🧭 Explorer</button>
+    <button class="icon-btn" id="motionBtn" aria-label="Reduce motion">Motion: on</button>
+    <div class="voice-group" aria-label="Section narration controls" title="Narrate the section currently on screen">
+      <button id="voicePlay" aria-label="Play section narration">🔊</button><button id="voicePause" aria-label="Pause narration">⏸</button><button id="voiceResume" aria-label="Resume narration">▶</button><button id="voiceStop" aria-label="Stop narration">⏹</button>
+    </div>
+    <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">☀︎</button>
+    <button class="icon-btn" onclick="window.print()" aria-label="Print document">Print</button>
+  </div>
+  <div class="progressline"><span id="readProgress"></span></div>
+</header>
+<div class="trainer-banner">🎓 Trainer mode is active — answers, timings, and facilitation notes are visible.</div>
+<div class="layout">
+<aside class="sidebar" aria-label="Document navigation">
+  <h2>Learning route</h2>
+  <nav id="toc">
+    <a href="#overview">01 · Start here</a>
+    <a href="#mission">02 · Case file AAOS-27</a>
+    <a href="#story">03 · 60-second story</a>
+    <a href="#language">04 · Terms that matter</a>
+    <a href="#myths">05 · Myth or fact</a>
+    <a href="#architecture">06 · Android architecture</a>
+    <a href="#transform">07 · Convert Android → AAOS</a>
+    <a href="#binder">08 · Binder highway</a>
+    <a href="#builder">09 · Build the stack</a>
+    <a href="#bootflow">10 · Boot & runtime flow</a>
+    <a href="#carstack">11 · Automotive additions</a>
+    <a href="#propertyflow">12 · VHAL signal path</a>
+    <a href="#cockpit">13 · Interactive cockpit</a>
+    <a href="#difference">14 · Phone vs vehicle</a>
+    <a href="#scenarios">15 · Scenario simulator</a>
+    <a href="#power">16 · Vehicle power lifecycle</a>
+    <a href="#pitstop">17 · Memory pit stop</a>
+    <a href="#safety">18 · Safety boundaries</a>
+    <a href="#terminal">19 · Practice terminal</a>
+    <a href="#triage">20 · Troubleshooting detective</a>
+    <a href="#labs">21 · Production labs</a>
+    <a href="#capstone">22 · Final boss battle</a>
+    <a href="#memory">23 · Memory garage</a>
+    <a href="#assessment">24 · Knowledge check</a>
+    <a href="#achievements">25 · Badges & trainer mode</a>
+    <a href="#validation">26 · Validation report</a>
+    <a href="#sources">27 · Official sources</a>
+  </nav>
+  <div class="side-meter" aria-hidden="true"><span id="sideProgress"></span></div>
+  <div class="muted" style="padding:0 8px;font-size:.82rem">Progress is stored locally in this browser.</div>
+</aside>
+<main id="main">
+<section class="hero" id="overview" data-search="overview android architecture phone automotive aaos">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">🧰 Android Architecture Garage · Interactive investigation</div>
+      <h1>Same Android bones.<br><span>Very different mission.</span></h1>
+      <p class="lede">Learn how the Android platform is assembled, then follow what changes when Android leaves a pocket and becomes part of a vehicle. The document uses plain-language analogies, visual stories, technical drill-downs, interactive architecture journeys, retrieval practice, validated ADB labs, expected-result reasoning, and production-style evidence collection.</p>
+      <div class="hero-actions">
+        <a class="primary" href="#mission" style="text-decoration:none">Accept Case AAOS-27</a>
+        <a class="secondary" href="#architecture" style="text-decoration:none">Explore the stack</a>
+        <a class="secondary" href="#labs" style="text-decoration:none">Open the labs</a>
+      </div>
+      <p class="muted" style="margin-top:18px"><b>Lab baseline:</b> Ubuntu 24.x host, KVM enabled, Cuttlefish already installed and launched. Automotive-only labs require an AAOS image.</p>
+    </div>
+    <div class="hero-art" aria-label="Animated phone and car illustration">
+      <div class="signal"></div><div class="signal s2"></div><div class="signal s3"></div>
+      <div class="phone"><div class="phone-screen"><span class="appdot"></span><span class="appdot"></span><span class="appdot"></span><span class="appdot"></span><span class="appdot"></span><span class="appdot"></span></div></div>
+      <div class="car"><div class="car-roof"></div><div class="window"></div><div class="car-body"></div><div class="wheel w1"></div><div class="wheel w2"></div><div class="road"></div></div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section searchable" id="mission" data-search="case mission guided journey evidence AAOS investigation">
+  <div class="kicker">Case file AAOS-27</div><h2>Is this really Android Automotive OS?</h2>
+  <div class="mission-board">
+    <div class="case-file">
+      <div class="case-id">🕵️ Architecture investigation</div>
+      <h3>A supplier has delivered a new infotainment image</h3>
+      <p>The screen looks automotive, but appearances are weak evidence. Your job is to determine whether the image is ordinary Android with a car-themed launcher, projected Android Auto, or genuine embedded AAOS.</p>
+      <div class="level-demo">
+        <div class="depth-card" data-depth-item="simple"><b>🌱 Simple view:</b> Follow clues, compare behaviours, and explain the result in everyday language.</div>
+        <div class="depth-card" data-depth-item="technical"><b>🔧 Technical view:</b> Trace framework services, Binder IPC, Car Service, VHAL, process identity, and lifecycle evidence.</div>
+        <div class="depth-card" data-depth-item="deep"><b>🧠 Deep dive:</b> Challenge the evidence quality, distinguish declared features from runtime implementation, and document limitations.</div>
+      </div>
+      <div class="character-tip"><div class="character-avatar">🔌</div><div><b>Victor VHAL says:</b> “A dashboard-shaped UI proves almost nothing. Find the automotive feature, Car Service, and vehicle-property path.”</div></div>
+    </div>
+    <div class="evidence-board" aria-live="polite">
+      <div class="kicker">Evidence board</div><h3 style="margin-top:.3rem">Clues collected</h3>
+      <div class="evidence-row" data-evidence="myths"><span class="evidence-icon">1</span><span>Separate Android Auto from AAOS</span><span class="evidence-status">Pending</span></div>
+      <div class="evidence-row" data-evidence="stack"><span class="evidence-icon">2</span><span>Rebuild the Android stack</span><span class="evidence-status">Pending</span></div>
+      <div class="evidence-row" data-evidence="vhal"><span class="evidence-icon">3</span><span>Trace a vehicle property</span><span class="evidence-status">Pending</span></div>
+      <div class="evidence-row" data-evidence="scenario"><span class="evidence-icon">4</span><span>Explain phone vs vehicle behaviour</span><span class="evidence-status">Pending</span></div>
+      <div class="evidence-row" data-evidence="classification"><span class="evidence-icon">5</span><span>Classify the image using evidence</span><span class="evidence-status">Pending</span></div>
+      <div class="game-status"><b id="missionPct">0%</b> of the investigation complete. Progress stays in this browser.</div>
+    </div>
+  </div>
+  <div class="route-strip" id="routeStrip">
+    <div class="route-step current">1 · Learn terms</div><div class="route-step">2 · Build stack</div><div class="route-step">3 · Trace VHAL</div><div class="route-step">4 · Run labs</div><div class="route-step">5 · Deliver verdict</div>
+  </div>
+</section>
+
+<section class="section searchable" data-search="outcomes prerequisites learning objectives" id="outcomes">
+  <div class="kicker">Learning outcomes</div><h2>What learners should be able to explain</h2>
+  <div class="cards">
+    <article class="card"><div class="num">1</div><h3>Read the Android stack</h3><p class="muted">Trace an action from an app through framework services, Binder IPC, native services, HALs, kernel drivers, and hardware.</p></article>
+    <article class="card"><div class="num">2</div><h3>Separate the car terms</h3><p class="muted">Explain Android Auto, Android Automotive OS, AOSP, Google built-in, Car Service, and VHAL without mixing them together.</p></article>
+    <article class="card"><div class="num">3</div><h3>Diagnose a running image</h3><p class="muted">Use ADB evidence to classify a device, inspect core services, check security boundaries, and examine AAOS vehicle integration.</p></article>
+  </div>
+</section>
+
+
+<section class="section searchable" id="story" data-search="visual story 60 second app binder framework hal kernel vehicle mental model">
+  <div class="kicker">Build the mental movie first</div><h2>The 60-second Android story</h2>
+  <div class="recall-ribbon">🎬 Imagine → Watch → Understand → Inspect → Practise → Recall</div>
+  <p>Before memorising layer names, follow one ordinary request. A driver taps a control. Android turns that human intention into a controlled call, crosses process boundaries, reaches hardware-facing code, and eventually changes something real.</p>
+  <div class="story-stage">
+    <div class="story-road" id="storyRoad">
+      <div class="story-stop"><div><span class="story-icon">👆</span><b>Human intent</b><small>Tap / voice / input</small></div></div>
+      <div class="story-stop"><div><span class="story-icon">📱</span><b>App / HMI</b><small>Requests a capability</small></div></div>
+      <div class="story-stop"><div><span class="story-icon">🏢</span><b>Framework</b><small>API + policy</small></div></div>
+      <div class="story-stop"><div><span class="story-icon">📞</span><b>Binder</b><small>Crosses processes</small></div></div>
+      <div class="story-stop"><div><span class="story-icon">🔌</span><b>HAL / VHAL</b><small>Hardware-facing contract</small></div></div>
+      <div class="story-stop"><div><span class="story-icon">⚙️</span><b>Hardware / ECU</b><small>Physical effect</small></div></div>
+    </div>
+    <div class="story-caption" id="storyCaption"><b>Start the story.</b> Watch where responsibility changes rather than trying to memorise every name at once.</div>
+    <div class="story-controls" style="margin-top:12px"><button class="primary" id="playStory">▶ Play story</button><button class="small-btn" id="stepStory">Step →</button><button class="small-btn" id="resetStory">↺ Reset</button></div>
+  </div>
+  <div class="character-tip"><div class="character-avatar">🧠</div><div><b>Memory trick:</b> say the path out loud as <em>intent → app → framework → Binder → HAL → hardware</em>. In AAOS, VHAL and Car Service add vehicle-specific policy and translation around that core pattern.</div></div>
+</section>
+
+<section class="section searchable" id="language" data-search="AOSP GMS Google Automotive Services GAS Android Auto AAOS Android Automotive OS Google built-in terms">
+  <div class="kicker">Vocabulary first</div><h2>Six terms that prevent 80% of the confusion</h2>
+  <dl class="term-grid">
+    <div class="term"><dt>Android</dt><dd>The broad operating-system platform and ecosystem. A commercial device usually combines open-source Android components with OEM and possibly Google components.</dd></div>
+    <div class="term"><dt>AOSP</dt><dd>The Android Open Source Project: the open-source platform code that OEMs and integrators can build and customize.</dd></div>
+    <div class="term"><dt>Android Auto</dt><dd>A <b>phone-powered projection experience</b>. The phone runs the app and projects a driver-optimized experience to a compatible vehicle display.</dd></div>
+    <div class="term"><dt>Android Automotive OS (AAOS)</dt><dd>Android running <b>directly on vehicle hardware</b>, typically as the in-vehicle infotainment operating system. It does not require a connected phone to be the computer.</dd></div>
+    <div class="term"><dt>Google built-in / GAS</dt><dd>Google apps and services supplied for some AAOS vehicles. AAOS can exist without Google built-in; the two are not synonyms.</dd></div>
+    <div class="term"><dt>Car Service + VHAL</dt><dd>The framework-side automotive service layer and the vehicle hardware abstraction layer that represent vehicle functions as controlled properties.</dd></div>
+  </dl>
+  <div class="callout warn" style="margin-top:18px"><strong>Myth buster:</strong> “Android in a car” does not automatically mean Android Auto. It may be projected Android Auto, embedded AAOS, an OEM Android fork, or simply an Android tablet mounted in the cabin.</div>
+</section>
+
+
+<section class="section searchable" id="myths" data-search="myth fact Android Auto AAOS VHAL Google built-in car apps">
+  <div class="kicker">Fast misconceptions check</div><h2>Myth or fact? Tap before reading the explanation</h2>
+  <p class="muted">Get at least four correct to collect the first clue. Wrong answers are useful here—they expose assumptions before the labs do.</p>
+  <div class="myth-grid" id="mythGrid">
+    <article class="myth-card" data-answer="false"><b>Android Auto and Android Automotive OS are the same platform.</b><div class="myth-choice"><button class="myth-vote" data-choice="true">Fact</button><button class="myth-vote" data-choice="false">Myth</button></div><div class="myth-result">Myth. Android Auto projects an experience from a phone; AAOS is embedded in the vehicle.</div></article>
+    <article class="myth-card" data-answer="true"><b>AAOS can operate without a connected phone.</b><div class="myth-choice"><button class="myth-vote" data-choice="true">Fact</button><button class="myth-vote" data-choice="false">Myth</button></div><div class="myth-result">Fact. AAOS runs on the vehicle’s own compute platform.</div></article>
+    <article class="myth-card" data-answer="false"><b>Every Android app may directly access the CAN bus.</b><div class="myth-choice"><button class="myth-vote" data-choice="true">Fact</button><button class="myth-vote" data-choice="false">Myth</button></div><div class="myth-result">Myth. Apps use controlled APIs; permissions, Car Service, VHAL, gateways, and OEM policy separate them from vehicle networks.</div></article>
+    <article class="myth-card" data-answer="false"><b>Google built-in is mandatory for all AAOS vehicles.</b><div class="myth-choice"><button class="myth-vote" data-choice="true">Fact</button><button class="myth-vote" data-choice="false">Myth</button></div><div class="myth-result">Myth. AAOS is open-source platform software; Google Automotive Services are separately licensed and optional.</div></article>
+    <article class="myth-card" data-answer="false"><b>A wide dashboard display proves the system is AAOS.</b><div class="myth-choice"><button class="myth-vote" data-choice="true">Fact</button><button class="myth-vote" data-choice="false">Myth</button></div><div class="myth-result">Myth. Screen shape is cosmetic evidence. Inspect declared features and runtime services.</div></article>
+    <article class="myth-card" data-answer="true"><b>VHAL abstracts vehicle properties but does not remove permission checks.</b><div class="myth-choice"><button class="myth-vote" data-choice="true">Fact</button><button class="myth-vote" data-choice="false">Myth</button></div><div class="myth-result">Fact. Abstraction is not authorization.</div></article>
+  </div>
+  <div class="game-status" id="mythScore">Score: 0/6</div>
+</section>
+
+<section class="section searchable" id="architecture" data-search="android architecture linux kernel hal native libraries ART runtime framework system services apps binder zygote">
+  <div class="kicker">Core concept</div><h2>Android architecture, one layer at a time</h2>
+  <p class="muted">Think of Android as a large hotel. Apps are guests. Framework APIs are the front desk. System services are specialized departments. Binder is the internal telephone network. HALs are standardized loading docks. The Linux kernel is the building’s utilities, locks, and machinery.</p>
+  <div class="stack-wrap">
+    <div class="stack" id="archStack" aria-label="Interactive Android architecture layers">
+      <button class="layer selected" data-layer="apps"><b>Applications & System UI</b><small>APK processes, activities, services, Compose/View UI</small></button>
+      <button class="layer" data-layer="framework"><b>Application Framework</b><small>Managers, APIs, system_server services</small></button>
+      <button class="layer" data-layer="runtime"><b>ART & Core Libraries</b><small>DEX execution, compilation, garbage collection</small></button>
+      <button class="layer" data-layer="native"><b>Native Services & Libraries</b><small>SurfaceFlinger, media, libc, SQLite, graphics</small></button>
+      <button class="layer" data-layer="hal"><b>Hardware Abstraction Layers</b><small>Stable interfaces for vendor implementations</small></button>
+      <button class="layer" data-layer="kernel"><b>Linux Kernel</b><small>Processes, memory, drivers, networking, SELinux hooks</small></button>
+      <button class="layer" data-layer="hardware"><b>Physical / Virtual Hardware</b><small>SoC, display, modem, audio, sensors—or Cuttlefish devices</small></button>
+    </div>
+    <div class="detail-panel" id="layerDetail" aria-live="polite"></div>
+  </div>
+  <div class="callout" style="margin-top:20px"><strong>Important architecture correction:</strong> the stack is not a simple “top calls the layer immediately below” ladder. Android is a network of processes. Binder IPC frequently crosses process boundaries, native daemons can talk to HALs, and kernel interfaces support all layers.</div>
+</section>
+
+
+
+<section class="section searchable" id="transform" data-search="convert Android to AAOS transformation Car Service VHAL automotive extension">
+  <div class="kicker">See the difference, don't memorise it</div><h2>Convert ordinary Android into an AAOS platform</h2>
+  <p>The core Android platform does not disappear in a vehicle. AAOS <b>extends it</b> with vehicle-aware services, policy, lifecycle, occupants, audio, and a standardized vehicle-property boundary.</p>
+  <div class="transform-stage" id="transformStage">
+    <div><h3>📱 Android core</h3><div class="mini-stack"><div class="mini-layer">Applications & System UI</div><div class="mini-layer">Application Framework</div><div class="mini-layer">ART + Native Services</div><div class="mini-layer">HALs</div><div class="mini-layer">Linux Kernel</div></div></div>
+    <div class="transform-arrow">➜</div>
+    <div class="aaos-addon"><h3>🚘 Automotive extensions</h3><div class="mini-stack"><div class="mini-layer">Car APIs + vehicle-aware HMI</div><div class="mini-layer">Car Service + UX / power / audio policy</div><div class="mini-layer">Vehicle HAL (VHAL)</div><div class="mini-layer">Vehicle network / gateways</div><div class="mini-layer">ECUs, sensors, actuators</div></div></div>
+  </div>
+  <div class="story-controls" style="margin-top:15px"><button class="primary" id="transformBtn">🚗 Convert Android → AAOS</button><button class="small-btn" id="transformReset">Reset</button></div>
+  <div class="transform-callout" id="transformLesson"><b>Key idea:</b> AAOS is Android adapted to live inside a vehicle; it is not “Android Auto installed in the dashboard.”</div>
+</section>
+
+<section class="section searchable" id="builder" data-search="drag drop architecture builder Android layers game">
+  <div class="kicker">Hands-on concept game</div><h2>Rebuild Android from the workshop floor up</h2>
+  <p>Drag a component into the correct layer, or select a component and then select a slot. The feedback explains why—not merely whether—you were wrong.</p>
+  <div class="builder-grid">
+    <div>
+      <h3>Loose components</h3>
+      <div class="component-pool" id="componentPool">
+        <button class="component-chip" draggable="true" data-target="apps">Maps application</button>
+        <button class="component-chip" draggable="true" data-target="framework">system_server</button>
+        <button class="component-chip" draggable="true" data-target="runtime">Zygote + ART</button>
+        <button class="component-chip" draggable="true" data-target="native">SurfaceFlinger</button>
+        <button class="component-chip" draggable="true" data-target="hal">Vehicle HAL</button>
+        <button class="component-chip" draggable="true" data-target="kernel">Binder driver</button>
+        <button class="component-chip" draggable="true" data-target="hardware">HVAC ECU</button>
+      </div>
+      <div class="game-status" id="builderFeedback">Select a component to begin.</div>
+      <div class="builder-actions" style="margin-top:10px"><button class="small-btn" id="resetBuilder">Reset workshop</button></div>
+      <div class="trainer-only callout warn" style="margin-top:12px"><strong>Trainer answer:</strong> Maps→Apps, system_server→Framework, Zygote/ART→Runtime, SurfaceFlinger→Native, VHAL→HAL, Binder driver→Kernel, HVAC ECU→Hardware.</div>
+    </div>
+    <div class="builder-stack" id="builderStack">
+      <button class="drop-slot" data-accept="apps"><span><b>Applications & System UI</b><br><span class="slot-label">APK processes and user experiences</span></span><span class="slot-value">Drop here</span></button>
+      <button class="drop-slot" data-accept="framework"><span><b>Application Framework</b><br><span class="slot-label">Managers and framework services</span></span><span class="slot-value">Drop here</span></button>
+      <button class="drop-slot" data-accept="runtime"><span><b>ART & Core Libraries</b><br><span class="slot-label">DEX execution and process creation</span></span><span class="slot-value">Drop here</span></button>
+      <button class="drop-slot" data-accept="native"><span><b>Native Services & Libraries</b><br><span class="slot-label">Graphics, media, C/C++ services</span></span><span class="slot-value">Drop here</span></button>
+      <button class="drop-slot" data-accept="hal"><span><b>Hardware Abstraction Layer</b><br><span class="slot-label">Stable hardware-facing interfaces</span></span><span class="slot-value">Drop here</span></button>
+      <button class="drop-slot" data-accept="kernel"><span><b>Linux Kernel</b><br><span class="slot-label">Drivers, IPC transport, scheduling</span></span><span class="slot-value">Drop here</span></button>
+      <button class="drop-slot" data-accept="hardware"><span><b>Hardware / Vehicle Domain</b><br><span class="slot-label">Compute, devices, buses, ECUs</span></span><span class="slot-value">Drop here</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="section searchable" id="binder" data-search="binder ipc aidl process communication transaction">
+  <div class="kicker">The invisible wiring</div><h2>Binder IPC: Android’s internal service bus</h2>
+  <p>Most important Android components live in separate processes. Binder lets a client call a remote service with an interface that can feel like a local method call. AIDL describes many of those interfaces; the Binder kernel driver transports transactions.</p>
+  <div class="callout"><strong>Try the mental movie:</strong> a vehicle HMI asks for speed. The app-facing manager does not jump straight to an ECU. Follow the call across controlled process boundaries.</div>
+  <div class="journey-strip" id="binderJourney"><div class="journey-node"><b>App / HMI</b><small>client process</small></div><div class="journey-node"><b>Manager API</b><small>client proxy</small></div><div class="journey-node"><b>Binder driver</b><small>kernel IPC</small></div><div class="journey-node"><b>Service stub</b><small>server process</small></div><div class="journey-node"><b>Policy</b><small>identity + permission</small></div><div class="journey-node"><b>HAL / VHAL</b><small>hardware-facing call</small></div></div>
+  <button class="small-btn" id="playBinder">▶ Send Binder transaction</button>
+
+  <div class="svg-card">
+    <svg viewBox="0 0 900 300" role="img" aria-label="Binder IPC path from app to system service and HAL">
+      <defs><marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#7ce7b7"/></marker></defs>
+      <g style="color:var(--text)">
+        <rect x="30" y="75" width="170" height="110" rx="18" fill="var(--panel)" stroke="var(--accent2)"/><text x="115" y="120" text-anchor="middle" class="svg-label">App process</text><text x="115" y="145" text-anchor="middle" class="svg-small">Client proxy</text>
+        <rect x="280" y="30" width="250" height="200" rx="22" fill="var(--panel)" stroke="var(--accent)"/><text x="405" y="70" text-anchor="middle" class="svg-label">Binder kernel driver</text><text x="405" y="98" text-anchor="middle" class="svg-small">transactions • identities • handles</text><rect x="330" y="125" width="150" height="55" rx="12" fill="var(--bg2)" stroke="var(--line)"/><text x="405" y="158" text-anchor="middle" class="svg-small">Parcel data</text>
+        <rect x="610" y="35" width="230" height="90" rx="18" fill="var(--panel)" stroke="var(--accent2)"/><text x="725" y="75" text-anchor="middle" class="svg-label">system_server</text><text x="725" y="100" text-anchor="middle" class="svg-small">Framework service stub</text>
+        <rect x="610" y="165" width="230" height="90" rx="18" fill="var(--panel)" stroke="var(--warn)"/><text x="725" y="205" text-anchor="middle" class="svg-label">HAL / native service</text><text x="725" y="230" text-anchor="middle" class="svg-small">Vendor-facing implementation</text>
+        <path d="M200 130 H275" stroke="#7ce7b7" stroke-width="4" marker-end="url(#arr)"/><path d="M530 105 H605" stroke="#7ce7b7" stroke-width="4" marker-end="url(#arr)"/><path d="M530 180 H605" stroke="#7ce7b7" stroke-width="4" marker-end="url(#arr)"/>
+      </g>
+    </svg>
+  </div>
+  <div class="cards">
+    <article class="card"><h3>Identity travels</h3><p class="muted">The service can identify the caller’s UID/PID and enforce permissions rather than trusting every caller.</p></article>
+    <article class="card"><h3>Failures are boundaries</h3><p class="muted">A dead remote process can trigger a Binder death notification instead of silently behaving like an in-process object.</p></article>
+    <article class="card"><h3>Not a network protocol</h3><p class="muted">Binder is mainly local IPC. Vehicle Ethernet, CAN, Bluetooth, Wi‑Fi, and cellular are separate communication domains.</p></article>
+  </div>
+</section>
+
+<section class="section searchable" id="bootflow" data-search="android boot bootloader kernel init zygote system_server surfaceflinger launcher runtime">
+  <div class="kicker">Boot story</div><h2>From power-on to an interactive Android system</h2>
+  <p class="muted">The exact boot chain varies by device, but this simplified sequence is a useful diagnostic model.</p>
+  <div class="flow-demo" id="bootDemo">
+    <div class="flow-node"><b>1. Boot ROM / bootloader</b><small>Establish trust and load boot components</small></div>
+    <div class="flow-node"><b>2. Linux kernel</b><small>Initialize memory, scheduler, drivers</small></div>
+    <div class="flow-node"><b>3. init</b><small>Parse rc files, mount partitions, start daemons</small></div>
+    <div class="flow-node"><b>4. Zygote</b><small>Preload classes and fork app processes</small></div>
+    <div class="flow-node"><b>5. system_server</b><small>Start framework services</small></div>
+    <div class="flow-node"><b>6. UI ready</b><small>System UI, launcher, apps, vehicle HMI</small></div>
+  </div>
+  <button class="small-btn" id="playBoot" style="margin-top:14px">▶ Animate boot path</button>
+  <div class="callout warn" style="margin-top:18px"><strong>Vehicle twist:</strong> a car cannot behave like a phone that simply boots when the user presses a power button. AAOS must coordinate ignition, wake, suspend, shutdown preparation, Garage Mode, and power policy with a vehicle controller through the VHAL.</div>
+</section>
+
+<section class="section searchable" id="carstack" data-search="AAOS automotive architecture Car API Car Service VHAL CAN LIN Ethernet ECU power audio zones multi display user">
+  <div class="kicker">Automotive extension</div><h2>What AAOS adds around the Android core</h2>
+  <p>The familiar Android stack remains, but AAOS adds a car framework and integration surfaces for a shared, multi-display, power-sensitive machine connected to many non-Android ECUs.</p>
+  <div class="svg-card">
+    <svg viewBox="0 0 1050 520" role="img" aria-label="AAOS architecture from car apps through Car Service and VHAL to vehicle ECUs">
+      <defs><marker id="arr2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#7ce7b7"/></marker></defs>
+      <g style="color:var(--text)">
+        <rect x="55" y="35" width="940" height="75" rx="18" fill="var(--panel)" stroke="var(--accent2)"/><text x="525" y="68" text-anchor="middle" class="svg-label">Vehicle HMI, media, navigation, system and privileged apps</text><text x="525" y="92" text-anchor="middle" class="svg-small">Driver display • center display • passenger display • app sandbox and permissions</text>
+        <rect x="55" y="145" width="440" height="105" rx="18" fill="var(--panel)" stroke="var(--accent2)"/><text x="275" y="182" text-anchor="middle" class="svg-label">Android Framework + Car APIs</text><text x="275" y="210" text-anchor="middle" class="svg-small">CarPropertyManager • CarAudioManager • CarPowerManager • users • UX restrictions</text>
+        <rect x="555" y="145" width="440" height="105" rx="18" fill="var(--panel)" stroke="var(--accent)"/><text x="775" y="182" text-anchor="middle" class="svg-label">Car Service</text><text x="775" y="210" text-anchor="middle" class="svg-small">Policy, permission checks, vehicle property services, power, audio, occupants</text>
+        <rect x="325" y="290" width="400" height="90" rx="18" fill="var(--panel)" stroke="var(--warn)"/><text x="525" y="327" text-anchor="middle" class="svg-label">Vehicle HAL (VHAL)</text><text x="525" y="353" text-anchor="middle" class="svg-small">Read • write • subscribe to typed vehicle properties</text>
+        <rect x="55" y="420" width="190" height="70" rx="15" fill="var(--panel)" stroke="var(--line)"/><text x="150" y="450" text-anchor="middle" class="svg-label">CAN / LIN</text><text x="150" y="472" text-anchor="middle" class="svg-small">Legacy vehicle buses</text>
+        <rect x="285" y="420" width="190" height="70" rx="15" fill="var(--panel)" stroke="var(--line)"/><text x="380" y="450" text-anchor="middle" class="svg-label">Automotive Ethernet</text><text x="380" y="472" text-anchor="middle" class="svg-small">Service / high bandwidth</text>
+        <rect x="515" y="420" width="190" height="70" rx="15" fill="var(--panel)" stroke="var(--line)"/><text x="610" y="450" text-anchor="middle" class="svg-label">Vehicle MCU</text><text x="610" y="472" text-anchor="middle" class="svg-small">Power and coordination</text>
+        <rect x="745" y="420" width="250" height="70" rx="15" fill="var(--panel)" stroke="var(--line)"/><text x="870" y="450" text-anchor="middle" class="svg-label">ECUs / actuators / sensors</text><text x="870" y="472" text-anchor="middle" class="svg-small">HVAC • seats • body • telemetry</text>
+        <path d="M525 110 V140" stroke="#7ce7b7" stroke-width="4" marker-end="url(#arr2)"/><path d="M495 197 H550" stroke="#7ce7b7" stroke-width="4" marker-end="url(#arr2)"/><path d="M775 250 L620 287" stroke="#7ce7b7" stroke-width="4" marker-end="url(#arr2)"/><path d="M525 380 V414" stroke="#7ce7b7" stroke-width="4" marker-end="url(#arr2)"/>
+      </g>
+    </svg>
+  </div>
+  <div class="cards">
+    <article class="card"><h3>Vehicle properties</h3><p class="muted">VHAL represents functions as typed properties with access mode, change mode, area/zone, and value metadata. It abstracts the underlying bus—not the permission model.</p></article>
+    <article class="card"><h3>Power coordination</h3><p class="muted">AAOS coordinates with the vehicle controller for ON, shutdown preparation, suspend/hibernate, wake, and power policies for components such as display, audio, radios, and CPU.</p></article>
+    <article class="card"><h3>Shared cabin</h3><p class="muted">Multiple users, displays, occupants, audio zones, microphones, and input devices are normal—not edge cases.</p></article>
+  </div>
+</section>
+
+<section class="section searchable" id="propertyflow" data-search="climate hvac property flow app CarPropertyManager Car Service VHAL ECU">
+  <div class="kicker">Interactive signal path</div><h2>Follow a climate-control request</h2>
+  <p class="muted">This is a conceptual path. Access to vehicle properties is permission-controlled; ordinary third-party apps cannot freely operate safety-relevant controls.</p>
+  <div class="flow-demo" id="propFlow">
+    <div class="flow-node"><b>HMI tap</b><small>Driver chooses 22°C</small></div>
+    <div class="flow-node"><b>Car API</b><small>CarPropertyManager call</small></div>
+    <div class="flow-node"><b>Car Service</b><small>Permission and policy checks</small></div>
+    <div class="flow-node"><b>VHAL</b><small>Set zoned HVAC property</small></div>
+    <div class="flow-node"><b>Vehicle network</b><small>Translate to OEM protocol</small></div>
+    <div class="flow-node"><b>HVAC ECU</b><small>Actuate and report state</small></div>
+  </div>
+  <button class="small-btn" id="playProperty" style="margin-top:14px">▶ Trace request</button>
+</section>
+
+
+<section class="section searchable" id="cockpit" data-search="interactive cockpit VHAL climate gear speed door lights property simulator">
+  <div class="kicker">Vehicle-property playground</div><h2>Operate the cockpit and watch the architecture move</h2>
+  <p>Each control updates a simplified property record and animates the path. The simulator is conceptual: OEM property IDs, network messages, gateways, and ECU behaviour vary by implementation.</p>
+  <div class="cockpit-grid">
+    <div class="cockpit-visual">
+      <div class="cockpit-screen">
+        <div class="gauge-row">
+          <div class="gauge"><div><small>SPEED</small><strong id="speedValue">0</strong><small>km/h</small></div></div>
+          <div class="gauge"><div><small>GEAR</small><strong id="gearValue">P</strong><small>selector</small></div></div>
+          <div class="gauge"><div><small>CABIN</small><strong id="tempValue">22°</strong><small>front-left</small></div></div>
+        </div>
+        <svg class="cockpit-car" viewBox="0 0 460 180" role="img" aria-label="Top view vehicle showing doors and headlights">
+          <path d="M145 18 H315 Q350 18 370 50 L410 130 Q417 150 390 160 H70 Q43 150 50 130 L90 50 Q110 18 145 18Z" fill="#10293c" stroke="#7ce7b7" stroke-width="4"/>
+          <rect x="145" y="42" width="170" height="92" rx="28" fill="#183b53" stroke="#42647d"/>
+          <path id="leftDoor" class="door-shape" d="M90 62 L142 48 V132 L70 132Z"/>
+          <path class="door-shape" d="M370 62 L318 48 V132 L390 132Z"/>
+          <circle id="leftLamp" cx="105" cy="35" r="10" fill="#506579"/><circle id="rightLamp" cx="355" cy="35" r="10" fill="#506579"/>
+          <text x="230" y="95" text-anchor="middle" fill="#d8f4ff" font-family="system-ui" font-weight="800">AAOS COCKPIT</text>
+        </svg>
+        <div class="cockpit-controls">
+          <button class="cockpit-control" data-cockpit="tempUp">🔥 Temperature +</button><button class="cockpit-control" data-cockpit="tempDown">❄️ Temperature −</button>
+          <button class="cockpit-control" data-cockpit="gear">⚙️ Change gear</button><button class="cockpit-control" data-cockpit="speed">🏁 Simulate speed</button>
+          <button class="cockpit-control" data-cockpit="door">🚪 Toggle door</button><button class="cockpit-control" data-cockpit="lights">💡 Toggle lights</button>
+        </div>
+      </div>
+    </div>
+    <div class="property-console">
+      <div class="kicker">Live property inspector</div><h3 id="propertyTitle">Select a cockpit control</h3>
+      <div class="property-kv"><span>Direction</span><b id="propDirection">—</b></div>
+      <div class="property-kv"><span>Property</span><code id="propName">—</code></div>
+      <div class="property-kv"><span>Area</span><code id="propArea">—</code></div>
+      <div class="property-kv"><span>Access</span><code id="propAccess">—</code></div>
+      <div class="property-kv"><span>Change mode</span><code id="propChange">—</code></div>
+      <div class="property-kv"><span>Value</span><code id="propValue">—</code></div>
+      <div class="signal-path" id="cockpitPath">
+        <div class="signal-node">App / HMI</div><div class="signal-node">Car API</div><div class="signal-node">Car Service</div><div class="signal-node">VHAL</div><div class="signal-node">Vehicle / ECU</div>
+      </div>
+      <div class="character-tip"><div class="character-avatar">🚌</div><div><b>Bindi the Binder:</b> “I carry calls between processes. I do not grant permission merely because a request arrived.”</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section searchable" id="difference" data-search="phone vs car vehicle comparison Android phone AAOS differences Android Auto standalone projection lifecycle safety display audio users">
+  <div class="kicker">The central comparison</div><h2>Android on a phone vs Android in a vehicle</h2>
+  <div class="toggle-row" id="compareFilters" aria-label="Comparison filters">
+    <button class="active" data-filter="all">All differences</button><button data-filter="platform">Platform</button><button data-filter="hardware">Hardware</button><button data-filter="lifecycle">Lifecycle</button><button data-filter="safety">Safety & UX</button><button data-filter="operations">Operations</button>
+  </div>
+  <div class="compare">
+    <div class="compare-col phonec"><h3>📱 Phone Android</h3><p class="muted">Personal, battery-operated, handheld, touch-first, generally one active human user, and built around frequent app interaction.</p><div><span class="chip">Pocket computer</span><span class="chip">Phone sensors</span><span class="chip">Personal profile</span></div></div>
+    <div class="compare-col carc"><h3>🚘 Android Automotive OS</h3><p class="muted">Embedded, vehicle-powered, shared, multi-display, driving-context-aware, integrated with ECUs, and governed by stricter distraction and lifecycle rules.</p><div><span class="chip ok">Vehicle computer</span><span class="chip ok">VHAL</span><span class="chip ok">Cabin zones</span></div></div>
+  </div>
+  <div style="overflow:auto;margin-top:18px">
+  <table class="comparison-table" id="comparisonTable">
+    <thead><tr><th>Dimension</th><th>Phone</th><th>Vehicle / AAOS</th></tr></thead>
+    <tbody>
+      <tr data-cat="platform"><td>Where it runs</td><td>On the handset SoC.</td><td>Directly on the vehicle’s infotainment or cockpit compute hardware.</td></tr>
+      <tr data-cat="platform"><td>Android Auto relation</td><td>The phone runs Android Auto-compatible apps and projects the experience.</td><td>AAOS is standalone. A vehicle may additionally support projection.</td></tr>
+      <tr data-cat="hardware"><td>Hardware abstraction</td><td>Camera, audio, sensors, GNSS, modem, biometrics, display HALs.</td><td>All common Android HALs plus automotive VHAL and vehicle-specific integrations.</td></tr>
+      <tr data-cat="hardware"><td>External systems</td><td>Accessories and cloud services.</td><td>Many ECUs, vehicle MCU, CAN/LIN/Ethernet, amplifiers, clusters, occupant hardware.</td></tr>
+      <tr data-cat="lifecycle"><td>Power model</td><td>Battery level, screen on/off, idle, charging, reboot/shutdown.</td><td>Ignition/wake, Wait-for-VHAL, ON, shutdown preparation, Garage Mode, suspend/hibernate, power policies.</td></tr>
+      <tr data-cat="lifecycle"><td>Boot expectation</td><td>Seconds are inconvenient.</td><td>Some functions may need to appear very quickly; rear-view and regulatory needs can drive early-start designs outside the ordinary app path.</td></tr>
+      <tr data-cat="safety"><td>Human attention</td><td>User is expected to look at and manipulate the device.</td><td>Driver attention is a constrained safety resource; UX restrictions and distraction-optimized experiences matter.</td></tr>
+      <tr data-cat="safety"><td>Safety boundary</td><td>Failures can be serious, but usually do not directly operate vehicle motion systems.</td><td>Infotainment must be isolated from safety-critical domains; AAOS is not automatically a functional-safety controller.</td></tr>
+      <tr data-cat="hardware"><td>Displays & audio</td><td>Usually one primary display and one user-centric audio route.</td><td>Center display, cluster, passenger/rear displays, independent audio zones and focus policies.</td></tr>
+      <tr data-cat="platform"><td>Users</td><td>Mostly one owner profile; secondary users are less central.</td><td>Shared-device model: drivers, guests, profiles, key-fob association, occupant zones.</td></tr>
+      <tr data-cat="operations"><td>Updates</td><td>OEM/Google OTA and app-store updates; user can tolerate some downtime.</td><td>OTA must consider ignition, battery, rollback, parked maintenance windows, fleet/OEM release governance.</td></tr>
+      <tr data-cat="operations"><td>Customization</td><td>OEM skin, apps, carrier features.</td><td>Deep OEM HMI, vehicle properties, audio topology, overlays, permissions, hardware policy, branding, regional constraints.</td></tr>
+      <tr data-cat="operations"><td>Expected service life</td><td>Often replaced in a few years.</td><td>Vehicle programs and field support can span much longer, requiring careful platform and supply-chain maintenance.</td></tr>
+      <tr data-cat="safety"><td>App freedom</td><td>Broad app categories and interaction styles.</td><td>Supported car app categories, templates, distraction rules, privileged access, and parked-vs-driving behavior.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout" style="margin-top:18px"><strong>Best one-line explanation:</strong> Phone Android optimizes a personal mobile computer; AAOS adapts Android into a vehicle-resident platform that must cooperate with the car’s power, occupants, displays, audio, networks, controls, and safety architecture.</div>
+</section>
+
+
+<section class="section searchable" id="scenarios" data-search="phone vehicle scenario simulator ignition reverse gear passenger display call power">
+  <div class="kicker">Compare by behaviour</div><h2>What happens next? Phone vs vehicle simulator</h2>
+  <p class="muted">Choose a real-world event. The important difference is usually not the UI—it is lifecycle, occupants, safety context, and integration responsibility.</p>
+  <div class="scenario-buttons" id="scenarioButtons">
+    <button class="scenario-btn active" data-scenario="screen">🖥️ Screen turns off</button>
+    <button class="scenario-btn" data-scenario="ignition">🔑 Ignition turns off</button>
+    <button class="scenario-btn" data-scenario="reverse">↩️ Reverse gear selected</button>
+    <button class="scenario-btn" data-scenario="passenger">🧑 Passenger opens media</button>
+    <button class="scenario-btn" data-scenario="moving">🚦 Vehicle begins moving</button>
+    <button class="scenario-btn" data-scenario="call">📞 Incoming call</button>
+  </div>
+  <div class="scenario-output">
+    <article class="scenario-panel phonec"><h3>📱 Phone Android</h3><p id="phoneScenario"></p></article>
+    <article class="scenario-panel carc"><h3>🚗 Android Automotive OS</h3><p id="carScenario"></p></article>
+    <div class="difference-punchline"><b>Architecture lesson:</b> <span id="scenarioLesson"></span></div>
+  </div>
+</section>
+
+<section class="section searchable" id="power" data-search="AAOS power management suspend shutdown garage mode VHAL power policy">
+  <div class="kicker">Vehicle lifecycle</div><h2>Why “turning off the screen” is not the same as parking the car</h2>
+  <div class="svg-card">
+    <svg viewBox="0 0 1000 260" role="img" aria-label="Simplified AAOS vehicle power state cycle">
+      <defs><marker id="arr3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#7ce7b7"/></marker></defs>
+      <g style="color:var(--text)">
+        <rect x="30" y="80" width="160" height="85" rx="18" fill="var(--panel)" stroke="var(--accent2)"/><text x="110" y="115" text-anchor="middle" class="svg-label">Suspend / Off</text><text x="110" y="140" text-anchor="middle" class="svg-small">Minimal or no execution</text>
+        <rect x="230" y="80" width="160" height="85" rx="18" fill="var(--panel)" stroke="var(--warn)"/><text x="310" y="115" text-anchor="middle" class="svg-label">Wait for VHAL</text><text x="310" y="140" text-anchor="middle" class="svg-small">Coordinate with vehicle</text>
+        <rect x="430" y="80" width="160" height="85" rx="18" fill="var(--panel)" stroke="var(--accent)"/><text x="510" y="115" text-anchor="middle" class="svg-label">ON</text><text x="510" y="140" text-anchor="middle" class="svg-small">Interactive operation</text>
+        <rect x="630" y="80" width="160" height="85" rx="18" fill="var(--panel)" stroke="var(--warn)"/><text x="710" y="115" text-anchor="middle" class="svg-label">Shutdown Prepare</text><text x="710" y="140" text-anchor="middle" class="svg-small">Maintenance / Garage Mode</text>
+        <rect x="830" y="80" width="140" height="85" rx="18" fill="var(--panel)" stroke="var(--danger)"/><text x="900" y="115" text-anchor="middle" class="svg-label">VHAL Finish</text><text x="900" y="140" text-anchor="middle" class="svg-small">Ready to sleep</text>
+        <path d="M190 122 H225" stroke="#7ce7b7" stroke-width="4" marker-end="url(#arr3)"/><path d="M390 122 H425" stroke="#7ce7b7" stroke-width="4" marker-end="url(#arr3)"/><path d="M590 122 H625" stroke="#7ce7b7" stroke-width="4" marker-end="url(#arr3)"/><path d="M790 122 H825" stroke="#7ce7b7" stroke-width="4" marker-end="url(#arr3)"/><path d="M900 170 C900 235,110 235,110 170" fill="none" stroke="#7ce7b7" stroke-width="4" marker-end="url(#arr3)"/>
+      </g>
+    </svg>
+  </div>
+  <p class="muted">This diagram intentionally simplifies several detailed states. The key idea is coordination: the vehicle controller and AAOS exchange power-state intent and readiness through VHAL properties, while AAOS applies component policies and gives services time to prepare.</p>
+</section>
+
+
+<section class="section searchable" id="pitstop" data-search="recall retrieval practice memory pit stop confidence">
+  <div class="kicker">Retrieval beats rereading</div><h2>🧠 Pit stop: answer without scrolling up</h2>
+  <p class="muted">Do not aim for perfect wording. Retrieve the idea from memory first, then reveal the answer. After revealing, record how confident you were.</p>
+  <div class="pit-grid" id="pitGrid">
+    <article class="pit-card"><b>1. Android Auto vs AAOS?</b><p>Say the difference in one sentence.</p><button class="small-btn reveal-pit">Reveal answer</button><div class="pit-answer">Android Auto is a phone-powered projection experience; AAOS runs directly on vehicle compute hardware.</div><div class="confidence"><button data-conf="guess">🤔 Guess</button><button data-conf="fair">🙂 Fairly sure</button><button data-conf="certain">😎 Certain</button></div></article>
+    <article class="pit-card"><b>2. What does Binder solve?</b><p>Name the architectural problem, not just the acronym.</p><button class="small-btn reveal-pit">Reveal answer</button><div class="pit-answer">Binder transports local IPC transactions between Android processes while preserving caller identity information for policy enforcement.</div><div class="confidence"><button data-conf="guess">🤔 Guess</button><button data-conf="fair">🙂 Fairly sure</button><button data-conf="certain">😎 Certain</button></div></article>
+    <article class="pit-card"><b>3. What does VHAL abstract?</b><p>What sits above and below it?</p><button class="small-btn reveal-pit">Reveal answer</button><div class="pit-answer">VHAL presents standardized typed vehicle properties above OEM-specific vehicle integration and network/ECU implementation.</div><div class="confidence"><button data-conf="guess">🤔 Guess</button><button data-conf="fair">🙂 Fairly sure</button><button data-conf="certain">😎 Certain</button></div></article>
+    <article class="pit-card"><b>4. Why isn't VHAL access equal to authorization?</b><p>Think abstraction versus policy.</p><button class="small-btn reveal-pit">Reveal answer</button><div class="pit-answer">VHAL provides an interface; permissions, Car Service policy, SELinux, OEM gateways, and vehicle-domain safeguards still decide what callers may do.</div><div class="confidence"><button data-conf="guess">🤔 Guess</button><button data-conf="fair">🙂 Fairly sure</button><button data-conf="certain">😎 Certain</button></div></article>
+    <article class="pit-card"><b>5. Why is vehicle power different?</b><p>Why isn't it just screen on/off?</p><button class="small-btn reveal-pit">Reveal answer</button><div class="pit-answer">AAOS must coordinate ignition, wake, shutdown preparation, suspend/hibernate, Garage Mode, and component power policies with the vehicle controller.</div><div class="confidence"><button data-conf="guess">🤔 Guess</button><button data-conf="fair">🙂 Fairly sure</button><button data-conf="certain">😎 Certain</button></div></article>
+    <article class="pit-card"><b>6. Strongest quick AAOS clue?</b><p>Cosmetic clue or declared platform feature?</p><button class="small-btn reveal-pit">Reveal answer</button><div class="pit-answer">The declared <code>android.hardware.type.automotive</code> feature is a stronger quick classification signal than wallpaper, screen shape, or a package name containing “car”.</div><div class="confidence"><button data-conf="guess">🤔 Guess</button><button data-conf="fair">🙂 Fairly sure</button><button data-conf="certain">😎 Certain</button></div></article>
+  </div>
+  <div class="pit-score" id="pitScore">0 of 6 answers revealed</div>
+</section>
+
+<section class="section searchable" id="safety" data-search="security safety isolation SELinux sandbox verified boot infotainment safety critical domain driver distraction UX restrictions">
+  <div class="kicker">Do not blur these concepts</div><h2>Security, driving safety, and functional safety are different</h2>
+  <div class="cards">
+    <article class="card"><h3>Security</h3><p class="muted">Protect confidentiality, integrity, and availability using app UIDs, permissions, SELinux, sandboxing, Verified Boot, signing, encryption, and secure updates.</p></article>
+    <article class="card"><h3>Driver distraction safety</h3><p class="muted">Limit what can be displayed or entered while moving. Apps and system UI must react to driving state and UX restrictions.</p></article>
+    <article class="card"><h3>Functional safety</h3><p class="muted">Systematic assurance that safety-related functions behave acceptably under faults. AAOS infotainment is not automatically the controller for braking, steering, or propulsion.</p></article>
+  </div>
+  <div class="callout danger" style="margin-top:18px"><strong>Architecture rule:</strong> Never assume that a VHAL property means an unrestricted app can control the corresponding physical function. Permissions, Car Service policy, OEM gateways, network segmentation, domain controllers, and safety mechanisms should all constrain the path.</div>
+  <h3>Defense-in-depth picture</h3>
+  <div class="svg-card">
+    <svg viewBox="0 0 920 360" role="img" aria-label="Concentric vehicle Android security controls">
+      <g style="color:var(--text)">
+        <circle cx="460" cy="180" r="155" fill="var(--panel)" stroke="var(--accent2)" stroke-width="3"/><circle cx="460" cy="180" r="118" fill="var(--panel2)" stroke="var(--accent)" stroke-width="3"/><circle cx="460" cy="180" r="80" fill="var(--bg2)" stroke="var(--warn)" stroke-width="3"/><circle cx="460" cy="180" r="43" fill="var(--panel)" stroke="var(--danger)" stroke-width="3"/>
+        <text x="460" y="45" text-anchor="middle" class="svg-label">Verified boot • signed updates • rollback controls</text><text x="460" y="90" text-anchor="middle" class="svg-label">SELinux • process isolation • least privilege</text><text x="460" y="137" text-anchor="middle" class="svg-label">Car permissions • UX policy • VHAL access</text><text x="460" y="185" text-anchor="middle" class="svg-label">Vehicle function</text><text x="460" y="315" text-anchor="middle" class="svg-small">Plus network gateways, ECU authentication, monitoring, and domain separation outside Android</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+
+<section class="section searchable" id="terminal" data-search="simulated terminal adb practice commands AAOS car service features">
+  <div class="kicker">No VM available? Practise anyway</div><h2>Safe simulated ADB terminal</h2>
+  <p>This terminal returns representative training output. It does <b>not</b> connect to your Cuttlefish VM and cannot replace the production labs. Type <code>help</code> to see supported commands.</p>
+  <div class="sim-terminal" aria-label="Simulated Android debug terminal">
+    <div class="terminal-bar"><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span><span style="margin-left:8px">android-architecture-garage — simulation</span></div>
+    <div class="terminal-screen" id="terminalScreen"><div class="terminal-info">Case AAOS-27 training shell. Type help or use a quick command.</div></div>
+    <form class="terminal-input-row" id="terminalForm"><span class="terminal-prompt">android-lab$</span><input class="terminal-input" id="terminalInput" autocomplete="off" spellcheck="false" aria-label="Terminal command"><button class="small-btn" type="submit">Run</button></form>
+  </div>
+  <div class="terminal-quick">
+    <button data-command="adb devices -l">ADB devices</button><button data-command="adb shell getprop ro.build.characteristics">Build type</button><button data-command="adb shell pm list features | grep automotive">Automotive feature</button><button data-command="adb shell service list | grep -i car">Car services</button><button data-command="adb shell dumpsys car_service">Car Service</button><button data-command="adb shell ps -A | grep -E 'zygote|system_server|surfaceflinger'">Core processes</button>
+  </div>
+</section>
+
+
+<section class="section searchable" id="triage" data-search="troubleshooting detective ADB offline car service VHAL boot UX restriction wrong image">
+  <div class="kicker">Field reasoning practice</div><h2>🚨 Troubleshooting Detective</h2>
+  <p>Pick an incident. The panel shows the <b>next evidence to collect</b>, not a magic fix. The goal is to diagnose from facts rather than retry commands randomly.</p>
+  <div class="triage-layout">
+    <div class="incident-list" id="incidentList">
+      <button class="incident-btn active" data-incident="adb">ADB target is <code>offline</code></button>
+      <button class="incident-btn" data-incident="feature">Automotive feature is absent</button>
+      <button class="incident-btn" data-incident="carservice"><code>Can't find service: car_service</code></button>
+      <button class="incident-btn" data-incident="vhal">VHAL dump fails / backend unknown</button>
+      <button class="incident-btn" data-incident="ux">Driving-state command ran, but UI did not change</button>
+      <button class="incident-btn" data-incident="boot">Car services look incomplete after launch</button>
+    </div>
+    <div class="triage-panel" id="triagePanel" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="section searchable" id="labs" data-search="labs adb Cuttlefish AAOS production simulation commands expected output troubleshooting">
+  <div class="kicker">Hands-on</div><h2>Production-style Cuttlefish and AAOS labs</h2>
+  <p>The labs are ordered from read-only evidence collection to controlled state simulation. Commands are designed for a Bash shell on the Ubuntu host. Run them against a training image, not a production vehicle.</p>
+  <div class="callout warn"><strong>Build gating:</strong> Labs 1–4 work on ordinary Android Cuttlefish images. Labs 5–7 require an AAOS image. Commands that modify simulated vehicle state require <code>userdebug</code> or <code>eng</code> access and the reference/emulated VHAL.</div>
+
+  <article class="lab mission-lab" id="lab1">
+    <div class="lab-head"><div class="lab-title"><div class="badge">01</div><div><h3 style="margin:0">Baseline and evidence directory</h3><div class="muted">Prove connectivity before interpreting architecture.</div></div></div><span class="chip ok">Read-only</span></div>
+    <div class="lab-body">
+      <div class="lab-meta"><span class="chip">10 min</span><span class="chip">All Cuttlefish images</span><span class="chip">Host shell</span></div>
+      <div class="mission-label">Mission 01 · Predict before running</div>
+      <details class="predict"><summary>Which result proves ADB is ready?</summary><div><div class="predict-options"><button class="predict-option" data-correct="true">A target in the device state</button><button class="predict-option" data-correct="false">A target in the offline state</button><button class="predict-option" data-correct="false">An empty device list</button><button class="predict-option" data-correct="false">A running web browser</button></div><div class="predict-feedback" data-explain="The device state indicates the ADB transport is usable.">Choose an answer.</div></div></details>
+      <p><b>Goal:</b> Capture a reproducible device identity and verify that only one intended target is selected.</p>
+<pre><code>set -Eeuo pipefail
+
+LAB_DIR="$HOME/android-arch-lab/$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$LAB_DIR"
+
+adb start-server
+adb devices -l | tee "$LAB_DIR/adb-devices.txt"
+adb wait-for-device
+
+adb shell getprop ro.serialno                 | tee "$LAB_DIR/serial.txt"
+adb shell getprop ro.build.fingerprint        | tee "$LAB_DIR/fingerprint.txt"
+adb shell getprop ro.build.version.release    | tee "$LAB_DIR/android-release.txt"
+adb shell getprop ro.build.version.sdk        | tee "$LAB_DIR/sdk.txt"
+adb shell getprop ro.build.type               | tee "$LAB_DIR/build-type.txt"
+adb shell getprop ro.build.characteristics    | tee "$LAB_DIR/characteristics.txt"
+
+printf 'Evidence saved in: %s\n' "$LAB_DIR"</code></pre>
+      <details class="expected-reveal"><summary>👀 Reveal expected result</summary><div class="expected"><strong>Expected:</strong> <code>adb devices -l</code> shows a device in the <code>device</code> state. The build type is commonly <code>userdebug</code> for development images. Characteristics may contain <code>automotive</code> on AAOS or values such as <code>nosdcard</code> on other virtual-device builds.</div></details>
+      <div class="trouble"><strong>Troubleshooting:</strong> <code>offline</code> means ADB sees the target but cannot complete the session. Restart the ADB server and confirm the Cuttlefish instance. More than one target requires <code>adb -s SERIAL ...</code> to avoid inspecting the wrong device.</div>
+      <label class="checkline"><input type="checkbox" data-check="lab1-baseline">I captured the target fingerprint, version, build type, and characteristics.</label>
+    </div>
+  </article>
+
+  <article class="lab mission-lab" id="lab2">
+    <div class="lab-head"><div class="lab-title"><div class="badge">02</div><div><h3 style="margin:0">Map the running Android architecture</h3><div class="muted">Find the processes that correspond to the conceptual layers.</div></div></div><span class="chip ok">Read-only</span></div>
+    <div class="lab-body">
+      <div class="lab-meta"><span class="chip">20 min</span><span class="chip">All Cuttlefish images</span></div>
+      <div class="mission-label">Mission 02 · Predict before running</div>
+      <details class="predict"><summary>What should the process list reveal?</summary><div><div class="predict-options"><button class="predict-option" data-correct="false">Only application names</button><button class="predict-option" data-correct="true">Framework, native, and runtime processes</button><button class="predict-option" data-correct="false">Linux systemd units only</button><button class="predict-option" data-correct="false">Vehicle CAN frames</button></div><div class="predict-feedback" data-explain="Processes such as system_server, zygote, and SurfaceFlinger map runtime architecture.">Choose an answer.</div></div></details>
+<pre><code># Core processes: framework, graphics, audio, networking, runtime
+adb shell 'ps -A -o USER,PID,NAME | grep -E "zygote|system_server|surfaceflinger|audioserver|netd"'
+
+# Binder-registered services (first 40 for readability)
+adb shell service list | sed -n '1,40p'
+
+# Selected framework state
+adb shell dumpsys activity processes | sed -n '1,100p'
+adb shell dumpsys SurfaceFlinger --list | sed -n '1,40p'
+
+# Kernel and ABI evidence
+adb shell uname -a
+adb shell getprop ro.product.cpu.abilist</code></pre>
+      <details class="expected-reveal"><summary>👀 Reveal expected result</summary><div class="expected"><strong>Expected:</strong> <code>zygote</code>/<code>zygote64</code>, <code>system_server</code>, <code>surfaceflinger</code>, <code>audioserver</code>, and <code>netd</code> appear when present in the image. <code>service list</code> returns Binder services, not Linux systemd units.</div></details>
+      <div class="trouble"><strong>Interpretation:</strong> A process name is not a complete “layer.” For example, <code>system_server</code> hosts many Java framework services, while SurfaceFlinger is a native process. The kernel supports both.</div>
+      <label class="checkline"><input type="checkbox" data-check="lab2-map">I identified at least one process or service for framework, runtime, native services, and kernel evidence.</label>
+    </div>
+  </article>
+
+  <article class="lab mission-lab" id="lab3">
+    <div class="lab-head"><div class="lab-title"><div class="badge">03</div><div><h3 style="margin:0">Observe app isolation and caller identity</h3><div class="muted">Connect the UID sandbox, SELinux, and package manager.</div></div></div><span class="chip ok">Read-only</span></div>
+    <div class="lab-body">
+      <div class="lab-meta"><span class="chip">15 min</span><span class="chip">All Cuttlefish images</span></div>
+      <div class="mission-label">Mission 03 · Predict before running</div>
+      <details class="predict"><summary>What reinforces the app sandbox?</summary><div><div class="predict-options"><button class="predict-option" data-correct="false">Screen resolution</button><button class="predict-option" data-correct="true">UID separation plus SELinux policy</button><button class="predict-option" data-correct="false">A wide display</button><button class="predict-option" data-correct="false">Bluetooth pairing</button></div><div class="predict-feedback" data-explain="Linux UIDs and SELinux domains provide complementary controls.">Choose an answer.</div></div></details>
+<pre><code># List packages with assigned UIDs
+adb shell cmd package list packages -U | sed -n '1,25p'
+
+# SELinux mode and current shell context
+adb shell getenforce
+adb shell id
+adb shell 'cat /proc/self/attr/current'
+
+# Verified Boot state exposed to Android, when the image provides it
+adb shell getprop ro.boot.verifiedbootstate
+
+# Pick a package name from the first command, then inspect it
+PKG=com.android.settings
+adb shell dumpsys package "$PKG" | grep -E 'userId=|pkg=|codePath=' | sed -n '1,12p'</code></pre>
+      <details class="expected-reveal"><summary>👀 Reveal expected result</summary><div class="expected"><strong>Expected:</strong> packages show different UIDs; SELinux should normally report <code>Enforcing</code>; the shell has its own UID and SELinux context. A virtual development image may report a Verified Boot state different from a locked consumer device.</div></details>
+      <div class="trouble"><strong>Do not conclude:</strong> “SELinux enforcing” alone does not prove the whole image is production-secure. Build type, bootloader state, test keys, debuggability, policy quality, patch level, and exposed services also matter.</div>
+      <label class="checkline"><input type="checkbox" data-check="lab3-security">I explained how UID isolation and SELinux reinforce each other.</label>
+    </div>
+  </article>
+
+  <article class="lab mission-lab" id="lab4">
+    <div class="lab-head"><div class="lab-title"><div class="badge">04</div><div><h3 style="margin:0">Classify the image: phone-like or automotive</h3><div class="muted">Use feature evidence, not the shape of the screen.</div></div></div><span class="chip ok">Read-only</span></div>
+    <div class="lab-body">
+      <div class="lab-meta"><span class="chip">15 min</span><span class="chip">All Cuttlefish images</span></div>
+      <div class="mission-label">Mission 04 · Predict before running</div>
+      <details class="predict"><summary>What is the strongest classification clue?</summary><div><div class="predict-options"><button class="predict-option" data-correct="false">Automotive wallpaper</button><button class="predict-option" data-correct="true">android.hardware.type.automotive</button><button class="predict-option" data-correct="false">A package containing car</button><button class="predict-option" data-correct="false">A landscape display</button></div><div class="predict-feedback" data-explain="The declared automotive hardware feature is stronger than cosmetic or naming evidence.">Choose an answer.</div></div></details>
+<pre><code>echo '=== Build characteristics ==='
+adb shell getprop ro.build.characteristics
+
+echo '=== Automotive feature ==='
+if adb shell pm list features | grep -Fq 'android.hardware.type.automotive'; then
+  echo '[PASS] Automotive feature declared'
+else
+  echo '[INFO] Automotive feature not declared'
+fi
+
+echo '=== Car service visibility ==='
+adb shell service list | grep -i car || true
+adb shell cmd package list packages | grep -E 'com\.android\.car|automotive' || true</code></pre>
+      <details class="expected-reveal"><summary>👀 Reveal expected result</summary><div class="expected"><strong>Expected AAOS evidence:</strong> <code>android.hardware.type.automotive</code> is listed and car-related framework/packages are present. On a generic phone image, the automotive feature test returns the INFO branch.</div></details>
+      <div class="trouble"><strong>False-positive warning:</strong> a package name containing “car” is weak evidence. The declared automotive hardware feature is the stronger classification signal.</div>
+      <label class="checkline"><input type="checkbox" data-check="lab4-classify">I classified the image and recorded the evidence supporting the classification.</label>
+    </div>
+  </article>
+
+  <article class="lab mission-lab" id="lab5">
+    <div class="lab-head"><div class="lab-title"><div class="badge">05</div><div><h3 style="margin:0">Inspect Car Service and automotive features</h3><div class="muted">Examine the framework layer that distinguishes AAOS.</div></div></div><span class="chip ok">AAOS · Read-only</span></div>
+    <div class="lab-body">
+      <div class="lab-meta"><span class="chip">20 min</span><span class="chip">AAOS image required</span></div>
+      <div class="mission-label">Mission 05 · Predict before running</div>
+      <details class="predict"><summary>What should this lab find on AAOS?</summary><div><div class="predict-options"><button class="predict-option" data-correct="true">Car Service state</button><button class="predict-option" data-correct="false">A phone baseband only</button><button class="predict-option" data-correct="false">Windows services</button><button class="predict-option" data-correct="false">A browser cookie</button></div><div class="predict-feedback" data-explain="Car Service is a core AAOS framework differentiator.">Choose an answer.</div></div></details>
+<pre><code># Gate the lab so a phone image fails clearly
+adb shell pm list features | grep -F 'android.hardware.type.automotive' >/dev/null || {
+  echo '[FAIL] This target is not declaring the automotive feature.' >&2
+  exit 1
+}
+
+# Car Service summary
+adb shell dumpsys car_service | sed -n '1,140p'
+
+# Feature controller: enabled, default, disabled, pending features
+adb shell dumpsys car_service --services CarFeatureController
+
+# User HAL status, when included/configured
+adb shell dumpsys car_service --hal UserHalService | grep -i enabled || true
+adb shell getprop android.car.user_hal_enabled</code></pre>
+      <details class="expected-reveal"><summary>👀 Reveal expected result</summary><div class="expected"><strong>Expected:</strong> Car Service returns a structured dump. The feature controller shows enabled/default/disabled/pending sets. User HAL may be disabled on a given build; that is a configuration result, not automatically a failure.</div></details>
+      <div class="trouble"><strong>If <code>dumpsys car_service</code> fails:</strong> verify the automotive feature and that the boot has completed. Collect <code>adb shell getprop sys.boot_completed</code> and <code>adb logcat -d -b all | grep -iE 'CarService|car_service'</code>.</div>
+      <label class="checkline"><input type="checkbox" data-check="lab5-carservice">I located Car Service and explained one enabled automotive feature.</label>
+    </div>
+  </article>
+
+  <article class="lab mission-lab" id="lab6">
+    <div class="lab-head"><div class="lab-title"><div class="badge">06</div><div><h3 style="margin:0">Inspect and query the reference VHAL</h3><div class="muted">Connect vehicle properties to the HAL architecture.</div></div></div><span class="chip warn">AAOS · root may be required</span></div>
+    <div class="lab-body">
+      <div class="lab-meta"><span class="chip">25 min</span><span class="chip">AIDL VHAL path</span><span class="chip">Reference/emulated VHAL</span></div>
+      <div class="mission-label">Mission 06 · Predict before running</div>
+      <details class="predict"><summary>What does a VHAL property include?</summary><div><div class="predict-options"><button class="predict-option" data-correct="false">Only a string name</button><button class="predict-option" data-correct="true">Type, access, area, change mode, and value</button><button class="predict-option" data-correct="false">Only a CAN identifier</button><button class="predict-option" data-correct="false">Only a UI icon</button></div><div class="predict-feedback" data-explain="VHAL models vehicle functions as typed properties with metadata.">Choose an answer.</div></div></details>
+<pre><code># Development images commonly permit adbd root; a user build may not.
+adb root || true
+adb wait-for-device
+
+VHAL='android.hardware.automotive.vehicle.IVehicle/default'
+
+# Show supported debug commands for the reference AIDL VHAL
+adb shell dumpsys "$VHAL" --help | sed -n '1,120p'
+
+# Read VIN if the reference property is supported by the image
+adb shell dumpsys "$VHAL" --get INFO_VIN || true
+
+# Capture a larger VHAL dump for architecture evidence
+adb shell dumpsys "$VHAL" | sed -n '1,160p'</code></pre>
+      <details class="expected-reveal"><summary>👀 Reveal expected result</summary><div class="expected"><strong>Expected:</strong> The reference VHAL help lists debug options. <code>--get INFO_VIN</code> either returns a configured value or a clear unsupported/not-available result. Both are useful evidence; do not fabricate a VIN.</div></details>
+      <div class="trouble"><strong>HIDL fallback:</strong> older images can expose <code>android.hardware.automotive.vehicle@2.0::IVehicle/default</code>. Use <code>adb shell lshal | grep -i automotive.vehicle</code> to identify the backend before choosing a debug command.</div>
+      <label class="checkline"><input type="checkbox" data-check="lab6-vhal">I confirmed whether the image exposes AIDL or HIDL VHAL and saved a debug dump.</label>
+    </div>
+  </article>
+
+  <article class="lab mission-lab" id="lab7">
+    <div class="lab-head"><div class="lab-title"><div class="badge">07</div><div><h3 style="margin:0">Simulate parked, idling, and moving states</h3><div class="muted">Observe how vehicle state can drive UX restrictions.</div></div></div><span class="chip warn">Mutates simulated state</span></div>
+    <div class="lab-body">
+      <div class="lab-meta"><span class="chip">30 min</span><span class="chip">AAOS userdebug/eng</span><span class="chip">Training image only</span></div>
+      <div class="mission-label">Mission 07 · Predict before running</div>
+      <details class="predict"><summary>Why gate state-changing commands?</summary><div><div class="predict-options"><button class="predict-option" data-correct="true">They alter simulated vehicle state</button><button class="predict-option" data-correct="false">They format the host disk</button><button class="predict-option" data-correct="false">They disable KVM</button><button class="predict-option" data-correct="false">They install Android Studio</button></div><div class="predict-feedback" data-explain="Even in a simulator, state-changing commands should be explicit and controlled.">Choose an answer.</div></div></details>
+      <p><b>Before running:</b> keep the AAOS display visible. Open an app or settings screen whose behavior can be observed while the driving state changes.</p>
+<pre><code># PARKED: speed 0 m/s, gear Park (value 4)
+adb shell dumpsys activity service com.android.car inject-vhal-event 0x11600207 0
+adb shell dumpsys activity service com.android.car inject-vhal-event 0x11400400 4
+sleep 2
+
+# IDLING: speed 0 m/s, gear Drive (value 8)
+adb shell dumpsys activity service com.android.car inject-vhal-event 0x11400400 8
+sleep 2
+
+# MOVING: speed 30 m/s while in Drive
+adb shell dumpsys activity service com.android.car inject-vhal-event 0x11600207 30
+sleep 2
+
+# Return to a safe simulated parked state
+adb shell dumpsys activity service com.android.car inject-vhal-event 0x11600207 0
+adb shell dumpsys activity service com.android.car inject-vhal-event 0x11400400 4</code></pre>
+      <details class="expected-reveal"><summary>👀 Reveal expected result</summary><div class="expected"><strong>Expected:</strong> the reference AAOS stack updates driving state. Depending on image configuration and the foreground app, the UI can restrict text entry, block non-distraction-optimized activities, or show no visible change. “No visible change” must be investigated—not silently marked as success.</div></details>
+      <div class="trouble"><strong>Validation path:</strong> capture logs while injecting: <code>adb logcat -c</code>, perform the transition, then <code>adb logcat -d | grep -iE 'driving|UxRestriction|CarUx|CarDriving'</code>. A command accepted by <code>dumpsys</code> is not sufficient proof that the intended policy changed.</div>
+      <label class="checkline"><input type="checkbox" data-check="lab7-driving">I observed or logged evidence for PARKED, IDLING, and MOVING, then restored PARKED.</label>
+    </div>
+  </article>
+
+  <article class="lab mission-lab" id="lab8">
+    <div class="lab-head"><div class="lab-title"><div class="badge">08</div><div><h3 style="margin:0">Generate a production triage bundle</h3><div class="muted">Create one timestamped archive suitable for peer review.</div></div></div><span class="chip ok">Mostly read-only</span></div>
+    <div class="lab-body">
+      <div class="lab-meta"><span class="chip">20 min</span><span class="chip">All images; AAOS data auto-detected</span></div>
+      <div class="mission-label">Mission 08 · Predict before running</div>
+      <details class="predict"><summary>What makes evidence production-grade?</summary><div><div class="predict-options"><button class="predict-option" data-correct="false">A screenshot alone</button><button class="predict-option" data-correct="true">Timestamped commands, outputs, context, and limitations</button><button class="predict-option" data-correct="false">A verbal claim</button><button class="predict-option" data-correct="false">A package name</button></div><div class="predict-feedback" data-explain="Reproducible evidence records what ran, where, when, and how to interpret it.">Choose an answer.</div></div></details>
+<pre><code>cat > /tmp/collect-android-architecture-evidence.sh <<'EOF'
+#!/usr/bin/env bash
+set -Eeuo pipefail
+OUT="${1:-$HOME/android-evidence-$(date +%Y%m%d-%H%M%S)}"
+mkdir -p "$OUT"
+run() { local name="$1"; shift; { printf '$'; printf ' %q' "$@"; printf '\n'; "$@"; } >"$OUT/$name.txt" 2>&1 || true; }
+
+adb wait-for-device
+run devices adb devices -l
+run getprop adb shell getprop
+run processes adb shell ps -A -o USER,PID,NAME
+run services adb shell service list
+run selinux adb shell getenforce
+run packages adb shell cmd package list packages -U
+run features adb shell pm list features
+run activity adb shell dumpsys activity processes
+run car_service adb shell dumpsys car_service
+run car_features adb shell dumpsys car_service --services CarFeatureController
+run vhal adb shell dumpsys android.hardware.automotive.vehicle.IVehicle/default
+run logcat adb logcat -d -b all -v threadtime -t 3000
+
+tar -C "$(dirname "$OUT")" -czf "$OUT.tar.gz" "$(basename "$OUT")"
+printf '[PASS] Evidence bundle: %s.tar.gz\n' "$OUT"
+EOF
+
+bash -n /tmp/collect-android-architecture-evidence.sh
+chmod 0755 /tmp/collect-android-architecture-evidence.sh
+/tmp/collect-android-architecture-evidence.sh</code></pre>
+      <details class="expected-reveal"><summary>👀 Reveal expected result</summary><div class="expected"><strong>Expected:</strong> a timestamped directory and <code>.tar.gz</code> archive. Commands unavailable on a non-AAOS image are retained as error evidence without aborting the whole collection.</div></details>
+      <div class="trouble"><strong>Production hygiene:</strong> inspect before sharing. Logs and properties can contain device identifiers, account hints, network details, paths, or app data. Redact according to your organization’s handling rules.</div>
+      <label class="checkline"><input type="checkbox" data-check="lab8-bundle">I created the archive, reviewed its contents, and documented which commands were unsupported.</label>
+    </div>
+  </article>
+</section>
+
+<section class="section searchable" id="capstone" data-search="capstone incident architecture production simulation phone AAOS evidence report">
+  <div class="kicker">Capstone scenario</div><h2>“The screen looks like a car, therefore it must be AAOS.” Prove or disprove it.</h2>
+  <p>A supplier gives your team access to a virtual Android image and claims it represents the production vehicle infotainment stack. Your task is to produce an evidence-based architecture note.</p>
+  <div class="cards">
+    <article class="card"><div class="num">A</div><h3>Classify</h3><p class="muted">Use build characteristics, declared features, packages, and Car Service evidence. State confidence and contradictory evidence.</p></article>
+    <article class="card"><div class="num">B</div><h3>Map</h3><p class="muted">Identify app/framework/native/HAL/kernel evidence and the VHAL backend. Draw the observed path, not a generic diagram copied from memory.</p></article>
+    <article class="card"><div class="num">C</div><h3>Validate</h3><p class="muted">Run one safe state simulation if supported. Show logs or UI evidence, restore the initial state, and include limitations.</p></article>
+  </div>
+
+  <div class="boss-wrap" id="bossBattle">
+    <div class="kicker">Boss battle</div><h3>🏁 The Mystery Infotainment Image</h3>
+    <p>A supplier claims, “This is definitely AAOS.” Reveal the evidence one clue at a time and classify only when the evidence supports it.</p>
+    <div class="boss-clues">
+      <div class="boss-clue"><b>Clue 1 · characteristics</b><p class="hidden-clue"><code>ro.build.characteristics=automotive</code></p></div>
+      <div class="boss-clue"><b>Clue 2 · declared feature</b><p class="hidden-clue"><code>feature:android.hardware.type.automotive</code></p></div>
+      <div class="boss-clue"><b>Clue 3 · Car Service</b><p class="hidden-clue"><code>car_service: [android.car.ICar]</code></p></div>
+      <div class="boss-clue"><b>Clue 4 · VHAL</b><p class="hidden-clue"><code>IVehicle/default</code> responds to <code>dumpsys</code></p></div>
+      <div class="boss-clue"><b>Clue 5 · security signal</b><p class="hidden-clue"><code>SELinux: Enforcing</code>; development build is <code>userdebug</code></p></div>
+      <div class="boss-clue"><b>Clue 6 · limitation</b><p class="hidden-clue">Virtual/reference VHAL evidence does not prove production vehicle integration or production security.</p></div>
+    </div>
+    <div class="story-controls"><button class="primary" id="revealBoss">Reveal next clue</button><button class="small-btn" id="resetBoss">Reset evidence</button></div>
+    <h4>Your verdict</h4>
+    <div class="boss-verdicts"><button data-verdict="generic">📱 Generic Android</button><button data-verdict="projection">📲 Android Auto projection</button><button data-verdict="aaos">🚗 AAOS image</button><button data-verdict="insufficient">❓ Insufficient evidence</button></div>
+    <div class="boss-feedback" id="bossFeedback">Reveal evidence, then make the strongest conclusion you can justify.</div>
+  </div>
+
+  <h3>Required deliverable</h3>
+  <div class="callout"><b>One-page report:</b> Executive conclusion; image identity; phone/AAOS classification; architecture map; security posture signals; VHAL/Car Service findings; lab evidence; unsupported commands; risks; confidence level.</div>
+</section>
+
+
+<section class="section searchable" id="memory" data-search="memory garage recall match Android Auto AAOS Binder VHAL Car Service SELinux">
+  <div class="kicker">Park the essentials in long-term memory</div><h2>🧠 Memory Garage</h2>
+  <p>Select a term, then click the matching role. Reconstruct the six anchors without looking back.</p>
+  <div class="memory-board">
+    <div><h3>Concepts</h3><div class="memory-terms" id="memoryTerms"><button class="memory-term" data-key="auto">Android Auto</button><button class="memory-term" data-key="aaos">AAOS</button><button class="memory-term" data-key="binder">Binder</button><button class="memory-term" data-key="vhal">VHAL</button><button class="memory-term" data-key="car">Car Service</button><button class="memory-term" data-key="selinux">SELinux</button></div><div class="memory-status" id="memoryStatus">Select a concept.</div><button class="small-btn" id="resetMemory" style="margin-top:10px">Shuffle & reset</button></div>
+    <div><h3>Roles</h3><div class="memory-slots" id="memorySlots"><button class="memory-slot" data-accept="binder">Local IPC between Android processes</button><button class="memory-slot" data-accept="auto">Phone-powered projection experience</button><button class="memory-slot" data-accept="car">Automotive framework services and policy</button><button class="memory-slot" data-accept="selinux">Mandatory access-control boundary</button><button class="memory-slot" data-accept="aaos">Android running directly on vehicle hardware</button><button class="memory-slot" data-accept="vhal">Standardized vehicle-property abstraction</button></div></div>
+  </div>
+</section>
+
+<section class="section searchable" id="assessment" data-search="quiz assessment questions flashcards Android AAOS">
+  <div class="kicker">Check understanding</div><h2>Knowledge check</h2>
+  <div id="quizArea">
+    <div class="quiz" data-answer="b"><p><b>1. Which statement is correct?</b></p><label><input type="radio" name="q1" value="a"> Android Auto is the operating system installed on every AAOS vehicle.</label><label><input type="radio" name="q1" value="b"> Android Auto is phone-powered projection; AAOS runs directly on vehicle hardware.</label><label><input type="radio" name="q1" value="c"> Google built-in and AAOS mean exactly the same thing.</label><div class="feedback"></div></div>
+    <div class="quiz" data-answer="c"><p><b>2. What is the VHAL’s primary architectural role?</b></p><label><input type="radio" name="q2" value="a"> Replace the Linux kernel.</label><label><input type="radio" name="q2" value="b"> Give every app direct CAN access.</label><label><input type="radio" name="q2" value="c"> Present standardized vehicle-property interfaces above OEM-specific vehicle integration.</label><div class="feedback"></div></div>
+    <div class="quiz" data-answer="a"><p><b>3. Which is the strongest quick signal that an image declares itself automotive?</b></p><label><input type="radio" name="q3" value="a"> The <code>android.hardware.type.automotive</code> feature.</label><label><input type="radio" name="q3" value="b"> A wide screen resolution.</label><label><input type="radio" name="q3" value="c"> A package whose name includes “car”.</label><div class="feedback"></div></div>
+    <div class="quiz" data-answer="c"><p><b>4. Why is AAOS power management materially different?</b></p><label><input type="radio" name="q4" value="a"> Vehicles never suspend.</label><label><input type="radio" name="q4" value="b"> Android controls the ignition switch directly with no external coordination.</label><label><input type="radio" name="q4" value="c"> AAOS coordinates lifecycle and component policy with the vehicle controller through VHAL.</label><div class="feedback"></div></div>
+    <div class="quiz" data-answer="b"><p><b>5. Which statement is safest architecturally?</b></p><label><input type="radio" name="q5" value="a"> Any app that can see a VHAL property should control it.</label><label><input type="radio" name="q5" value="b"> Vehicle controls require permissions, policy, and broader vehicle-domain safeguards.</label><label><input type="radio" name="q5" value="c"> SELinux makes network segmentation unnecessary.</label><div class="feedback"></div></div>
+    <button class="primary" id="gradeQuiz">Grade quiz</button> <span class="score" id="quizScore"></span>
+  </div>
+  <h3>Flashcards</h3>
+  <div class="flashcards">
+    <div class="flash" tabindex="0"><div class="flash-inner"><div class="front"><b>Android Auto</b><small>Click to flip</small></div><div class="back">Phone-powered, projected, driver-optimized experience.</div></div></div>
+    <div class="flash" tabindex="0"><div class="flash-inner"><div class="front"><b>AAOS</b><small>Click to flip</small></div><div class="back">Android Automotive OS runs directly on vehicle hardware.</div></div></div>
+    <div class="flash" tabindex="0"><div class="flash-inner"><div class="front"><b>VHAL</b><small>Click to flip</small></div><div class="back">Vehicle property abstraction between Car Service and OEM vehicle integration.</div></div></div>
+    <div class="flash" tabindex="0"><div class="flash-inner"><div class="front"><b>Binder</b><small>Click to flip</small></div><div class="back">Android’s main local inter-process communication mechanism.</div></div></div>
+    <div class="flash" tabindex="0"><div class="flash-inner"><div class="front"><b>Car Service</b><small>Click to flip</small></div><div class="back">AAOS framework services for vehicle properties, users, power, audio, occupants, policy, and more.</div></div></div>
+    <div class="flash" tabindex="0"><div class="flash-inner"><div class="front"><b>Google built-in</b><small>Click to flip</small></div><div class="back">Google apps/services offered on some AAOS systems; not required for AAOS itself.</div></div></div>
+  </div>
+</section>
+
+
+<section class="section searchable" id="achievements" data-search="badges achievements trainer mode certificate completion">
+  <div class="kicker">Progress that means something</div><h2>Badges, trainer controls, and completion record</h2>
+  <div class="badge-grid" id="badgeGrid">
+    <div class="achievement" data-badge="myths"><span class="badge-emoji">🧠</span><b>Myth Buster</b><small>Score 4/6 or better</small></div>
+    <div class="achievement" data-badge="stack"><span class="badge-emoji">🧱</span><b>Stack Builder</b><small>Place all seven components</small></div>
+    <div class="achievement" data-badge="vhal"><span class="badge-emoji">🔌</span><b>VHAL Explorer</b><small>Trace three cockpit properties</small></div>
+    <div class="achievement" data-badge="scenario"><span class="badge-emoji">⚖️</span><b>Platform Comparator</b><small>Explore four scenarios</small></div>
+    <div class="achievement" data-badge="classification"><span class="badge-emoji">🚗</span><b>AAOS Spotter</b><small>Run classification evidence</small></div>
+    <div class="achievement" data-badge="labs"><span class="badge-emoji">🧰</span><b>ADB Mechanic</b><small>Complete four lab checks</small></div>
+    <div class="achievement" data-badge="quiz"><span class="badge-emoji">🎯</span><b>Knowledge Driver</b><small>Score 4/5 or better</small></div>
+    <div class="achievement" data-badge="final"><span class="badge-emoji">🏁</span><b>Architecture Investigator</b><small>Collect all five clues</small></div>
+  </div>
+
+  <h3>Trainer mode</h3>
+  <div class="trainer-tools">
+    <div class="trainer-card"><b>Facilitation controls</b><p class="muted">Reveal answer notes and suggested discussion prompts.</p><button class="small-btn" id="trainerToggle">Enable trainer mode</button></div>
+    <div class="trainer-card"><b>Random challenge</b><p class="muted" id="randomChallenge">Generate a discussion prompt for the room.</p><button class="small-btn" id="challengeBtn">Generate challenge</button></div>
+    <div class="trainer-card"><b>Progress reset</b><p class="muted">Clear local checks, badges, game scores, and evidence.</p><button class="small-btn" id="resetProgress">Reset all progress</button></div>
+  </div>
+  <div class="trainer-only callout warn" style="margin-top:14px"><strong>Suggested delivery rhythm:</strong> 10-minute hook → 35-minute architecture walkthrough → 20-minute builder/myths → 30-minute cockpit and scenarios → 90–150-minute labs → 20-minute capstone and assessment.</div>
+
+  <h3>Generate a practice completion record</h3>
+  <div class="certificate-wrap">
+    <div class="certificate-input"><input id="learnerName" placeholder="Learner name"><button class="primary" id="generateCertificate">Generate certificate</button><button class="secondary" id="printCertificate">Print</button></div>
+    <div class="certificate" id="certificate">
+      <div class="kicker">Android Architecture Garage</div><h3>Practice Completion Record</h3>
+      <p>This records completion of the interactive learning activities by</p><div class="certificate-name" id="certificateName">Learner</div>
+      <p>for <b>Android Architecture: Phone vs Vehicle</b></p>
+      <p class="muted">Activities completed locally in this browser. This is a training record, not a professional certification.</p>
+      <p id="certificateDate"></p>
+    </div>
+  </div>
+</section>
+
+<section class="section searchable" id="validation" data-search="validation verified HTML JavaScript shell syntax command accuracy sources accessibility">
+  <div class="kicker">Quality gate</div><h2>Validation report</h2>
+  <p>This document separates three different meanings of “validated” so learners do not get a false sense of certainty.</p>
+  <div class="validation-grid">
+    <div class="validation-item"><b>PASS</b>HTML parsed<div class="muted">All 28 sections parsed, internal navigation targets resolve, and no duplicate IDs were detected.</div></div>
+    <div class="validation-item"><b>PASS</b>JavaScript syntax<div class="muted">The complete embedded script was extracted and checked with Node.js.</div></div>
+    <div class="validation-item"><b>PASS</b>Interactive smoke test<div class="muted">Headless Chromium exercised the original mission/quiz/cockpit/terminal interactions plus the new story stepper, Android→AAOS transform, Binder journey, retrieval pit stop, troubleshooting detective, command anatomy, boss battle, and Memory Garage with no page exceptions.</div></div>
+    <div class="validation-item"><b>PASS</b>Shell syntax<div class="muted">The command block in each of the eight labs passed <code>bash -n</code>.</div></div>
+    <div class="validation-item"><b>REVIEWED</b>Command semantics<div class="muted">AAOS-specific commands were cross-checked against official Android documentation listed below.</div></div>
+  </div>
+  <h3>What was not executed here</h3>
+  <div class="callout warn">This build environment does not contain the user’s running Cuttlefish/AAOS instance, so ADB commands were not executed against the target. The document therefore labels expected outputs as patterns, gates automotive labs, preserves unsupported-command evidence, and requires observable/log evidence for state simulations.</div>
+  <h3>Trainer validation checklist on the actual lab host</h3>
+  <label class="checkline"><input type="checkbox" data-check="host-adb">One intended target is in ADB <code>device</code> state.</label>
+  <label class="checkline"><input type="checkbox" data-check="host-phone">Labs 1–4 pass on the generic Android image.</label>
+  <label class="checkline"><input type="checkbox" data-check="host-aaos">AAOS feature, Car Service, and VHAL are present on the automotive image.</label>
+  <label class="checkline"><input type="checkbox" data-check="host-state">Driving-state injection produces UI or log evidence and the lab restores PARKED.</label>
+  <label class="checkline"><input type="checkbox" data-check="host-bundle">The evidence bundle is created and manually reviewed for sensitive data.</label>
+</section>
+
+<section class="section searchable" id="sources" data-search="official sources documentation Android source developer">
+  <div class="kicker">Primary references</div><h2>Official sources used for technical verification</h2>
+  <ol class="source-list">
+    <li><a href="https://source.android.com/docs/core/architecture" target="_blank" rel="noreferrer">AOSP — Android architecture overview</a></li>
+    <li><a href="https://source.android.com/docs/core/architecture/hal" target="_blank" rel="noreferrer">AOSP — Hardware abstraction layer overview</a></li>
+    <li><a href="https://source.android.com/docs/core/architecture/ipc/binder-overview" target="_blank" rel="noreferrer">AOSP — Binder overview</a></li>
+    <li><a href="https://source.android.com/docs/security/app-sandbox" target="_blank" rel="noreferrer">AOSP — Application Sandbox</a></li>
+    <li><a href="https://source.android.com/docs/security/features/selinux" target="_blank" rel="noreferrer">AOSP — SELinux in Android</a></li>
+    <li><a href="https://source.android.com/docs/security/features/verifiedboot" target="_blank" rel="noreferrer">AOSP — Verified Boot</a></li>
+    <li><a href="https://developer.android.com/training/cars" target="_blank" rel="noreferrer">Android Developers — Android for Cars overview</a></li>
+    <li><a href="https://developer.android.com/training/cars/platforms/automotive-os" target="_blank" rel="noreferrer">Android Developers — Android Automotive OS overview</a></li>
+    <li><a href="https://source.android.com/docs/automotive" target="_blank" rel="noreferrer">AOSP — Android Automotive documentation hub</a></li>
+    <li><a href="https://source.android.com/docs/automotive/vhal" target="_blank" rel="noreferrer">AOSP — VHAL overview</a></li>
+    <li><a href="https://source.android.com/docs/automotive/vhal/vhal_debug" target="_blank" rel="noreferrer">AOSP — Debug VHAL</a></li>
+    <li><a href="https://source.android.com/docs/automotive/feature-control" target="_blank" rel="noreferrer">AOSP — Car Service feature control</a></li>
+    <li><a href="https://source.android.com/docs/automotive/driver_distraction/consume" target="_blank" rel="noreferrer">AOSP — Driving state and UX restriction testing</a></li>
+    <li><a href="https://source.android.com/docs/automotive/power/power" target="_blank" rel="noreferrer">AOSP — AAOS power management</a></li>
+    <li><a href="https://source.android.com/docs/devices/cuttlefish/get-started" target="_blank" rel="noreferrer">AOSP — Cuttlefish get started</a></li>
+  </ol>
+  <p class="muted">Documentation evolves. Re-check commands against the Android release and VHAL backend used in the training image before delivery.</p>
+</section>
+
+<div class="foot">Built as a self-contained Android Architecture Garage. No external JavaScript, fonts, trackers, or runtime dependencies.</div>
+</main>
+</div>
+
+<div class="floating-mission" id="floatingMission" aria-live="polite"><strong id="floatingTitle">Current mission: learn the terms</strong><span class="muted" id="floatingText">0 of 5 clues collected</span><div class="floating-meter"><span id="floatingMeter"></span></div></div>
+<div class="toast" id="toast">Copied</div>
+<script>
+const layerData={
+ apps:{title:'Applications & System UI',analogy:'Hotel guests and public spaces',body:'Apps run in isolated Linux processes under assigned UIDs. They use framework APIs rather than freely touching devices or other apps.',points:['Activities, services, content providers and broadcast receivers','System UI and privileged/OEM apps have additional roles','On AAOS, supported app categories and driver-distraction rules constrain experiences'],trace:['App','Framework API','Binder service']},
+ framework:{title:'Application Framework',analogy:'Front desk and specialist departments',body:'Java/Kotlin-facing APIs and system services coordinate packages, activities, windows, location, power, users, connectivity and more. Many services run inside system_server.',points:['Manager classes are client-side entry points','Services enforce permissions and policy','AAOS adds Car APIs and Car Service modules'],trace:['Manager API','Binder proxy','system_server service']},
+ runtime:{title:'Android Runtime (ART)',analogy:'The staff training and execution system',body:'ART executes DEX bytecode, compiles code, manages memory and supplies core Java libraries. Zygote preloads common code and forks many app processes efficiently.',points:['Ahead-of-time and just-in-time compilation','Garbage collection and runtime tooling','Zygote reduces repeated startup cost'],trace:['DEX','ART','Machine instructions']},
+ native:{title:'Native services & libraries',analogy:'Engineering rooms behind the lobby',body:'C/C++ libraries and daemons provide graphics composition, media, databases, cryptography, networking and lower-level platform functions.',points:['SurfaceFlinger composes display surfaces','Audio and media services coordinate pipelines','Bionic libc is Android’s C library'],trace:['Framework JNI/native call','Native daemon','HAL or kernel']},
+ hal:{title:'Hardware Abstraction Layer',analogy:'Standard loading docks for many suppliers',body:'HAL interfaces let the framework use hardware capabilities without embedding every vendor implementation into the framework. Modern HALs commonly use stable AIDL interfaces; older stacks may use HIDL.',points:['Interface stability supports framework/vendor separation','Vendor code implements the hardware-specific side','AAOS adds the Vehicle HAL for vehicle properties'],trace:['Framework/native client','AIDL/HIDL interface','Vendor implementation']},
+ kernel:{title:'Linux Kernel',analogy:'Utilities, locks, elevators and machinery',body:'The kernel schedules processes, manages memory, networking, filesystems, power and drivers. Android adds or uses mechanisms such as Binder and SELinux hooks.',points:['UIDs and process isolation start here','Drivers expose hardware and virtual devices','Binder driver transports local IPC transactions'],trace:['System call','Kernel subsystem','Driver']},
+ hardware:{title:'Physical or virtual hardware',analogy:'The actual building and equipment',body:'On a phone this includes the handset SoC, modem, cameras and sensors. On AAOS it includes cockpit compute, displays, audio hardware and links to vehicle controllers. Cuttlefish emulates a configurable Android device for development.',points:['Hardware topology differs by product','Virtual hardware is useful but not identical to production timing','Vehicle buses and ECUs sit beyond Android’s ordinary device boundary'],trace:['Driver','Device','Physical/virtual signal']}
+};
+function renderLayer(key){const d=layerData[key];document.getElementById('layerDetail').innerHTML=`<div class="kicker">${d.analogy}</div><h3>${d.title}</h3><p>${d.body}</p><ul>${d.points.map(x=>`<li>${x}</li>`).join('')}</ul><div class="trace">${d.trace.map((x,i)=>`${i?'<b class="arrow">→</b>':''}<span>${x}</span>`).join('')}</div>`}
+renderLayer('apps');
+document.querySelectorAll('.layer').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.layer').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');renderLayer(b.dataset.layer)}));
+
+const store={mem:Object.create(null),get(k){try{const v=localStorage.getItem(k);return v===null?(this.mem[k]??null):v}catch{return this.mem[k]??null}},set(k,v){this.mem[k]=String(v);try{localStorage.setItem(k,v)}catch{}}};
+const themeBtn=document.getElementById('themeBtn');
+const savedTheme=store.get('androidArchTheme');if(savedTheme)document.documentElement.dataset.theme=savedTheme;
+function themeIcon(){themeBtn.textContent=document.documentElement.dataset.theme==='dark'?'☀︎':'☾'}themeIcon();
+themeBtn.addEventListener('click',()=>{const t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;store.set('androidArchTheme',t);themeIcon()});
+
+function animateNodes(id,delay=520){const nodes=[...document.querySelectorAll(`#${id} .flow-node`)];nodes.forEach(n=>n.classList.remove('active'));nodes.forEach((n,i)=>setTimeout(()=>{nodes.forEach(x=>x.classList.remove('active'));n.classList.add('active');if(i===nodes.length-1)setTimeout(()=>n.classList.remove('active'),delay)},i*delay))}
+document.getElementById('playBoot').addEventListener('click',()=>animateNodes('bootDemo'));
+document.getElementById('playProperty').addEventListener('click',()=>animateNodes('propFlow'));
+
+const filterBtns=document.querySelectorAll('#compareFilters button');
+filterBtns.forEach(b=>b.addEventListener('click',()=>{filterBtns.forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('#comparisonTable tbody tr').forEach(r=>r.style.display=(b.dataset.filter==='all'||r.dataset.cat===b.dataset.filter)?'':'none')}));
+
+const toast=document.getElementById('toast');function showToast(msg){toast.textContent=msg;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1300)}
+document.querySelectorAll('pre').forEach(pre=>{const btn=document.createElement('button');btn.className='copy';btn.textContent='Copy';btn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.innerText.replace(/^Copy\n?/,''));showToast('Command copied')}catch{showToast('Copy unavailable')}});pre.appendChild(btn)});
+
+const checks=[...document.querySelectorAll('input[data-check]')];checks.forEach(c=>{c.checked=store.get('check:'+c.dataset.check)==='1';c.addEventListener('change',()=>{store.set('check:'+c.dataset.check,c.checked?'1':'0');updateChecklist()})});
+function updateChecklist(){const pct=checks.length?Math.round(checks.filter(x=>x.checked).length/checks.length*100):0;document.getElementById('sideProgress').style.width=pct+'%'}updateChecklist();
+
+document.querySelectorAll('.flash').forEach(f=>{const flip=()=>f.classList.toggle('flipped');f.addEventListener('click',flip);f.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flip()}})});
+
+document.getElementById('gradeQuiz').addEventListener('click',()=>{let score=0;document.querySelectorAll('.quiz').forEach(q=>{const chosen=q.querySelector('input:checked');const good=chosen&&chosen.value===q.dataset.answer;if(good)score++;q.querySelector('.feedback').textContent=chosen?(good?'Correct ✓':'Not quite — review the comparison and architecture sections.'):'Choose an answer first.';q.querySelector('.feedback').style.color=good?'var(--ok)':'var(--warn)'});document.getElementById('quizScore').textContent=`${score}/5`;store.set('androidArchQuiz',score)});
+
+const search=document.getElementById('searchInput');search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();document.querySelectorAll('.searchable,.lab').forEach(el=>{const hay=(el.dataset.search||'')+' '+el.innerText.toLowerCase();el.classList.toggle('hidden-by-search',q&&!hay.includes(q))})});
+
+const sections=[...document.querySelectorAll('main section[id]')];const tocLinks=[...document.querySelectorAll('#toc a')];
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){tocLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))}})},{rootMargin:'-20% 0px -70% 0px'});sections.forEach(s=>obs.observe(s));
+window.addEventListener('scroll',()=>{const h=document.documentElement;const max=h.scrollHeight-h.clientHeight;const pct=max?Math.min(100,Math.max(0,h.scrollTop/max*100)):0;document.getElementById('readProgress').style.width=pct+'%'});
+
+// === Learning Garage interactions ===
+const depthSelect=document.getElementById('depthSelect');
+const savedDepth=store.get('androidArchDepth')||'technical';document.documentElement.dataset.depth=savedDepth;depthSelect.value=savedDepth;
+depthSelect.addEventListener('change',()=>{document.documentElement.dataset.depth=depthSelect.value;store.set('androidArchDepth',depthSelect.value);showToast('Explanation depth updated')});
+const motionBtn=document.getElementById('motionBtn');
+if(store.get('androidArchMotion')==='off'){document.body.classList.add('motion-off');motionBtn.textContent='Motion: off'}
+motionBtn.addEventListener('click',()=>{document.body.classList.toggle('motion-off');const off=document.body.classList.contains('motion-off');motionBtn.textContent=off?'Motion: off':'Motion: on';store.set('androidArchMotion',off?'off':'on')});
+const modeBtn=document.getElementById('modeBtn');
+let guided=store.get('androidArchMode')==='guided';
+function renderMode(){modeBtn.classList.toggle('active',guided);modeBtn.textContent=guided?'🧭 Guided':'🧭 Explorer';document.getElementById('floatingMission').classList.toggle('show',guided)}renderMode();
+modeBtn.addEventListener('click',()=>{guided=!guided;store.set('androidArchMode',guided?'guided':'explorer');renderMode();showToast(guided?'Guided journey enabled':'Explorer mode enabled')});
+
+const evidenceKeys=['myths','stack','vhal','scenario','classification'];
+function evidenceDone(key){return store.get('evidence:'+key)==='1'}
+function setEvidence(key,done=true){store.set('evidence:'+key,done?'1':'0');updateMission()}
+function confetti(){if(document.body.classList.contains('motion-off'))return;const symbols=['🎉','✨','🔧','🚗','🧠','⚙️'];for(let i=0;i<24;i++){const p=document.createElement('span');p.className='confetti-piece';p.textContent=symbols[i%symbols.length];p.style.left=Math.random()*100+'vw';p.style.animationDelay=(Math.random()*.5)+'s';document.body.appendChild(p);setTimeout(()=>p.remove(),2300)}}
+function unlockBadge(key){const el=document.querySelector(`[data-badge="${key}"]`);if(el&&!el.classList.contains('unlocked')){el.classList.add('unlocked');store.set('badge:'+key,'1');showToast('Badge unlocked: '+el.querySelector('b').textContent)}}
+function updateMission(){
+  let count=0;evidenceKeys.forEach((key,i)=>{const done=evidenceDone(key);if(done)count++;const row=document.querySelector(`[data-evidence="${key}"]`);if(row){row.classList.toggle('done',done);row.querySelector('.evidence-icon').textContent=done?'✓':String(i+1);row.querySelector('.evidence-status').textContent=done?'Collected':'Pending'}});
+  const pct=Math.round(count/evidenceKeys.length*100);document.getElementById('missionPct').textContent=pct+'%';document.getElementById('floatingText').textContent=`${count} of ${evidenceKeys.length} clues collected`;document.getElementById('floatingMeter').style.width=pct+'%';
+  const route=[count>=1,count>=2,count>=3,count>=4,count>=5];document.querySelectorAll('#routeStrip .route-step').forEach((r,i)=>{r.classList.toggle('done',route[i]);r.classList.toggle('current',!route[i]&&(i===0||route[i-1]))});
+  if(count===5){unlockBadge('final');document.getElementById('floatingTitle').textContent='Case ready for final verdict';}else{const next=evidenceKeys.find(k=>!evidenceDone(k));const labels={myths:'separate Android Auto from AAOS',stack:'rebuild the Android stack',vhal:'trace a VHAL property',scenario:'compare platform behaviour',classification:'classify the image'};document.getElementById('floatingTitle').textContent='Current mission: '+labels[next]}
+}
+
+// Myth or Fact cards with explicit Fact/Myth controls.
+let mythCorrect=Number(store.get('mythCorrect')||0),mythAnswered=Number(store.get('mythAnswered')||0);
+function renderMythScore(){document.getElementById('mythScore').textContent=`Score: ${mythCorrect}/6 · Answered ${mythAnswered}/6`;if(mythCorrect>=4){setEvidence('myths');unlockBadge('myths')}}
+document.querySelectorAll('.myth-card').forEach((card,index)=>{const saved=store.get('myth:'+index);if(saved){const wasCorrect=saved==='correct';card.classList.add('answered',wasCorrect?'true':'false');card.querySelectorAll('.myth-vote').forEach(b=>b.disabled=true)}card.querySelectorAll('.myth-vote').forEach(vote=>vote.addEventListener('click',()=>{if(card.classList.contains('answered'))return;const correct=vote.dataset.choice===card.dataset.answer;card.classList.add('answered',correct?'true':'false');card.querySelectorAll('.myth-vote').forEach(b=>b.disabled=true);mythAnswered++;if(correct)mythCorrect++;store.set('myth:'+index,correct?'correct':'wrong');store.set('mythCorrect',mythCorrect);store.set('mythAnswered',mythAnswered);renderMythScore();showToast(correct?'Correct — clue strengthened':'Useful miss — read the explanation')}))});renderMythScore();
+
+// Architecture builder: click and drag accessible interaction.
+let selectedChip=null;
+const builderExplanations={apps:'Applications are APK processes and UI experiences.',framework:'system_server hosts many Java framework services.',runtime:'Zygote preloads common code and ART executes DEX.',native:'SurfaceFlinger is a native graphics-composition service.',hal:'VHAL is the vehicle-facing HAL abstraction.',kernel:'The Binder driver transports IPC in the Linux kernel.',hardware:'An HVAC ECU sits beyond Android in the vehicle domain.'};
+function builderPlace(chip,slot){if(!chip||chip.classList.contains('placed'))return;if(chip.dataset.target===slot.dataset.accept){slot.classList.add('correct');slot.querySelector('.slot-value').textContent=chip.textContent;chip.classList.add('placed');chip.classList.remove('selected');selectedChip=null;document.getElementById('builderFeedback').textContent='Correct: '+builderExplanations[slot.dataset.accept];const placed=document.querySelectorAll('.component-chip.placed').length;store.set('builderPlaced',String(placed));if(placed===7){setEvidence('stack');unlockBadge('stack');confetti();document.getElementById('builderFeedback').textContent='Workshop complete — all seven components are correctly placed.'}}else{slot.classList.add('wrong');setTimeout(()=>slot.classList.remove('wrong'),600);document.getElementById('builderFeedback').textContent='Not there yet. '+builderExplanations[chip.dataset.target]}}
+document.querySelectorAll('.component-chip').forEach(chip=>{chip.addEventListener('click',()=>{document.querySelectorAll('.component-chip').forEach(c=>c.classList.remove('selected'));selectedChip=chip;chip.classList.add('selected');document.getElementById('builderFeedback').textContent='Selected '+chip.textContent+'. Choose a layer.'});chip.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',chip.dataset.target);selectedChip=chip})});
+document.querySelectorAll('.drop-slot').forEach(slot=>{slot.addEventListener('click',()=>builderPlace(selectedChip,slot));slot.addEventListener('dragover',e=>e.preventDefault());slot.addEventListener('drop',e=>{e.preventDefault();const target=e.dataTransfer.getData('text/plain');const chip=[...document.querySelectorAll('.component-chip')].find(c=>c.dataset.target===target&&!c.classList.contains('placed'));builderPlace(chip,slot)})});
+if(Number(store.get('builderPlaced')||0)===7){document.querySelectorAll('.component-chip').forEach(chip=>{const slot=document.querySelector(`.drop-slot[data-accept="${chip.dataset.target}"]`);chip.classList.add('placed');slot.classList.add('correct');slot.querySelector('.slot-value').textContent=chip.textContent});document.getElementById('builderFeedback').textContent='Workshop complete — restored from local progress.';}
+document.getElementById('resetBuilder').addEventListener('click',()=>{document.querySelectorAll('.component-chip').forEach(c=>c.classList.remove('placed','selected'));document.querySelectorAll('.drop-slot').forEach(s=>{s.classList.remove('correct','wrong');s.querySelector('.slot-value').textContent='Drop here'});selectedChip=null;store.set('builderPlaced','0');setEvidence('stack',false);document.getElementById('builderFeedback').textContent='Workshop reset.'});
+
+// Cockpit / VHAL simulator.
+const cockpitState={temp:22,gear:'P',speed:0,door:false,lights:false};let cockpitActions=Number(store.get('cockpitActions')||0);
+const cockpitMeta={
+ tempUp:{title:'Increase front-left temperature',direction:'WRITE: HMI → ECU',name:'HVAC_TEMPERATURE_SET',area:'FRONT_LEFT',access:'READ_WRITE',change:'ON_CHANGE'},
+ tempDown:{title:'Decrease front-left temperature',direction:'WRITE: HMI → ECU',name:'HVAC_TEMPERATURE_SET',area:'FRONT_LEFT',access:'READ_WRITE',change:'ON_CHANGE'},
+ gear:{title:'Read selected gear',direction:'READ: ECU → HMI',name:'GEAR_SELECTION',area:'GLOBAL',access:'READ',change:'ON_CHANGE'},
+ speed:{title:'Read vehicle speed',direction:'READ: ECU → HMI',name:'PERF_VEHICLE_SPEED',area:'GLOBAL',access:'READ',change:'CONTINUOUS'},
+ door:{title:'Read front-left door state',direction:'READ: ECU → HMI',name:'DOOR_POS',area:'ROW_1_LEFT',access:'READ',change:'ON_CHANGE'},
+ lights:{title:'Control exterior lights',direction:'WRITE: HMI → ECU',name:'LIGHT_STATE',area:'GLOBAL',access:'READ_WRITE',change:'ON_CHANGE'}
+};
+function animateCockpit(direction){const nodes=[...document.querySelectorAll('#cockpitPath .signal-node')];const order=direction.startsWith('READ')?[...nodes].reverse():nodes;nodes.forEach(n=>n.classList.remove('active'));order.forEach((n,i)=>setTimeout(()=>{nodes.forEach(x=>x.classList.remove('active'));n.classList.add('active');if(i===order.length-1)setTimeout(()=>n.classList.remove('active'),450)},i*360))}
+function useCockpit(action){const m=cockpitMeta[action];let value='';if(action==='tempUp'){cockpitState.temp=Math.min(30,cockpitState.temp+.5);value=cockpitState.temp.toFixed(1)+' °C'}if(action==='tempDown'){cockpitState.temp=Math.max(16,cockpitState.temp-.5);value=cockpitState.temp.toFixed(1)+' °C'}if(action==='gear'){const gears=['P','R','N','D'];cockpitState.gear=gears[(gears.indexOf(cockpitState.gear)+1)%gears.length];value=cockpitState.gear}if(action==='speed'){cockpitState.speed=(cockpitState.speed+20)%120;value=cockpitState.speed+' km/h'}if(action==='door'){cockpitState.door=!cockpitState.door;value=cockpitState.door?'OPEN':'CLOSED'}if(action==='lights'){cockpitState.lights=!cockpitState.lights;value=cockpitState.lights?'ON':'OFF'}document.getElementById('tempValue').textContent=cockpitState.temp+'°';document.getElementById('gearValue').textContent=cockpitState.gear;document.getElementById('speedValue').textContent=cockpitState.speed;document.getElementById('leftDoor').classList.toggle('open',cockpitState.door);document.getElementById('leftLamp').classList.toggle('lamp-on',cockpitState.lights);document.getElementById('rightLamp').classList.toggle('lamp-on',cockpitState.lights);document.getElementById('propertyTitle').textContent=m.title;document.getElementById('propDirection').textContent=m.direction;document.getElementById('propName').textContent=m.name;document.getElementById('propArea').textContent=m.area;document.getElementById('propAccess').textContent=m.access;document.getElementById('propChange').textContent=m.change;document.getElementById('propValue').textContent=value;animateCockpit(m.direction);cockpitActions++;store.set('cockpitActions',String(cockpitActions));if(cockpitActions>=3){setEvidence('vhal');unlockBadge('vhal')}}
+document.querySelectorAll('[data-cockpit]').forEach(b=>b.addEventListener('click',()=>useCockpit(b.dataset.cockpit)));
+
+// Scenario simulator.
+const scenarioData={
+ screen:{phone:'The display sleeps. Depending on policy, the handset may reduce activity and later enter deeper idle states.',car:'One display may turn off while audio, telematics, diagnostics, vehicle services, or other occupant displays continue.',lesson:'A vehicle has several operational domains; display state is not equivalent to whole-system power state.'},
+ ignition:{phone:'There is no ignition lifecycle. The user normally controls power through the handset button and battery state.',car:'AAOS coordinates shutdown preparation, suspend, wake, Garage Mode, and power policy with vehicle power control through automotive services and VHAL.',lesson:'Vehicle lifecycle is externally coordinated and must respect start-up and shutdown budgets.'},
+ reverse:{phone:'A phone has no standard reverse-gear event. An app would need an external integration.',car:'The vehicle can publish gear state; the HMI may prioritize a camera view and apply vehicle-specific UX policy.',lesson:'AAOS consumes vehicle context through controlled automotive interfaces.'},
+ passenger:{phone:'The device generally represents one foreground user experience, even though Android supports multiple users.',car:'AAOS may support multiple occupants, displays, audio zones, and concurrent experiences with policy separating driver and passenger.',lesson:'Vehicle Android is a shared cabin platform, not merely a larger personal handset.'},
+ moving:{phone:'The operating system does not normally know that its user is driving unless an application infers context.',car:'Driving state can activate UX restrictions that limit distracting interactions for the driver while preserving permitted functions.',lesson:'Driver-distraction policy is a platform concern in AAOS.'},
+ call:{phone:'Telecom services present the call using handset audio routing, notifications, and user controls.',car:'The vehicle may route call audio through a cabin zone, coordinate microphones, duck media, and apply driver-safe interaction rules.',lesson:'Audio routing and interaction policy must account for zones, occupants, and driving context.'}
+};
+let scenarioSeen=new Set(JSON.parse(store.get('scenarioSeen')||'[]'));
+function renderScenario(key){const d=scenarioData[key];document.getElementById('phoneScenario').textContent=d.phone;document.getElementById('carScenario').textContent=d.car;document.getElementById('scenarioLesson').textContent=d.lesson;document.querySelectorAll('.scenario-btn').forEach(b=>b.classList.toggle('active',b.dataset.scenario===key));scenarioSeen.add(key);store.set('scenarioSeen',JSON.stringify([...scenarioSeen]));if(scenarioSeen.size>=4){setEvidence('scenario');unlockBadge('scenario')}}
+document.querySelectorAll('.scenario-btn').forEach(b=>b.addEventListener('click',()=>renderScenario(b.dataset.scenario)));renderScenario('screen');
+
+// Simulated ADB terminal.
+const terminalScreen=document.getElementById('terminalScreen'),terminalInput=document.getElementById('terminalInput');
+const terminalCommands={
+ 'adb devices -l':'List of devices attached\n0.0.0.0:6520 device product:cf_x86_64_auto model:Cuttlefish_AAOS device:vsoc_x86_64 transport_id:1',
+ 'adb shell getprop ro.build.characteristics':'automotive',
+ 'adb shell pm list features | grep automotive':'feature:android.hardware.type.automotive',
+ 'adb shell service list | grep -i car':'168 car_service: [android.car.ICar]\n169 car_feature: [android.car.ICarFeature]',
+ 'adb shell dumpsys car_service':'*CarService*\n  mUserService: ready\n  CarPropertyService: connected\n  VehicleHal: connected (reference/emulated)\n  PowerManagement: active',
+ "adb shell ps -A | grep -E 'zygote|system_server|surfaceflinger'":'root       412   zygote64\nsystem     785   system_server\nsystem     361   surfaceflinger'
+};
+function terminalPrint(text,cls=''){const d=document.createElement('div');d.className='terminal-line '+cls;d.textContent=text;terminalScreen.appendChild(d);terminalScreen.scrollTop=terminalScreen.scrollHeight}
+function runTerminal(cmd){cmd=cmd.trim();if(!cmd)return;terminalPrint('android-lab$ '+cmd,'terminal-command');if(cmd==='clear'){terminalScreen.innerHTML='';return}if(cmd==='help'){terminalPrint('Supported commands:\n'+Object.keys(terminalCommands).join('\n')+'\nclear','terminal-info');return}if(terminalCommands[cmd]){terminalPrint(terminalCommands[cmd]);if(cmd.includes('hardware.type.automotive')||cmd.includes('ro.build.characteristics')||cmd.includes('car_service')){setEvidence('classification');unlockBadge('classification')}}else{terminalPrint('Command not available in this simulation. Use help, a quick command, or run the real command in the labs.','terminal-error')}}
+document.getElementById('terminalForm').addEventListener('submit',e=>{e.preventDefault();runTerminal(terminalInput.value);terminalInput.value=''});document.querySelectorAll('[data-command]').forEach(b=>b.addEventListener('click',()=>runTerminal(b.dataset.command)));
+
+// Prediction interactions for labs.
+document.querySelectorAll('.predict-option').forEach(btn=>btn.addEventListener('click',()=>{const box=btn.closest('.predict');const feedback=box.querySelector('.predict-feedback');box.querySelectorAll('.predict-option').forEach(b=>b.disabled=true);const correct=btn.dataset.correct==='true';btn.classList.toggle('correct',correct);feedback.textContent=(correct?'Correct. ':'Not quite. ')+feedback.dataset.explain;feedback.style.color=correct?'var(--ok)':'var(--warn)'}));
+
+// Extend checklist progress into badges.
+const originalUpdateChecklist=updateChecklist;updateChecklist=function(){originalUpdateChecklist();const done=checks.filter(x=>x.checked).length;if(done>=4)unlockBadge('labs')};updateChecklist();
+
+// Extend quiz grading with badge.
+document.getElementById('gradeQuiz').addEventListener('click',()=>{const score=Number((document.getElementById('quizScore').textContent||'0').split('/')[0]);if(score>=4)unlockBadge('quiz')});
+
+// Trainer controls.
+const trainerToggle=document.getElementById('trainerToggle');
+function setTrainer(on){document.body.classList.toggle('trainer-mode',on);trainerToggle.textContent=on?'Disable trainer mode':'Enable trainer mode';store.set('trainerMode',on?'1':'0')}
+setTrainer(store.get('trainerMode')==='1');trainerToggle.addEventListener('click',()=>setTrainer(!document.body.classList.contains('trainer-mode')));
+const challenges=['Explain why a car-themed launcher is weak AAOS evidence.','Trace a climate request from HMI to HVAC ECU.','Name three reasons vehicle power management differs from a phone.','Explain why VHAL abstraction is not authorization.','Classify Android Auto, AAOS, AOSP, and Google built-in without using the word “same.”','Describe what evidence would make a lab conclusion reproducible.'];
+document.getElementById('challengeBtn').addEventListener('click',()=>{document.getElementById('randomChallenge').textContent=challenges[Math.floor(Math.random()*challenges.length)]});
+document.getElementById('resetProgress').addEventListener('click',()=>{if(!confirm('Clear all locally stored progress for this document?'))return;Object.keys(localStorage).filter(k=>k.startsWith('androidArch')||k.startsWith('check:')||k.startsWith('evidence:')||k.startsWith('badge:')||k.startsWith('myth')||['builderPlaced','cockpitActions','scenarioSeen','trainerMode'].includes(k)).forEach(k=>localStorage.removeItem(k));location.reload()});
+
+// Completion record.
+document.getElementById('generateCertificate').addEventListener('click',()=>{const name=document.getElementById('learnerName').value.trim()||'Learner';document.getElementById('certificateName').textContent=name;document.getElementById('certificateDate').textContent='Generated '+new Date().toLocaleDateString();document.getElementById('certificate').classList.add('show');showToast('Completion record generated')});document.getElementById('printCertificate').addEventListener('click',()=>window.print());
+
+// Restore badges and initialize mission.
+document.querySelectorAll('[data-badge]').forEach(b=>{if(store.get('badge:'+b.dataset.badge)==='1')b.classList.add('unlocked')});updateMission();
+
+
+// === Brain-Friendly Learning Adventure v2 interactions ===
+// Section narration: explicit play/pause/resume/stop; never auto-plays.
+let narrationUtterance=null,narratingSection=null;
+const voicePlay=document.getElementById('voicePlay'),voicePause=document.getElementById('voicePause'),voiceResume=document.getElementById('voiceResume'),voiceStop=document.getElementById('voiceStop');
+function currentLearningSection(){const all=[...document.querySelectorAll('main section[id]')];let best=all[0],bestDist=Infinity;all.forEach(s=>{if(s.classList.contains('hidden-by-search'))return;const r=s.getBoundingClientRect();const d=Math.abs(r.top-100);if(d<bestDist){best=s;bestDist=d}});return best}
+function cleanNarrationText(section){const c=section.cloneNode(true);c.querySelectorAll('pre,button,input,select,svg,.trainer-only,.confidence,.story-controls,.boss-verdicts').forEach(x=>x.remove());return c.innerText.replace(/\s+/g,' ').trim().slice(0,5200)}
+function clearNarrating(){document.querySelectorAll('.section.narrating,.hero.narrating').forEach(x=>x.classList.remove('narrating'));narratingSection=null}
+function englishVoice(){return speechSynthesis.getVoices().find(v=>/^en([-_]|$)/i.test(v.lang))||null}
+voicePlay.addEventListener('click',()=>{if(!('speechSynthesis' in window)){showToast('Speech synthesis is unavailable in this browser');return}speechSynthesis.cancel();clearNarrating();const s=currentLearningSection();const txt=cleanNarrationText(s);if(!txt){showToast('Nothing readable in this section');return}narrationUtterance=new SpeechSynthesisUtterance(txt);narrationUtterance.lang='en-US';const v=englishVoice();if(v)narrationUtterance.voice=v;narrationUtterance.rate=.96;narrationUtterance.onend=clearNarrating;narrationUtterance.onerror=clearNarrating;s.classList.add('narrating');narratingSection=s;speechSynthesis.speak(narrationUtterance);showToast('Narrating: '+(s.querySelector('h1,h2')?.textContent||'current section'))});
+voicePause.addEventListener('click',()=>{if('speechSynthesis' in window&&speechSynthesis.speaking){speechSynthesis.pause();showToast('Narration paused')}});
+voiceResume.addEventListener('click',()=>{if('speechSynthesis' in window&&speechSynthesis.paused){speechSynthesis.resume();showToast('Narration resumed')}});
+voiceStop.addEventListener('click',()=>{if('speechSynthesis' in window)speechSynthesis.cancel();clearNarrating();showToast('Narration stopped')});
+
+// 60-second visual story.
+const storyLines=[
+ 'A human makes an intention visible: a tap, voice command, steering-wheel input, or app action.',
+ 'The app or vehicle HMI requests a capability through a public or privileged Android API.',
+ 'Framework code and system services coordinate state, policy, lifecycle, and permissions.',
+ 'When the responsible service lives in another process, Binder carries the IPC transaction across the process boundary.',
+ 'A HAL provides a stable hardware-facing contract; in AAOS, VHAL represents vehicle functions as typed properties.',
+ 'Vendor integration, gateways, drivers, buses, ECUs, sensors, or actuators produce or observe the physical result.'
+];
+let storyIndex=-1,storyTimer=null;
+function renderStoryStep(i){const stops=[...document.querySelectorAll('#storyRoad .story-stop')];stops.forEach((x,n)=>x.classList.toggle('active',n===i));storyIndex=i;document.getElementById('storyCaption').innerHTML=`<b>Step ${i+1} of ${storyLines.length}</b><br>${storyLines[i]}`}
+function resetStory(){if(storyTimer)clearInterval(storyTimer);storyTimer=null;storyIndex=-1;document.querySelectorAll('#storyRoad .story-stop').forEach(x=>x.classList.remove('active'));document.getElementById('storyCaption').innerHTML='<b>Start the story.</b> Watch where responsibility changes rather than trying to memorise every name at once.'}
+document.getElementById('playStory').addEventListener('click',()=>{resetStory();let i=0;renderStoryStep(i++);storyTimer=setInterval(()=>{if(i>=storyLines.length){clearInterval(storyTimer);storyTimer=null;return}renderStoryStep(i++)},1200)});
+document.getElementById('stepStory').addEventListener('click',()=>renderStoryStep((storyIndex+1)%storyLines.length));document.getElementById('resetStory').addEventListener('click',resetStory);
+
+// Android -> AAOS transformation.
+document.getElementById('transformBtn').addEventListener('click',()=>{document.getElementById('transformStage').classList.add('transformed');document.getElementById('transformLesson').innerHTML='<b>What changed?</b> The Android core remains. AAOS adds vehicle-aware framework services and policies, VHAL, and integration with vehicle networks and ECUs.';showToast('Automotive extensions revealed')});
+document.getElementById('transformReset').addEventListener('click',()=>{document.getElementById('transformStage').classList.remove('transformed');document.getElementById('transformLesson').innerHTML='<b>Key idea:</b> AAOS is Android adapted to live inside a vehicle; it is not “Android Auto installed in the dashboard.”'});
+
+// Binder journey animation.
+document.getElementById('playBinder').addEventListener('click',()=>{const nodes=[...document.querySelectorAll('#binderJourney .journey-node')];nodes.forEach(x=>x.classList.remove('active'));nodes.forEach((n,i)=>setTimeout(()=>{nodes.forEach(x=>x.classList.remove('active'));n.classList.add('active');if(i===nodes.length-1)setTimeout(()=>n.classList.remove('active'),500)},i*520))});
+
+// Retrieval pit stop + metacognitive confidence.
+function updatePitScore(){const cards=[...document.querySelectorAll('#pitGrid .pit-card')],revealed=cards.filter(c=>c.classList.contains('revealed')).length;document.getElementById('pitScore').textContent=`${revealed} of ${cards.length} answers revealed`;store.set('pitRevealed',String(revealed))}
+document.querySelectorAll('.reveal-pit').forEach((b,i)=>b.addEventListener('click',()=>{const c=b.closest('.pit-card');c.classList.add('revealed');b.disabled=true;store.set('pit:'+i,'1');updatePitScore()}));
+document.querySelectorAll('#pitGrid .pit-card').forEach((c,i)=>{if(store.get('pit:'+i)==='1'){c.classList.add('revealed');const b=c.querySelector('.reveal-pit');b.disabled=true}c.querySelectorAll('[data-conf]').forEach(btn=>{if(store.get('pitconf:'+i)===btn.dataset.conf)btn.classList.add('chosen');btn.addEventListener('click',()=>{c.querySelectorAll('[data-conf]').forEach(x=>x.classList.remove('chosen'));btn.classList.add('chosen');store.set('pitconf:'+i,btn.dataset.conf)})})});updatePitScore();
+
+// Troubleshooting detective.
+const triageData={
+ adb:{title:'ADB target is offline',summary:'Do not interpret Android architecture until transport is healthy.',steps:[['Confirm scope','Run <code>adb devices -l</code>. If several targets exist, select the intended serial explicitly.'],['Reset transport','Restart the ADB server, then wait for the target.'],['Check Cuttlefish','Confirm the instance is running and its ADB connector reached the expected port.'],['Re-test','Proceed only when the target state is <code>device</code>.']],commands:['adb kill-server && adb start-server','adb devices -l','adb -s SERIAL wait-for-device']},
+ feature:{title:'Automotive feature is absent',summary:'A car-themed launcher is not enough. First test whether the image declares itself automotive.',steps:[['Re-run evidence','Query <code>pm list features</code> and <code>ro.build.characteristics</code>.'],['Avoid weak signals','Package names, wallpaper, and landscape resolution are supporting clues only.'],['Classify honestly','If the automotive feature is absent, treat the target as non-AAOS unless stronger contradictory evidence is documented.']],commands:["adb shell pm list features | grep -F android.hardware.type.automotive","adb shell getprop ro.build.characteristics"]},
+ carservice:{title:'car_service cannot be found',summary:'Separate wrong image, incomplete boot, and service-start failure.',steps:[['Gate the image','Confirm <code>android.hardware.type.automotive</code> is declared.'],['Check boot','Read <code>sys.boot_completed</code>.'],['Look for evidence','Inspect car-related packages/services and logcat for CarService startup errors.'],['Conclude','A missing service on a declared AAOS image is a runtime problem to investigate, not proof that AAOS never existed.']],commands:['adb shell getprop sys.boot_completed',"adb shell service list | grep -i car","adb logcat -d -b all | grep -iE 'CarService|car_service'"]},
+ vhal:{title:'VHAL dump fails or backend is unknown',summary:'Identify the VHAL transport/backend before assuming a command syntax.',steps:[['Check AIDL','Try the current AIDL service name.'],['Check HIDL fallback','Older images can expose the 2.0 HIDL IVehicle service.'],['Use help','Once the backend is known, ask the service for supported debug options.'],['Record unsupported state','An unsupported debug operation is still evidence; do not fabricate property values.']],commands:["adb shell dumpsys android.hardware.automotive.vehicle.IVehicle/default --help","adb shell lshal | grep -i automotive.vehicle"]},
+ ux:{title:'Driving-state command ran but UI did not change',summary:'Command acceptance is not proof that policy changed.',steps:[['Capture logs','Clear logcat, perform one transition, then search for driving/UX restriction components.'],['Check observer','Use an app or screen whose behaviour is actually constrained by driving state.'],['Check image policy','Reference images can differ in configured restrictions.'],['Restore state','Always return the simulation to PARKED after the test.']],commands:['adb logcat -c',"adb logcat -d | grep -iE 'driving|UxRestriction|CarUx|CarDriving'"]},
+ boot:{title:'Car services look incomplete after launch',summary:'Many architecture checks are meaningless before framework boot completion.',steps:[['Check boot flag','Read <code>sys.boot_completed</code>.'],['Check core processes','Confirm <code>zygote</code>, <code>system_server</code>, and graphics services are present.'],['Inspect logs','Look for fatal loops, service-manager failures, or CarService errors.'],['Retry evidence collection','Only after the system reaches a stable boot state.']],commands:['adb shell getprop sys.boot_completed',"adb shell ps -A | grep -E 'zygote|system_server|surfaceflinger'","adb logcat -d -b all -t 1000"]}
+};
+function renderIncident(key){const d=triageData[key];document.getElementById('triagePanel').innerHTML=`<div class="kicker">Incident analysis</div><h3>${d.title}</h3><p>${d.summary}</p>${d.steps.map((s,i)=>`<div class="decision-step"><b>${i+1}. ${s[0]}</b><br>${s[1]}</div>`).join('')}<h4>Useful evidence commands</h4>${d.commands.map(c=>`<div><code class="triage-command">${c}</code></div>`).join('')}`;document.querySelectorAll('.incident-btn').forEach(b=>b.classList.toggle('active',b.dataset.incident===key))}
+document.querySelectorAll('.incident-btn').forEach(b=>b.addEventListener('click',()=>renderIncident(b.dataset.incident)));renderIncident('adb');
+
+// Command anatomy: generated for every code block; focuses on the first useful command.
+const anatomyLexicon={
+ 'adb':'Android Debug Bridge: host-side client used to communicate with an Android target.',
+ 'shell':'Run the following command inside the Android device environment.',
+ 'dumpsys':'Ask an Android Binder/system service to dump diagnostic state.',
+ 'getprop':'Read Android system properties exposed by the property service.',
+ 'pm':'Package Manager command interface.',
+ 'service':'Interact with or list Binder-registered services.',
+ 'cmd':'Invoke a service-specific Android command interface.',
+ 'ps':'List running processes.',
+ 'grep':'Filter text for matching patterns.',
+ 'sed':'Select or transform text; often used here to keep training output readable.',
+ 'tee':'Display output while also saving it to a file.',
+ 'root':'Ask adbd to restart with root privileges when the build permits it.',
+ 'wait-for-device':'Block until the selected ADB target is reachable.',
+ 'logcat':'Read Android log buffers.',
+ 'uname':'Show kernel/system identity from the Android shell.',
+ 'lshal':'List HIDL HAL services; useful on older Android/AAOS images.',
+ 'features':'Query declared device features when used through Package Manager.'
+};
+function firstUsefulCommand(raw){return raw.split('\n').map(x=>x.trim()).find(x=>x&&!x.startsWith('#')&&!/^(set |if |fi$|else$|for |done$|cat >|EOF$|[A-Z_]+=)/.test(x))||raw.split('\n').find(x=>x.trim())||''}
+function describeToken(t){const clean=t.replace(/[;'"|{}()]/g,'');if(anatomyLexicon[clean])return anatomyLexicon[clean];if(clean.startsWith('ro.')||clean.startsWith('sys.'))return 'Android property key being queried.';if(clean.startsWith('--'))return 'Option that changes the behaviour or output of the command.';if(clean.startsWith('-'))return 'Short command option / flag.';if(clean.includes('car_service'))return 'AAOS Car Service diagnostic target.';if(clean.includes('automotive.vehicle'))return 'Vehicle HAL service/interface name.';if(clean.includes('android.hardware.type.automotive'))return 'Declared Package Manager feature indicating an automotive device type.';return 'Argument, filter, target, path, or value passed to the preceding command.'}
+function commandPurpose(cmd){if(cmd.includes('hardware.type.automotive'))return 'Field use: classify whether the image declares the automotive device type.';if(cmd.includes('car_service'))return 'Field use: inspect AAOS Car Service presence, state, features, or startup problems.';if(cmd.includes('automotive.vehicle'))return 'Field use: identify or inspect the Vehicle HAL and its property-facing debug surface.';if(cmd.includes('logcat'))return 'Field use: correlate a visible failure with timestamped Android runtime evidence.';if(cmd.includes('getprop'))return 'Field use: capture build, boot, security, or runtime identity without guessing.';if(cmd.includes('ps '))return 'Field use: map conceptual Android components to real running processes.';return 'Field use: collect reproducible evidence before making an architecture conclusion.'}
+[...document.querySelectorAll('pre')].forEach((pre,idx)=>{const code=pre.querySelector('code');if(!code)return;const b=document.createElement('button');b.className='anatomy';b.textContent='Explain';b.setAttribute('aria-label','Explain command anatomy');const panel=document.createElement('div');panel.className='command-anatomy-panel';panel.id='anatomy-'+idx;pre.insertAdjacentElement('afterend',panel);b.addEventListener('click',()=>{const cmd=firstUsefulCommand(code.textContent);const tokens=cmd.match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g)||[];const unique=[];tokens.slice(0,12).forEach(t=>{if(!unique.includes(t))unique.push(t)});panel.innerHTML=`<div class="kicker">Command anatomy</div><h4 style="margin:.3rem 0 .7rem">What is this command asking?</h4><code>${escapeHtml(cmd)}</code>${unique.map(t=>`<div class="anatomy-row"><div class="anatomy-token">${escapeHtml(t)}</div><div>${escapeHtml(describeToken(t))}</div></div>`).join('')}<div class="field-use">${escapeHtml(commandPurpose(cmd))}</div>`;panel.classList.toggle('show');b.textContent=panel.classList.contains('show')?'Hide':'Explain'});pre.appendChild(b)});
+function escapeHtml(s){return String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]))}
+
+// Boss battle.
+let bossIndex=0;const bossClues=[...document.querySelectorAll('.boss-clue')];
+function resetBoss(){bossIndex=0;bossClues.forEach(c=>c.classList.remove('revealed'));const f=document.getElementById('bossFeedback');f.className='boss-feedback';f.textContent='Reveal evidence, then make the strongest conclusion you can justify.'}
+document.getElementById('revealBoss').addEventListener('click',()=>{if(bossIndex<bossClues.length){bossClues[bossIndex++].classList.add('revealed');showToast(`Evidence ${bossIndex}/${bossClues.length} revealed`)}else showToast('All evidence is already visible')});document.getElementById('resetBoss').addEventListener('click',resetBoss);
+document.querySelectorAll('[data-verdict]').forEach(b=>b.addEventListener('click',()=>{const f=document.getElementById('bossFeedback'),n=bossIndex,v=b.dataset.verdict;f.className='boss-feedback';if(n<2){f.classList.add('warn');f.innerHTML='<b>Too early.</b> One cosmetic/build clue is not enough. Reveal at least the declared automotive feature before classifying.';return}if(v==='aaos'&&n>=2){f.classList.add('good');f.innerHTML='<b>Supported conclusion:</b> the evidence is consistent with an AAOS image. Keep the scope precise: this does not prove production vehicle integration, production security, or that the supplier image matches a final vehicle build.';setEvidence('classification');unlockBadge('classification');return}if(v==='insufficient'&&n<4){f.classList.add('good');f.innerHTML='<b>Reasonable caution.</b> You can state what the current clues support and request Car Service/VHAL evidence before making a stronger claim.';return}f.classList.add('warn');f.innerHTML='<b>Re-check the evidence.</b> Distinguish projection from embedded AAOS, and distinguish AAOS classification from production-readiness claims.';}));
+
+// Memory Garage matching.
+let selectedMemory=null;
+function memoryMatch(term,slot){if(!term||term.classList.contains('matched')||slot.classList.contains('correct'))return;if(term.dataset.key===slot.dataset.accept){term.classList.add('matched');term.classList.remove('selected');slot.classList.add('correct');slot.innerHTML=`<b>${term.textContent}</b> — ${slot.textContent}`;selectedMemory=null;const count=document.querySelectorAll('.memory-slot.correct').length;document.getElementById('memoryStatus').textContent=count===6?'Garage complete — six mental anchors reconstructed.':'Correct. Choose the next concept.';if(count===6){confetti();showToast('Memory Garage complete')}}else{slot.classList.add('wrong');setTimeout(()=>slot.classList.remove('wrong'),600);document.getElementById('memoryStatus').textContent='Not that role. Ask: what architectural problem does this term solve?'}}
+document.querySelectorAll('.memory-term').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.memory-term').forEach(x=>x.classList.remove('selected'));selectedMemory=t;t.classList.add('selected');document.getElementById('memoryStatus').textContent='Selected '+t.textContent+'. Now choose its role.'}));document.querySelectorAll('.memory-slot').forEach(s=>s.addEventListener('click',()=>memoryMatch(selectedMemory,s)));
+document.getElementById('resetMemory').addEventListener('click',()=>{selectedMemory=null;document.querySelectorAll('.memory-term').forEach(x=>x.classList.remove('selected','matched'));const labels={binder:'Local IPC between Android processes',auto:'Phone-powered projection experience',car:'Automotive framework services and policy',selinux:'Mandatory access-control boundary',aaos:'Android running directly on vehicle hardware',vhal:'Standardized vehicle-property abstraction'};document.querySelectorAll('.memory-slot').forEach(s=>{s.classList.remove('correct','wrong');s.textContent=labels[s.dataset.accept]});document.getElementById('memoryStatus').textContent='Select a concept.'});
+
+</script>
+</body>
+</html>

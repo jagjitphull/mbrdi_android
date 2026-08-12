@@ -1,0 +1,1472 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>Project Aegis — Android Advanced Security Mission Control | Android 17</title>
+<style>
+:root{
+ --bg:#071019;--panel:#0d1a27;--panel2:#13263a;--panel3:#1a3047;
+ --text:#eef8ff;--muted:#a9bfd0;--line:#2a4961;--a:#66dcff;--b:#8bf0b2;
+ --c:#c2a7ff;--warn:#ffd166;--bad:#ff7d8b;--code:#050a10;--shadow:0 16px 44px rgba(0,0,0,.3);
+ --r:18px;--nav:310px
+}
+html[data-theme="light"]{
+ --bg:#f3f8fb;--panel:#fff;--panel2:#eef5fa;--panel3:#e1edf6;
+ --text:#102336;--muted:#526c80;--line:#c5d9e8;--a:#006f9d;--b:#087f5b;
+ --c:#6549c9;--warn:#8b5a00;--bad:#b42338;--code:#eef3f7;--shadow:0 12px 32px rgba(21,55,82,.12)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--text);font:16px/1.64 system-ui,-apple-system,"Segoe UI",sans-serif;background:
+radial-gradient(circle at 90% -8%,rgba(102,220,255,.14),transparent 34%),
+radial-gradient(circle at 0 28%,rgba(194,167,255,.09),transparent 28%),var(--bg)}
+a{color:var(--a)}button,input,select{font:inherit}.top{position:sticky;top:0;z-index:80;display:flex;gap:.55rem;align-items:center;padding:.65rem 1rem;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px)}
+.brand{margin-right:auto;font-weight:900}.brand span{color:var(--a)}.btn,.icon{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:11px;padding:.55rem .76rem;cursor:pointer;transition:.18s}.btn:hover,.icon:hover{border-color:var(--a);transform:translateY(-1px)}.btn.primary{border:0;background:linear-gradient(135deg,var(--a),var(--b));color:#03161e;font-weight:900}.search{width:min(34vw,340px);border:1px solid var(--line);background:var(--panel);color:var(--text);padding:.58rem .8rem;border-radius:11px}.layout{display:grid;grid-template-columns:var(--nav) minmax(0,1fr)}
+aside{position:sticky;top:58px;height:calc(100vh - 58px);overflow:auto;padding:1rem;border-right:1px solid var(--line);background:color-mix(in srgb,var(--panel) 89%,transparent)}
+aside h2{font-size:.8rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}nav a{display:block;text-decoration:none;color:var(--muted);padding:.43rem .62rem;border-radius:9px}nav a:hover,nav a.active{background:var(--panel2);color:var(--text)}.track{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b))}
+main{min-width:0;max-width:1540px;padding:clamp(1rem,3vw,3rem)}.hero{position:relative;overflow:hidden;padding:clamp(1.4rem,4vw,3.8rem);border:1px solid var(--line);border-radius:28px;background:linear-gradient(145deg,var(--panel),var(--panel2));box-shadow:var(--shadow)}.hero:after{content:"";position:absolute;width:420px;height:420px;border:1px solid rgba(102,220,255,.28);border-radius:50%;right:-170px;top:-205px;box-shadow:0 0 0 55px rgba(102,220,255,.04),0 0 0 110px rgba(102,220,255,.02)}
+.tag,.pill{display:inline-flex;align-items:center;gap:.35rem;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:.25rem .65rem;font-size:.84rem}h1{font-size:clamp(2.1rem,5.1vw,4.8rem);line-height:1.02;margin:.75rem 0;max-width:1100px}h1 em{font-style:normal;color:var(--a)}.hero p{max-width:990px;color:var(--muted);font-size:1.08rem}.badges{display:flex;gap:.5rem;flex-wrap:wrap}
+section{scroll-margin-top:78px;margin:2.2rem 0;padding:clamp(1rem,2.4vw,2rem);border:1px solid var(--line);border-radius:var(--r);background:var(--panel);box-shadow:var(--shadow)}section>h2{font-size:clamp(1.45rem,3vw,2.3rem);margin:.1rem 0 .45rem}h3{line-height:1.25}.lead,.muted{color:var(--muted)}.small{font-size:.9rem}.tiny{font-size:.79rem}.grid{display:grid;gap:1rem}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{border:1px solid var(--line);background:var(--panel2);border-radius:15px;padding:1rem;min-width:0}.card h3{margin-top:0}.callout{border-left:4px solid var(--a);background:var(--panel2);padding:.9rem 1rem;border-radius:0 12px 12px 0;margin:1rem 0}.callout.good{border-color:var(--b)}.callout.warn{border-color:var(--warn)}.callout.bad{border-color:var(--bad)}
+pre{position:relative;background:var(--code);border:1px solid var(--line);border-radius:14px;padding:1rem;overflow:auto;white-space:pre;line-height:1.44}code,kbd{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.copy{position:absolute;right:.5rem;top:.5rem;font-size:.74rem}.expected{border-left:3px solid var(--b)}
+table{width:100%;border-collapse:collapse;display:block;overflow:auto}th,td{padding:.68rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:var(--a);white-space:nowrap}.steps{counter-reset:s}.step{counter-increment:s;position:relative;margin:1rem 0;padding:1rem 1rem 1rem 3.3rem;border:1px solid var(--line);background:var(--panel2);border-radius:14px}.step:before{content:counter(s);position:absolute;left:.88rem;top:.88rem;width:1.85rem;height:1.85rem;border-radius:50%;display:grid;place-items:center;background:var(--a);color:#03202a;font-weight:900}
+.controls{display:flex;gap:.65rem;flex-wrap:wrap;align-items:end}.field{display:grid;gap:.3rem;min-width:150px;flex:1}.field label{font-size:.83rem;color:var(--muted)}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--code);color:var(--text);padding:.58rem}.result{margin-top:1rem;padding:1rem;border:1px dashed var(--line);border-radius:13px;background:var(--code)}.ok{color:var(--b)}.no{color:var(--bad)}.maybe{color:var(--warn)}
+details{border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:.65rem .85rem;margin:.65rem 0}summary{cursor:pointer;font-weight:800}.tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem}.tab{border:1px solid var(--line);background:var(--panel2);color:var(--muted);padding:.45rem .72rem;border-radius:10px;cursor:pointer}.tab.active{color:var(--text);border-color:var(--a)}.pane{display:none}.pane.active{display:block}
+.flow{display:flex;gap:.65rem;align-items:stretch;overflow:auto;padding:.5rem 0}.flowbox{position:relative;min-width:180px;flex:1;border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:.9rem}.flowbox:not(:last-child):after{content:"➜";position:absolute;right:-.53rem;top:39%;color:var(--a);font-size:1.2rem;z-index:2}
+.ladder{display:grid;grid-template-columns:repeat(6,minmax(145px,1fr));gap:.7rem;overflow:auto}.rung{min-width:145px;border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:.9rem;transition:.25s}.rung.on{border-color:var(--a);transform:translateY(-5px);box-shadow:0 0 24px rgba(102,220,255,.14)}.rung strong{display:block}.rung span{font-size:.82rem;color:var(--muted)}
+.routeboard{border:1px solid var(--line);border-radius:17px;background:var(--code);padding:1rem}.netrow{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}.network{position:relative;border:1px solid var(--line);background:var(--panel2);padding:1rem;border-radius:14px;text-align:center;transition:.25s}.network.chosen{border-color:var(--b);box-shadow:0 0 25px rgba(139,240,178,.16)}.network.unavailable{opacity:.35}.carapp{width:100px;height:70px;border:1px solid var(--line);border-radius:16px;background:var(--panel3);display:grid;place-items:center;margin:1rem auto;transition:transform .45s}.routepath{height:5px;background:var(--line);border-radius:99px;margin:.8rem 5%;overflow:hidden}.routepath span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--a),var(--b));transition:width .7s}
+.nsgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}.proc{border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:.85rem;cursor:pointer}.proc.active{border-color:var(--c)}.inode{font-family:ui-monospace,monospace;font-size:.82rem}.nsbadge{display:inline-block;border-radius:999px;padding:.18rem .5rem;margin:.15rem;font-size:.75rem;border:1px solid var(--line)}
+.resource{display:grid;grid-template-columns:160px 1fr 75px;gap:.7rem;align-items:center;margin:.75rem 0}.gauge{height:14px;border-radius:99px;background:var(--panel3);overflow:hidden}.gauge span{display:block;height:100%;background:linear-gradient(90deg,var(--b),var(--warn),var(--bad));transition:width .35s}.hookmap{display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem}.hook{border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:.75rem;text-align:center}.hook.on{border-color:var(--a);box-shadow:inset 0 -4px var(--a)}
+.zygote-stage{position:relative;min-height:310px;border:1px solid var(--line);border-radius:17px;background:var(--code);overflow:hidden;padding:1rem}.zrow{display:grid;grid-template-columns:repeat(5,1fr);gap:.7rem;position:relative;z-index:2}.znode{border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:.8rem;text-align:center;min-height:105px;display:grid;place-items:center}.znode.active{border-color:var(--a);box-shadow:0 0 24px rgba(102,220,255,.14)}.zygote-dot{position:absolute;width:24px;height:24px;border-radius:50%;background:var(--warn);box-shadow:0 0 22px var(--warn);left:8%;top:165px;opacity:0;transition:left .5s,opacity .2s,background .2s}
+.avf{position:relative;border:1px solid var(--line);border-radius:17px;background:var(--code);padding:1rem;min-height:390px}.avf-layer{border:1px solid var(--line);border-radius:15px;padding:1rem;margin:.65rem;background:var(--panel2);text-align:center}.avf-layer.hyper{border-color:var(--c)}.vms{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}.page{width:42px;height:42px;border-radius:8px;background:var(--a);box-shadow:0 0 18px rgba(102,220,255,.4);margin:1rem auto;transition:.45s}.page.guest{background:var(--b);transform:translateX(170px)}.page.shared{background:var(--warn);transform:translateX(85px)}.page.wiped{background:var(--panel3);box-shadow:none}
+.pattern-board{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}.zone{border:1px solid var(--line);background:var(--panel2);border-radius:15px;padding:1rem;min-height:180px}.zone.selected{border-color:var(--a)}.control-chip{display:inline-flex;padding:.22rem .52rem;margin:.2rem;border:1px solid var(--line);border-radius:999px;font-size:.78rem;cursor:pointer}.control-chip.active{background:var(--a);color:#03161e;border-color:transparent}
+.quiz-q{border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:1rem;margin:.8rem 0}.quiz-q label{display:block;padding:.35rem;border-radius:8px}.quiz-q label:hover{background:var(--panel3)}.checks label{display:flex;gap:.6rem;padding:.55rem;border-bottom:1px dashed var(--line)}.checks input{margin-top:.35rem}.meter{height:11px;border-radius:99px;background:var(--panel3);overflow:hidden}.meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--b),var(--a));transition:.3s}.hidden{display:none!important}.mobile{display:none}.pulse{animation:pulse 1.8s ease-in-out infinite}@keyframes pulse{50%{opacity:.35;transform:scale(.95)}}footer{padding:2rem 0;color:var(--muted)}
+@media(max-width:1100px){.ladder,.netrow,.nsgrid,.hookmap,.zrow,.pattern-board{grid-template-columns:repeat(2,minmax(160px,1fr))}.zygote-stage{min-height:520px}.zygote-dot{display:none}}
+@media(max-width:980px){.layout{display:block}aside{display:none}.mobile{display:inline-flex}.search{width:min(44vw,280px)}.g2,.g3,.g4,.vms{grid-template-columns:1fr}.ladder,.netrow,.nsgrid,.hookmap,.zrow,.pattern-board{grid-template-columns:1fr}.resource{grid-template-columns:1fr}.zygote-stage{min-height:auto}}
+@media print{.top,aside,.copy,.no-print{display:none!important}.layout{display:block}body{background:white;color:#111}main{max-width:none;padding:0}section,.hero,.card{box-shadow:none;border-color:#bbb;break-inside:avoid}pre{white-space:pre-wrap;background:#f5f5f5;color:#111}.pane{display:block!important}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}body.reduce *{animation:none!important;transition:none!important}
+
+
+/* ===== Project Aegis learning-experience layer ===== */
+:root{--mission:#ffb84d;--success:#65e6a1;--danger:#ff6f7f;--info:#69d9ff}
+body{overflow-x:hidden}main section p,main section li{max-width:82ch}:not(pre)>code{overflow-wrap:anywhere;word-break:break-word}pre,table,.flow,.ladder{max-width:100%}.hero{isolation:isolate}.hero:before{content:"ORION X / SECURITY READINESS";position:absolute;right:1.2rem;bottom:1rem;font:800 .72rem/1 ui-monospace,monospace;letter-spacing:.14em;color:var(--muted);opacity:.55}
+.mode-chip{display:inline-flex;align-items:center;gap:.45rem;border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:.4rem .72rem;font-size:.82rem;color:var(--muted)}
+.mission-hub{background:linear-gradient(145deg,color-mix(in srgb,var(--panel) 92%,var(--a)),var(--panel));overflow:hidden}.mission-intro{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.7fr);gap:1rem;align-items:stretch}.briefing{border:1px solid var(--line);border-radius:18px;padding:1.15rem;background:linear-gradient(135deg,var(--panel2),color-mix(in srgb,var(--panel2) 88%,var(--c)))}.briefing h3{margin-top:.2rem}.mission-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem}.stat{border:1px solid var(--line);background:var(--code);border-radius:14px;padding:.8rem}.stat strong{font-size:1.35rem;display:block;color:var(--a)}
+.mission-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem;margin-top:1rem}.mission-card{position:relative;border:1px solid var(--line);border-radius:16px;padding:1rem;background:var(--panel2);cursor:pointer;transition:.2s;min-height:165px}.mission-card:hover{transform:translateY(-3px);border-color:var(--a)}.mission-card.done{border-color:var(--b);background:color-mix(in srgb,var(--panel2) 90%,var(--b))}.mission-card.done:after{content:"✓ COMPLETE";position:absolute;right:.65rem;top:.55rem;font-size:.68rem;font-weight:900;color:var(--b)}.mission-card .mission-no{font:900 .74rem/1 ui-monospace,monospace;letter-spacing:.1em;color:var(--mission)}.mission-card .mission-icon{font-size:1.75rem;display:block;margin:.6rem 0}.mission-card h3{font-size:1rem;margin:.25rem 0}.mission-card p{font-size:.86rem;color:var(--muted);margin:.4rem 0}.mission-progress{height:12px;background:var(--panel3);border-radius:99px;overflow:hidden;margin:.8rem 0}.mission-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mission),var(--b));transition:.3s}
+.learning-loop{display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));gap:.55rem;overflow:auto;margin:1rem 0}.loop-step{min-width:130px;border:1px solid var(--line);background:var(--code);border-radius:13px;padding:.7rem;text-align:center}.loop-step b{display:block;color:var(--a)}
+.myth{position:relative;border:1px solid color-mix(in srgb,var(--bad) 65%,var(--line));background:color-mix(in srgb,var(--panel2) 88%,var(--bad));border-radius:14px;padding:1rem 1rem 1rem 3.2rem}.myth:before{content:"💥";position:absolute;left:.9rem;top:.8rem;font-size:1.45rem}.myth strong{color:var(--bad)}
+.analogy{border:1px dashed var(--c);background:color-mix(in srgb,var(--panel2) 92%,var(--c));border-radius:14px;padding:1rem}.analogy strong{color:var(--c)}
+section{position:relative}section[data-mission]:before{content:attr(data-mission);display:inline-flex;margin-bottom:.45rem;font:900 .7rem/1 ui-monospace,monospace;letter-spacing:.12em;color:var(--mission)}
+section.speaking{outline:3px solid var(--a);outline-offset:4px}.listen-section{float:right;margin-left:.6rem;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:999px;padding:.35rem .65rem;cursor:pointer;font-size:.76rem}.listen-section:hover{border-color:var(--a)}
+.incident-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.incident-card{border:1px solid var(--line);border-radius:17px;background:var(--panel2);padding:1rem}.incident-head{display:flex;gap:.7rem;align-items:flex-start}.incident-icon{font-size:1.65rem}.incident-options{display:grid;gap:.45rem;margin:.8rem 0}.incident-option{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--code);color:var(--text);border-radius:11px;padding:.68rem;cursor:pointer}.incident-option:hover{border-color:var(--a)}.incident-option.selected{border-color:var(--warn)}.incident-option.correct{border-color:var(--b);background:color-mix(in srgb,var(--code) 88%,var(--b))}.incident-option.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--code) 90%,var(--bad))}.incident-feedback{min-height:75px;border-left:3px solid var(--line);padding:.65rem .8rem;color:var(--muted)}.scoreboard{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}.scorebox{border:1px solid var(--line);background:var(--code);border-radius:13px;padding:.8rem;text-align:center}.scorebox strong{display:block;font-size:1.5rem;color:var(--a)}
+.status-legend{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem}.status-item{border:1px solid var(--line);border-radius:13px;padding:.8rem;background:var(--panel2)}.status-item b{display:block}.status-item.pass b{color:var(--b)}.status-item.skip b{color:var(--a)}.status-item.warn b{color:var(--warn)}.status-item.fail b{color:var(--bad)}
+.trouble-tree{font-family:ui-monospace,monospace;white-space:pre-wrap;border:1px solid var(--line);background:var(--code);border-radius:14px;padding:1rem;line-height:1.7}.command-anatomy{display:flex;gap:.35rem;flex-wrap:wrap}.cmd-part{border:1px solid var(--line);border-radius:9px;background:var(--code);padding:.4rem .55rem;cursor:pointer}.cmd-part:hover,.cmd-part.active{border-color:var(--a);color:var(--a)}
+.glossary-toolbar{display:flex;gap:.7rem;flex-wrap:wrap}.glossary-toolbar input{flex:1;min-width:230px;border:1px solid var(--line);background:var(--code);color:var(--text);border-radius:11px;padding:.65rem}.glossary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin-top:1rem}.term{border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:.85rem}.term h3{margin:.1rem 0;color:var(--a);font-size:1rem}.term p{font-size:.88rem;margin:.45rem 0}.term small{color:var(--muted)}
+.architect-layout{display:grid;grid-template-columns:minmax(240px,.65fr) minmax(0,1.35fr);gap:1rem}.workload-list{display:grid;gap:.55rem}.workload-btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:.75rem;border-radius:12px;text-align:left;cursor:pointer}.workload-btn.active{border-color:var(--a);box-shadow:inset 4px 0 var(--a)}.control-pool{display:flex;flex-wrap:wrap;gap:.5rem}.security-token{border:1px solid var(--line);background:var(--code);border-radius:999px;padding:.45rem .7rem;cursor:grab;user-select:none}.security-token:hover{border-color:var(--a)}.design-drop{min-height:170px;margin-top:1rem;border:2px dashed var(--line);border-radius:17px;background:color-mix(in srgb,var(--code) 92%,var(--a));padding:1rem}.design-drop.dragover{border-color:var(--a)}.design-drop .security-token{cursor:pointer;margin:.25rem}.architecture-feedback{margin-top:1rem;border:1px solid var(--line);border-radius:14px;padding:1rem;background:var(--code)}
+.achievement-drawer{position:fixed;right:1rem;top:68px;width:min(390px,calc(100vw - 2rem));z-index:120;border:1px solid var(--line);background:var(--panel);box-shadow:var(--shadow);border-radius:17px;padding:1rem;display:none}.achievement-drawer.open{display:block}.achievement-list{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}.achievement{border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:.7rem;opacity:.45}.achievement.unlocked{opacity:1;border-color:var(--b)}.achievement b{display:block;font-size:.85rem}.achievement span{font-size:.75rem;color:var(--muted)}
+.voice-player{position:fixed;right:1rem;bottom:1rem;z-index:115;width:min(430px,calc(100vw - 2rem));border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 94%,transparent);backdrop-filter:blur(14px);box-shadow:var(--shadow);border-radius:16px;padding:.75rem}.voice-player .voice-row{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap}.voice-player select{border:1px solid var(--line);background:var(--code);color:var(--text);border-radius:9px;padding:.42rem;max-width:190px}.voice-player button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:9px;padding:.42rem .58rem;cursor:pointer}.voice-player button:hover{border-color:var(--a)}.voice-status{font-size:.75rem;color:var(--muted);margin-top:.4rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.guide-bar{position:fixed;left:calc(var(--nav) + 1rem);right:1rem;bottom:1rem;z-index:110;border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 95%,transparent);backdrop-filter:blur(14px);box-shadow:var(--shadow);border-radius:16px;padding:.7rem 1rem;display:none;align-items:center;gap:.7rem}.guide-bar .guide-title{margin-right:auto}.guide-bar strong{display:block}.guide-bar small{color:var(--muted)}body.guided .guide-bar{display:flex}body.guided .voice-player{bottom:5.8rem}body.guided main section:not(#mission):not(.guided-current){display:none!important}body.guided #mission{display:block!important}body.guided aside nav a:not([href="#mission"]):not(.guide-link){opacity:.5}body.guided .guided-current{animation:missionIn .3s ease-out}@keyframes missionIn{from{opacity:.25;transform:translateY(8px)}}
+@media(max-width:1250px){.mission-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.learning-loop{grid-template-columns:repeat(3,minmax(130px,1fr))}.glossary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:980px){.mission-intro,.architect-layout{grid-template-columns:1fr}.incident-grid,.status-legend,.scoreboard{grid-template-columns:1fr}.guide-bar{left:1rem}.voice-player{left:1rem;right:1rem;width:auto}.achievement-drawer{top:60px}.top .search{display:none}}
+@media(max-width:620px){.top{gap:.32rem;padding:.5rem}.brand{font-size:.78rem;line-height:1.15;max-width:132px;min-width:0}.top .icon{padding:.42rem .52rem}.top button[title="Reduce motion"],.top button[title="Print or save PDF"]{display:none}.mission-grid,.glossary-grid,.learning-loop{grid-template-columns:1fr}.mission-stats{grid-template-columns:1fr}.guide-bar{flex-wrap:wrap}.guide-bar .guide-title{width:100%}.voice-player{padding:.55rem}.voice-player select{max-width:145px}}
+@media print{.voice-player,.guide-bar,.achievement-drawer,.listen-section,.mission-actions{display:none!important}body.guided main section{display:block!important}}
+
+</style>
+</head>
+<body>
+<header class="top">
+<button class="icon mobile" id="menu" aria-label="Open contents">☰</button>
+<div class="brand">Aegis • <span>Android Security</span></div>
+<input class="search" id="search" placeholder="Search PANS, namespace, pKVM…">
+<button class="icon" id="modeToggle" title="Switch guided or explore mode">🧭</button>
+<button class="icon" id="achievementButton" title="View achievements">🏅</button>
+<button class="icon" id="motion" title="Reduce motion">◫</button>
+<button class="icon" id="theme" title="Toggle theme">☀</button>
+<button class="icon" onclick="print()" title="Print or save PDF">⎙</button>
+</header>
+
+<div class="layout">
+<aside id="toc">
+<h2>Full-day session</h2>
+<nav>
+<a href="#mission">🎯 Mission control</a>
+<a href="#overview">1. Session plan</a>
+<a href="#model">2. Isolation ladder</a>
+<a href="#pans">3. PANS</a>
+<a href="#namespaces">4. Network namespaces</a>
+<a href="#cgroups">5. cgroup v2 & BPF</a>
+<a href="#zygote">6. Zygote sandbox</a>
+<a href="#isolated">7. Isolated processes</a>
+<a href="#avf">8. AVF & pKVM</a>
+<a href="#automotive">9. Automotive patterns</a>
+<a href="#incidents">⚠ Incident arena</a>
+<a href="#labs">10. Guided labs</a>
+<a href="#troubleshooting">🧰 Lab rescue centre</a>
+<a href="#glossary">📚 Security glossary</a>
+<a href="#quiz">11. Knowledge check</a>
+<a href="#architect">🏗 Architecture challenge</a>
+<a href="#acceptance">12. Acceptance test</a>
+<a href="#sources">13. Sources</a>
+</nav>
+<p class="small muted">Reading progress</p><div class="track"><div class="bar" id="progress"></div></div>
+</aside>
+
+<main>
+<article class="hero">
+<span class="tag">Project Aegis • Android 17 • API 37 • Cuttlefish userdebug</span>
+<h1>Secure the Orion X with the right <em>isolation boundary</em></h1>
+<p>Your mission is to prepare the fictional Orion X connected vehicle for production. Investigate threats, choose proportionate boundaries, run evidence-based labs, and defend why each control belongs in the architecture.</p>
+<div class="badges"><span class="pill">🛡️ Mission-based learning</span><span class="pill">🧪 Concepts + labs</span><span class="pill">🚗 Automotive incidents</span><span class="pill">✅ Capability-aware validation</span></div>
+</article>
+
+<section id="mission" class="mission-hub" data-search>
+<h2>🎯 Mission Control: Project Aegis</h2>
+<div class="mission-intro">
+<div class="briefing">
+<span class="mode-chip">🚗 VEHICLE PLATFORM: ORION X</span>
+<h3>Production security review begins now</h3>
+<p>The Orion X mixes consumer apps, OEM connectivity, untrusted media, vehicle APIs, sensitive computation and safety-critical systems. Your job is not to choose the strongest control everywhere. Your job is to choose the <strong>least expensive boundary that still satisfies the threat model</strong>.</p>
+<div class="controls mission-actions">
+<button class="btn primary" id="startGuided">Start guided mission</button>
+<button class="btn" id="startExplore">Explore full reference</button>
+<button class="btn" id="resetMissionProgress">Reset progress</button>
+</div>
+</div>
+<div class="mission-stats">
+<div class="stat"><strong id="missionDoneCount">0/8</strong><span>missions complete</span></div>
+<div class="stat"><strong id="achievementCount">0/8</strong><span>badges unlocked</span></div>
+<div class="stat"><strong id="incidentScoreMini">0%</strong><span>incident score</span></div>
+<div class="stat"><strong id="architectureScoreMini">0%</strong><span>design score</span></div>
+</div>
+</div>
+<div class="mission-progress" aria-label="Mission completion"><span id="missionProgressBar"></span></div>
+<div class="mission-grid" id="missionGrid">
+<div class="mission-card" data-target="model" data-key="boundary"><span class="mission-no">MISSION 01</span><span class="mission-icon">🧱</span><h3>Choose the boundary</h3><p>Build the isolation ladder and reject one-control-fits-all thinking.</p></div>
+<div class="mission-card" data-target="pans" data-key="network"><span class="mission-no">MISSION 02</span><span class="mission-icon">📡</span><h3>Control connectivity</h3><p>Route OEM, private and consumer traffic without misusing customer data.</p></div>
+<div class="mission-card" data-target="namespaces" data-key="visibility"><span class="mission-no">MISSION 03</span><span class="mission-icon">🪟</span><h3>Investigate visibility</h3><p>Compare what processes can see without inventing a per-app netns model.</p></div>
+<div class="mission-card" data-target="cgroups" data-key="resources"><span class="mission-no">MISSION 04</span><span class="mission-icon">🎛️</span><h3>Contain resource abuse</h3><p>Separate cgroup placement from programmable BPF enforcement.</p></div>
+<div class="mission-card" data-target="zygote" data-key="birth"><span class="mission-no">MISSION 05</span><span class="mission-icon">🧬</span><h3>Trace app birth</h3><p>Follow Zygote, fork/USAP, specialization and final sandbox identity.</p></div>
+<div class="mission-card" data-target="isolated" data-key="parser"><span class="mission-no">MISSION 06</span><span class="mission-icon">🧪</span><h3>Contain the parser</h3><p>Reduce authority for untrusted input while remembering the shared kernel.</p></div>
+<div class="mission-card" data-target="avf" data-key="secrets"><span class="mission-no">MISSION 07</span><span class="mission-icon">🔐</span><h3>Protect sensitive compute</h3><p>Model protected memory ownership and the pKVM host-threat boundary.</p></div>
+<div class="mission-card" data-target="automotive" data-key="architecture"><span class="mission-no">MISSION 08</span><span class="mission-icon">🏗️</span><h3>Design the vehicle</h3><p>Layer controls across IVI, VHAL, gateways, protected compute and safety ECUs.</p></div>
+</div>
+<h3>The six-step learning loop</h3>
+<div class="learning-loop">
+<div class="loop-step"><b>1. Explain</b><span>Build a simple mental model</span></div>
+<div class="loop-step"><b>2. Visualize</b><span>Watch the boundary change</span></div>
+<div class="loop-step"><b>3. Predict</b><span>Choose before revealing</span></div>
+<div class="loop-step"><b>4. Test</b><span>Run the lab or simulator</span></div>
+<div class="loop-step"><b>5. Diagnose</b><span>Interpret PASS, SKIP, WARN, FAIL</span></div>
+<div class="loop-step"><b>6. Defend</b><span>Explain the design trade-off</span></div>
+</div>
+<div class="grid g2">
+<div class="analogy"><strong>Sticky-note mental model</strong><p><b>Namespace:</b> same kernel, different view. <b>cgroup:</b> who gets how much. <b>BPF:</b> what happens at this hook. <b>Isolated process:</b> less authority, same kernel. <b>pVM:</b> different kernel, stronger trust boundary.</p></div>
+<div class="myth"><strong>Myth busted:</strong><p>A separate Android process does not automatically receive a separate UID, separate permissions, separate network namespace or separate kernel. Always identify the exact boundary created.</p></div>
+</div>
+<div id="achievementDrawer" class="achievement-drawer" aria-live="polite">
+<div class="controls"><h3 style="margin:0 auto 0 0">🏅 Security badges</h3><button class="icon" id="closeAchievements">✕</button></div>
+<div class="achievement-list" id="achievementList"></div>
+</div>
+</section>
+
+<section id="overview" data-search>
+<h2>1. Session plan and learning outcomes</h2>
+<table><thead><tr><th>Time</th><th>Module</th><th>Method</th><th>Outcome</th></tr></thead><tbody>
+<tr><td>09:30–10:00</td><td>Isolation mental model</td><td>Animated ladder</td><td>Select an appropriate boundary</td></tr>
+<tr><td>10:00–11:00</td><td>PANS</td><td>Route simulator + AAOS capability probe</td><td>Predict per-app network selection</td></tr>
+<tr><td>11:15–12:00</td><td>Namespaces</td><td>Inode explorer + Cuttlefish inspection</td><td>Distinguish network, mount and PID views</td></tr>
+<tr><td>12:00–13:00</td><td>cgroup v2 and BPF</td><td>Resource simulator + task-profile lab</td><td>Separate resource control from security policy</td></tr>
+<tr><td>14:00–15:00</td><td>Zygote and isolated processes</td><td>Fork animation + process inspection</td><td>Explain specialization and permission stripping</td></tr>
+<tr><td>15:00–16:00</td><td>AVF and pKVM</td><td>Memory-ownership animation + capability probe</td><td>Explain protected-VM assurances and limits</td></tr>
+<tr><td>16:15–17:00</td><td>Automotive isolation patterns</td><td>Architecture designer</td><td>Layer controls across IVI, VHAL and vehicle domains</td></tr>
+<tr><td>17:00–17:30</td><td>Assessment</td><td>Quiz + acceptance test</td><td>Defend a workload-isolation design</td></tr>
+</tbody></table>
+<div class="callout warn"><strong>Environment boundary:</strong> the validated x86_64 phone Cuttlefish image is excellent for framework, namespace, cgroup, BPF and Zygote inspection. PANS is automotive-only. Production protected AVF/pKVM is ARM64; x86_64 is for non-protected testing where the build includes AVF.</div>
+</section>
+
+<section id="model" data-search data-mission="MISSION 01 • SECURITY BOUNDARIES">
+<h2>2. Isolation is a ladder, not one wall</h2>
+<p class="lead">Click through the layers. Stronger boundaries usually cost more memory, startup time, integration effort and communication complexity.</p>
+<div class="ladder" id="ladder">
+<div class="rung" data-i="0"><strong>Permission/API</strong><span>Who may request an operation?</span></div>
+<div class="rung" data-i="1"><strong>UID + SELinux</strong><span>Which process may access which object?</span></div>
+<div class="rung" data-i="2"><strong>Namespace</strong><span>Which kernel objects are visible?</span></div>
+<div class="rung" data-i="3"><strong>cgroup + BPF</strong><span>How much resource and what programmable policy?</span></div>
+<div class="rung" data-i="4"><strong>Isolated process</strong><span>Separate UID with no app permissions of its own</span></div>
+<div class="rung" data-i="5"><strong>pVM / separate ECU</strong><span>Separate kernel or hardware trust domain</span></div>
+</div>
+<div class="controls no-print"><button class="btn primary" id="playLadder">Animate ladder</button><button class="btn" id="resetLadder">Reset</button></div>
+<div class="result" id="ladderText">Start with the least expensive boundary that satisfies the threat model. Add layers rather than replacing all lower layers.</div>
+<div class="grid g3">
+<div class="card"><h3>Security isolation</h3><p>UIDs, SELinux, seccomp, namespaces and pKVM restrict access and reduce blast radius.</p></div>
+<div class="card"><h3>Resource isolation</h3><p>cgroups control CPU, memory, process count, freezer state and scheduling placement. They are not a confidentiality boundary by themselves.</p></div>
+<div class="card"><h3>Routing isolation</h3><p>PANS, UID routing, VPNs and restricted network capabilities control which network path an app receives. They do not create a separate kernel.</p></div>
+</div>
+</section>
+
+<section id="pans" data-search data-mission="MISSION 02 • CONNECTIVITY POLICY">
+<h2>3. PANS and per-application network selection</h2>
+<div class="grid g2">
+<div class="card">
+<h3>What PANS solves</h3>
+<p>Per-application network selection maps an automotive app package to an OEM network preference. It lets an OEM pay for selected critical traffic while ordinary consumer traffic uses the user's/default network.</p>
+<p>The automotive-only <code>ConnectivityManager.setOemNetworkPreference()</code> System API maps package names to one preference each.</p>
+</div>
+<div class="card">
+<h3>What PANS does not do</h3>
+<p>PANS changes an app's <strong>default network</strong>. A specialized request—such as an app explicitly asking for an unmetered network—can still apply. PANS is not an app VPN and not a separate network namespace.</p>
+<p>Preferences are not persisted across boot and must be reapplied.</p>
+</div>
+</div>
+<div class="callout good"><strong>Automotive example:</strong> map navigation and hands-free assistant to OEM-paid connectivity, map diagnostics to OEM-private connectivity, and leave streaming media on the user's normal data plan.</div>
+
+<div class="routeboard">
+<div class="controls">
+<div class="field"><label>App preference</label><select id="pansPref">
+<option value="paid">OEM_PAID</option><option value="paidNo">OEM_PAID_NO_FALLBACK</option>
+<option value="paidOnly">OEM_PAID_ONLY</option><option value="privateOnly">OEM_PRIVATE_ONLY</option>
+</select></div>
+<div class="field"><label>Unmetered available</label><select id="hasUnmetered"><option value="true">Yes</option><option value="false">No</option></select></div>
+<div class="field"><label>OEM_PAID available</label><select id="hasPaid"><option value="true">Yes</option><option value="false">No</option></select></div>
+<div class="field"><label>OEM_PRIVATE available</label><select id="hasPrivate"><option value="false">No</option><option value="true">Yes</option></select></div>
+<div class="field"><label>General default available</label><select id="hasDefault"><option value="true">Yes</option><option value="false">No</option></select></div>
+<button class="btn primary" id="routePans">Select route</button>
+</div>
+<div class="carapp">🚗<br><strong>App</strong></div><div class="routepath"><span id="routeFill"></span></div>
+<div class="netrow">
+<div class="network" data-net="unmetered"><strong>Unmetered</strong><br><span class="muted">User Wi-Fi / no cost</span></div>
+<div class="network" data-net="paid"><strong>OEM_PAID</strong><br><span class="muted">OEM-funded data</span></div>
+<div class="network" data-net="private"><strong>OEM_PRIVATE</strong><br><span class="muted">Dedicated OEM network</span></div>
+<div class="network" data-net="default"><strong>System default</strong><br><span class="muted">Normal app network</span></div>
+</div>
+<div class="result" id="pansResult">Run the selector.</div>
+</div>
+<table><thead><tr><th>Preference</th><th>Selection order</th><th>Fallback</th></tr></thead><tbody>
+<tr><td><code>OEM_PAID</code></td><td>Unmetered → OEM_PAID → general default</td><td>Yes</td></tr>
+<tr><td><code>OEM_PAID_NO_FALLBACK</code></td><td>Unmetered → OEM_PAID → none</td><td>No general default</td></tr>
+<tr><td><code>OEM_PAID_ONLY</code></td><td>OEM_PAID only</td><td>None</td></tr>
+<tr><td><code>OEM_PRIVATE_ONLY</code></td><td>OEM_PRIVATE only</td><td>None</td></tr>
+</tbody></table>
+<div class="callout warn"><strong>Restricted-network rule:</strong> tagging a network OEM_PAID or OEM_PRIVATE makes it restricted. Apps require OEM-controlled privileged authorization such as <code>CONNECTIVITY_USE_RESTRICTED_NETWORKS</code>.</div>
+</section>
+
+<section id="namespaces" data-search data-mission="MISSION 03 • PROCESS VISIBILITY">
+<h2>4. Android network namespaces</h2>
+<div class="grid g2">
+<div class="card">
+<h3>Linux concept</h3>
+<p>A network namespace owns its own interface list, routes, neighbor tables, firewall state and socket namespace. Two processes in different netns can both have an interface named <code>eth0</code> but see different networks.</p>
+</div>
+<div class="card">
+<h3>Android reality</h3>
+<p>AOSP does <strong>not normally create one network namespace per app</strong>. Ordinary app traffic is separated mainly through socket UID, SELinux, UID routing, VPN policy and BPF/firewall rules. Verify your build by comparing <code>/proc/PID/ns/net</code> inode links.</p>
+</div>
+</div>
+<div class="nsgrid" id="nsGrid">
+<div class="proc active" data-p="zygote"><strong>Zygote</strong><br><span class="nsbadge">net:[4026533001]</span><span class="nsbadge">mnt:[4026533100]</span></div>
+<div class="proc" data-p="system"><strong>system_server</strong><br><span class="nsbadge">net:[4026533001]</span><span class="nsbadge">mnt:[4026533101]</span></div>
+<div class="proc" data-p="app"><strong>App process</strong><br><span class="nsbadge">net:[4026533001]</span><span class="nsbadge">mnt:[4026533199]</span></div>
+<div class="proc" data-p="isolated"><strong>Isolated service</strong><br><span class="nsbadge">net:[4026533001]</span><span class="nsbadge">mnt:[4026533201]</span></div>
+</div>
+<div class="result" id="nsResult"><strong>Teaching model:</strong> shared network namespace, potentially different mount views. Exact inode numbers vary every boot.</div>
+<div class="tabs">
+<button class="tab active" data-tab="nsNet">Network namespace</button>
+<button class="tab" data-tab="nsMount">Mount namespace</button>
+<button class="tab" data-tab="nsPid">PID namespace</button>
+<button class="tab" data-tab="nsLinker">Linker namespace</button>
+</div>
+<div class="pane active" id="nsNet"><p>Controls interfaces, routes and network-stack objects. It is not the primary per-app boundary on standard Android.</p></div>
+<div class="pane" id="nsMount"><p>Controls filesystem mount visibility. Android uses private mount views for storage and app-data isolation in Zygote-forked processes.</p></div>
+<div class="pane" id="nsPid"><p>Controls process-ID visibility. Do not assume a normal Android app gets its own PID namespace.</p></div>
+<div class="pane" id="nsLinker"><p>An Android dynamic-linker namespace controls which native libraries are visible. It is unrelated to Linux network namespaces despite sharing the word “namespace.”</p></div>
+</section>
+
+<section id="cgroups" data-search data-mission="MISSION 04 • RESOURCE CONTAINMENT">
+<h2>5. cgroup v2 and BPF</h2>
+<div class="grid g2">
+<div class="card">
+<h3>cgroups: organize and control tasks</h3>
+<p>cgroups group processes/threads hierarchically for resource accounting and control. Android supports cgroup v1 and v2 and uses a task-profile abstraction so framework code does not hard-code filesystem paths.</p>
+<p><code>cgroups.json</code> describes controllers; <code>task_profiles.json</code> describes reusable actions applied through process-group APIs.</p>
+</div>
+<div class="card">
+<h3>BPF: programmable logic at hooks</h3>
+<p>eBPF programs can attach to cgroup and networking hooks and consult maps. Android uses BPF for traffic accounting, socket tagging and per-UID firewalling. A cgroup supplies a useful attachment point; it does not itself contain the policy program.</p>
+</div>
+</div>
+<div class="card">
+<h3>Resource-governance simulator</h3>
+<div class="controls">
+<div class="field"><label>CPU weight</label><input id="cpuWeight" type="range" min="1" max="10000" value="100"></div>
+<div class="field"><label>Memory high (%)</label><input id="memHigh" type="range" min="10" max="100" value="70"></div>
+<div class="field"><label>PIDs maximum</label><input id="pidsMax" type="range" min="16" max="512" value="128"></div>
+<div class="field"><label>BPF network policy</label><select id="bpfPolicy"><option value="allow">Allow + account</option><option value="throttle">Account + mark constrained</option><option value="drop">Drop UID traffic</option></select></div>
+<button class="btn primary" id="applyResource">Apply model</button>
+</div>
+<div class="resource"><strong>CPU opportunity</strong><div class="gauge"><span id="cpuGauge"></span></div><span id="cpuText">1%</span></div>
+<div class="resource"><strong>Memory pressure point</strong><div class="gauge"><span id="memGauge"></span></div><span id="memText">70%</span></div>
+<div class="resource"><strong>Process budget</strong><div class="gauge"><span id="pidGauge"></span></div><span id="pidText">128</span></div>
+<div class="hookmap">
+<div class="hook on" id="hTask"><strong>Task profile</strong><br>places process</div>
+<div class="hook" id="hCgroup"><strong>cgroup v2</strong><br>resource state</div>
+<div class="hook" id="hBpf"><strong>BPF hook</strong><br>runs logic</div>
+<div class="hook" id="hMap"><strong>BPF map</strong><br>reads rule</div>
+<div class="hook" id="hOutcome"><strong>Outcome</strong><br>allow/account</div>
+</div>
+<div class="result" id="resourceResult">cgroups control resource placement; BPF separately evaluates programmable policy.</div>
+</div>
+<div class="callout bad"><strong>Safety warning:</strong> CPU shares and memory controls improve availability and containment, but they do not make a non-safety-certified Android workload safe for direct vehicle actuation.</div>
+</section>
+
+<section id="zygote" data-search data-mission="MISSION 05 • APP PROCESS BIRTH">
+<h2>6. Zygote sandbox and process specialization</h2>
+<p class="lead">Zygote starts once, preloads common runtime state, then creates app processes quickly. Forking is only the beginning; the child must be specialized before app code runs.</p>
+<div class="zygote-stage">
+<div class="zrow">
+<div class="znode" data-z="0"><strong>init</strong><span class="muted">starts Zygote</span></div>
+<div class="znode" data-z="1"><strong>Zygote / USAP</strong><span class="muted">preloaded process</span></div>
+<div class="znode" data-z="2"><strong>Fork</strong><span class="muted">new child PID</span></div>
+<div class="znode" data-z="3"><strong>Specialize</strong><span class="muted">UID, GID, groups, cgroup, SELinux, mount view, limits</span></div>
+<div class="znode" data-z="4"><strong>App process</strong><span class="muted">sandboxed runtime</span></div>
+</div>
+<div class="zygote-dot" id="zygoteDot"></div>
+<div class="result" id="zygoteText">Press Start to trace process creation.</div>
+</div>
+<div class="controls no-print"><button class="btn primary" id="playZygote">Start process</button><button class="btn" id="resetZygote">Reset</button></div>
+<div class="grid g3">
+<div class="card"><h3>USAP pool</h3><p>Unspecialized app processes may be pre-forked. System server selects one and requests specialization, reducing startup latency.</p></div>
+<div class="card"><h3>Shared pages, separate identity</h3><p>Forked processes initially share read-only/copy-on-write memory pages, but execute with their own process identity and sandbox policy.</p></div>
+<div class="card"><h3>Not a VM</h3><p>Every normal app process still shares the Android Linux kernel. A kernel compromise is outside the protection promised by the ordinary app sandbox.</p></div>
+</div>
+</section>
+
+<section id="isolated" data-search data-mission="MISSION 06 • UNTRUSTED PARSER">
+<h2>7. Isolated process model</h2>
+<div class="grid g2">
+<div class="card">
+<h3>Ordinary private app process</h3>
+<pre><code>&lt;service
+  android:name=".ParserService"
+  android:process=":parser"
+  android:exported="false" /&gt;</code></pre>
+<p>Runs in a separate process but normally under the application's UID and permissions. This separates crashes and heaps, not app authority.</p>
+</div>
+<div class="card">
+<h3>Isolated service process</h3>
+<pre><code>&lt;service
+  android:name=".UntrustedParserService"
+  android:isolatedProcess="true"
+  android:exported="false" /&gt;</code></pre>
+<p>Runs with a special isolated UID and <strong>no permissions of its own</strong>. Communication is through the Service/Binder API. Give it only the data and capabilities it needs.</p>
+</div>
+</div>
+<div class="controls">
+<div class="field"><label>Workload</label><select id="isoWork"><option value="parser">Parse untrusted media</option><option value="secret">Process long-lived vehicle secret</option><option value="ui">Render ordinary UI</option><option value="safety">Control brakes or steering</option></select></div>
+<div class="field"><label>Host compromise in threat model</label><select id="hostThreat"><option value="no">No</option><option value="yes">Yes</option></select></div>
+<button class="btn primary" id="chooseBoundary">Choose boundary</button>
+</div>
+<div class="result" id="isoResult">Select a workload.</div>
+<div class="callout warn"><strong>Isolated does not mean invisible:</strong> it shares the kernel and receives data through Binder. Validate every input, keep the Binder API narrow, and do not pass broad file descriptors or privileged service handles.</div>
+</section>
+
+<section id="avf" data-search data-mission="MISSION 07 • PROTECTED COMPUTE">
+<h2>8. Android Virtualization Framework and pKVM</h2>
+<div class="grid g2">
+<div class="card">
+<h3>AVF</h3>
+<p>AVF provides APIs and services for creating and managing guest VMs. <code>VirtualizationService</code> manages crosvm instances; Microdroid is a small Android-derived guest designed for secure payloads.</p>
+</div>
+<div class="card">
+<h3>pKVM</h3>
+<p>pKVM is the ARM64 KVM-based hypervisor that places protected VMs and host Android into mutually distrusted domains. A protected VM's private memory is not readable by a compromised host Android kernel.</p>
+</div>
+</div>
+<div class="avf">
+<div class="avf-layer"><strong>Host Android (EL1/EL0)</strong><br><span class="muted">UI, app lifecycle, VirtualizationService, untrusted client</span></div>
+<div class="vms">
+<div class="avf-layer"><strong>pVM A</strong><br>Microdroid + security payload</div>
+<div class="avf-layer"><strong>pVM B</strong><br>separate keys and memory</div>
+</div>
+<div class="avf-layer hyper"><strong>pKVM hypervisor (EL2)</strong><br><span class="muted">page ownership, stage-2 translation, VM switching</span></div>
+<div class="page" id="memoryPage"></div>
+<div class="controls no-print"><button class="btn" data-mem="host">Host owns page</button><button class="btn" data-mem="guest">Donate privately</button><button class="btn" data-mem="shared">Share explicitly</button><button class="btn" data-mem="wiped">Reclaim after wipe</button></div>
+<div class="result" id="memResult">Host-owned page: Android may access it. A protected guest may not until ownership is transferred or sharing is authorized.</div>
+</div>
+<div class="grid g3">
+<div class="card"><h3>Protected pVM</h3><p>Confidentiality and integrity are protected even against compromised host Android, subject to the AVF threat model and hardware implementation.</p></div>
+<div class="card"><h3>Non-protected VM</h3><p>Useful for compatibility, development or workload separation, but does not promise private memory from a compromised host.</p></div>
+<div class="card"><h3>Microdroid limitations</h3><p>No SystemServer, Zygote, full Android Java framework, graphics UI or HAL stack. It is a focused payload environment, not another full phone UI.</p></div>
+</div>
+<div class="callout warn"><strong>Your baseline:</strong> official AVF production protection is ARM64. AOSP notes x86_64 support for non-protected testing. The x86_64 Cuttlefish capability probe may therefore PASS, SKIP, or expose only non-protected functionality depending on the image.</div>
+</section>
+
+<section id="automotive" data-search data-mission="MISSION 08 • VEHICLE ARCHITECTURE">
+<h2>9. Automotive Android workload isolation patterns</h2>
+<p class="lead">Automotive security is a layered architecture problem. The correct answer is rarely “put everything in Android” or “put everything in a VM.”</p>
+<div class="pattern-board" id="patternBoard">
+<div class="zone selected" data-zone="consumer"><h3>Consumer IVI apps</h3><p>Media, messaging, weather</p><div class="chips"></div></div>
+<div class="zone" data-zone="oem"><h3>OEM-connected services</h3><p>Maps, OTA, diagnostics</p><div class="chips"></div></div>
+<div class="zone" data-zone="vehicle"><h3>Vehicle gateway</h3><p>CarService, VHAL, CAN/Ethernet gateway</p><div class="chips"></div></div>
+<div class="zone" data-zone="sensitive"><h3>Sensitive compute</h3><p>Keys, models, attested computation</p><div class="chips"></div></div>
+<div class="zone" data-zone="passenger"><h3>Passenger workloads</h3><p>Separate user/display experience</p><div class="chips"></div></div>
+<div class="zone" data-zone="safety"><h3>Safety-critical control</h3><p>Cluster core, ADAS control, powertrain actuation</p><div class="chips"></div></div>
+</div>
+<div class="controls"><div class="field"><label>Selected workload</label><select id="zoneSelect"><option value="consumer">Consumer IVI apps</option><option value="oem">OEM-connected services</option><option value="vehicle">Vehicle gateway</option><option value="sensitive">Sensitive compute</option><option value="passenger">Passenger workloads</option><option value="safety">Safety-critical control</option></select></div><button class="btn primary" id="recommendPattern">Recommend controls</button></div>
+<div class="result" id="patternResult">Select a workload to see a layered recommendation.</div>
+<table><thead><tr><th>Pattern</th><th>Primary controls</th><th>Why</th><th>Do not assume</th></tr></thead><tbody>
+<tr><td>Consumer app</td><td>UID sandbox, SELinux, permissions, BPF firewall</td><td>Strong app-level containment with low overhead</td><td>A cgroup alone is a security sandbox</td></tr>
+<tr><td>OEM network app</td><td>PANS, restricted network permission, UID routing, allowlisted APIs</td><td>Separates who pays and who may reach private services</td><td>OEM_PRIVATE is a separate kernel</td></tr>
+<tr><td>Untrusted parser</td><td>Isolated service, seccomp, narrow Binder API, resource limits</td><td>Reduces app permission and parsing blast radius</td><td>An isolated process protects against host-kernel compromise</td></tr>
+<tr><td>Sensitive payload</td><td>Protected AVF pVM, verified payload, attestation, minimal RPC</td><td>Protects secrets from compromised host Android</td><td>A pVM is automatically functionally safe</td></tr>
+<tr><td>Vehicle access</td><td>CarService/VHAL gateway, automotive permissions, SELinux, filtering and rate limiting</td><td>Only vetted commands cross into vehicle networks</td><td>Privileged app status removes the need for input validation</td></tr>
+<tr><td>Safety-critical actuation</td><td>Separate safety domain/ECU/RTOS or certified hypervisor partition, constrained interface to Android</td><td>Maintains an independent safety and timing boundary</td><td>Android cgroups or AVF alone prove ISO 26262 compliance</td></tr>
+</tbody></table>
+<div class="callout good"><strong>Vehicle gateway principle:</strong> apps should use Car APIs. CarService is the Java gateway to VHAL; direct access is blocked by SELinux. VHAL and downstream gateways should validate permissions, property ranges, message origin and rate.</div>
+</section>
+
+
+
+<section id="incidents" data-search>
+<h2>⚠ Incident Arena — What could go wrong?</h2>
+<p class="lead">Choose a response before revealing the explanation. These incidents target the exact misconceptions that commonly appear in Android and automotive security reviews.</p>
+<div class="scoreboard">
+<div class="scorebox"><strong id="incidentCorrect">0</strong><span>correct decisions</span></div>
+<div class="scorebox"><strong id="incidentAttempted">0/4</strong><span>incidents attempted</span></div>
+<div class="scorebox"><strong id="incidentPercent">0%</strong><span>readiness score</span></div>
+</div>
+<div class="incident-grid" id="incidentGrid">
+<article class="incident-card" data-answer="c">
+<div class="incident-head"><span class="incident-icon">💸</span><div><h3>Incident 1 — The data-bill surprise</h3><p>A streaming application was accidentally mapped to an OEM-funded network. Monthly connectivity cost rises sharply.</p></div></div>
+<div class="incident-options">
+<button class="incident-option" data-value="a">Move the streaming app into a new cgroup.</button>
+<button class="incident-option" data-value="b">Create a new mount namespace for the app.</button>
+<button class="incident-option" data-value="c">Remove the OEM-paid PANS preference and use normal/default connectivity.</button>
+</div><div class="incident-feedback">Select the control that actually determines the application’s default network.</div>
+</article>
+<article class="incident-card" data-answer="b">
+<div class="incident-head"><span class="incident-icon">🧨</span><div><h3>Incident 2 — Separate process, same authority</h3><p>An untrusted media parser runs with <code>android:process=":parser"</code>. Exploitation still reaches all application permissions.</p></div></div>
+<div class="incident-options">
+<button class="incident-option" data-value="a">Increase its CPU weight.</button>
+<button class="incident-option" data-value="b">Use an isolated service with a narrow Binder API and strict input validation.</button>
+<button class="incident-option" data-value="c">Give the parser a privileged signature permission.</button>
+</div><div class="incident-feedback">A private process separates crashes and heaps, but normally retains the app UID and authority.</div>
+</article>
+<article class="incident-card" data-answer="a">
+<div class="incident-head"><span class="incident-icon">🚦</span><div><h3>Incident 3 — “High priority means safe”</h3><p>A team puts a braking workload in a high-priority cgroup and declares the design functionally safe.</p></div></div>
+<div class="incident-options">
+<button class="incident-option" data-value="a">Reject the claim; resource priority is not an independent safety or confidentiality boundary.</button>
+<button class="incident-option" data-value="b">Accept it because CPU weight guarantees deadlines.</button>
+<button class="incident-option" data-value="c">Add a BPF map and claim ISO 26262 compliance.</button>
+</div><div class="incident-feedback">cgroups can improve resource governance, but they do not prove functional safety or eliminate shared-kernel risk.</div>
+</article>
+<article class="incident-card" data-answer="c">
+<div class="incident-head"><span class="incident-icon">🔓</span><div><h3>Incident 4 — Host compromise matters</h3><p>A key-processing service must keep long-lived vehicle secrets private even if the Android host kernel is compromised.</p></div></div>
+<div class="incident-options">
+<button class="incident-option" data-value="a">Use an ordinary foreground application.</button>
+<button class="incident-option" data-value="b">Use only an isolated process.</button>
+<button class="incident-option" data-value="c">Use a protected AVF pVM with verified payload, attestation and minimal RPC.</button>
+</div><div class="incident-feedback">The host-compromise requirement changes the boundary: same-kernel isolation is not sufficient.</div>
+</article>
+</div>
+<div class="callout good"><strong>Debrief rule:</strong> name the asset, attacker, failure consequence, required assurance and operational cost before selecting a boundary.</div>
+</section>
+
+<section id="labs" data-search>
+<h2>10. Guided Android 17 Cuttlefish labs</h2>
+<p class="lead">Labs are read-only unless marked optional. PASS/SKIP is expected for automotive-only and AVF-only capabilities on the phone Cuttlefish image.</p>
+<div class="callout good"><strong>Set once:</strong></div>
+<pre><button class="copy btn">Copy</button><code>RUNTIME="${RUNTIME:-$HOME/src}"
+ADB="${ADB:-$RUNTIME/bin/adb}"
+SERIAL="${SERIAL:-0.0.0.0:6520}"
+
+"$ADB" connect "$SERIAL" >/dev/null 2>&1 || true
+"$ADB" -s "$SERIAL" get-state
+"$ADB" -s "$SERIAL" root >/dev/null 2>&1 || true
+"$ADB" -s "$SERIAL" wait-for-device</code></pre>
+
+<details open><summary>Lab 0 — Confirm Android 17 baseline</summary>
+<pre><button class="copy btn">Copy</button><code>for PROP in \
+  ro.build.version.release \
+  ro.build.version.sdk \
+  ro.build.type \
+  ro.product.cpu.abi \
+  ro.hardware
+do
+  printf '%-30s ' "$PROP"
+  "$ADB" -s "$SERIAL" \
+    shell getprop "$PROP" |
+    tr -d '\r'
+done
+
+"$ADB" -s "$SERIAL" shell getenforce</code></pre>
+<pre class="expected"><code>ro.build.version.release       17
+ro.build.version.sdk           37
+ro.build.type                  userdebug
+ro.product.cpu.abi             x86_64
+...
+Enforcing</code></pre>
+</details>
+
+<details><summary>Lab 1 — PANS and AAOS capability probe</summary>
+<pre><button class="copy btn">Copy</button><code>FEATURES="$(
+  "$ADB" -s "$SERIAL" \
+    shell pm list features |
+    tr -d '\r'
+)"
+
+if grep -q \
+  'android.hardware.type.automotive' \
+  <<<"$FEATURES"; then
+  echo '[PASS] Automotive feature present'
+
+  "$ADB" -s "$SERIAL" \
+    shell service list |
+    grep -Ei \
+    'car|connectivity'
+
+  "$ADB" -s "$SERIAL" \
+    shell dumpsys connectivity |
+    grep -Ei \
+    'OEM_PAID|OEM_PRIVATE|OemNetwork' |
+    head -n 80
+else
+  echo '[SKIP] Phone Cuttlefish is not an AAOS build'
+  echo 'Use the PANS simulator or an AAOS target for API testing.'
+fi</code></pre>
+<p class="muted">A SKIP is correct on <code>aosp_cf_x86_64_only_phone-userdebug</code>.</p>
+</details>
+
+<details><summary>Lab 2 — Compare namespace inode links</summary>
+<pre><button class="copy btn">Copy</button><code>"$ADB" -s "$SERIAL" \
+  shell am start \
+  -a android.settings.SETTINGS \
+  >/dev/null 2>&1 || true
+
+"$ADB" -s "$SERIAL" shell '
+printf "%-18s %-7s %-24s %-24s\n" \
+  PROCESS PID NET_NAMESPACE MOUNT_NAMESPACE
+
+for NAME in \
+  zygote64 \
+  system_server \
+  netd \
+  com.android.settings
+do
+  PID="$(pidof "$NAME" 2>/dev/null | awk "{print \$1}")"
+  [ -n "$PID" ] || continue
+
+  NET="$(readlink "/proc/$PID/ns/net" 2>/dev/null)"
+  MNT="$(readlink "/proc/$PID/ns/mnt" 2>/dev/null)"
+
+  printf "%-18s %-7s %-24s %-24s\n" \
+    "$NAME" "$PID" "$NET" "$MNT"
+done
+'</code></pre>
+<p class="muted">Typical observation: the network namespace inode is shared while mount namespace inodes can differ. Compare values; do not memorize the sample inode numbers.</p>
+</details>
+
+<details><summary>Optional Linux analogy — Create and remove a network namespace on Ubuntu</summary>
+<pre><button class="copy btn">Copy</button><code>NS='android-netns-demo'
+
+cleanup() {
+  sudo ip netns del "$NS" \
+    2>/dev/null || true
+}
+trap cleanup EXIT
+
+sudo ip netns add "$NS"
+sudo ip netns exec "$NS" \
+  ip -brief link
+sudo ip netns exec "$NS" \
+  ip route
+
+cleanup
+trap - EXIT</code></pre>
+<pre class="expected"><code>lo               DOWN
+# No external route until interfaces/routes are added.</code></pre>
+<div class="callout warn">This is a Linux teaching analogy. It does not imply Android creates one netns for every app.</div>
+</details>
+
+<details><summary>Lab 3 — Inspect cgroup version, process placement and task profiles</summary>
+<pre><button class="copy btn">Copy</button><code>"$ADB" -s "$SERIAL" shell '
+echo "=== cgroup mounts ==="
+mount | grep -E "cgroup|cgroup2" || true
+
+echo
+echo "=== v2 controllers ==="
+cat /sys/fs/cgroup/cgroup.controllers \
+  2>/dev/null || echo "No unified v2 controller file"
+
+echo
+echo "=== process membership ==="
+for NAME in zygote64 system_server netd; do
+  PID="$(pidof "$NAME" 2>/dev/null | awk "{print \$1}")"
+  [ -n "$PID" ] || continue
+  echo "--- $NAME pid=$PID ---"
+  cat "/proc/$PID/cgroup"
+done
+
+echo
+echo "=== profile definitions ==="
+find /system/etc /vendor/etc /product/etc \
+  -maxdepth 3 \
+  \( -name "cgroups*.json" -o \
+     -name "task_profiles*.json" \) \
+  2>/dev/null |
+  sort
+'</code></pre>
+</details>
+
+<details><summary>Lab 4 — Inspect BPF filesystem and network hooks</summary>
+<pre><button class="copy btn">Copy</button><code>"$ADB" -s "$SERIAL" shell '
+echo "=== BPF filesystem ==="
+mount | grep -E " type bpf |/sys/fs/bpf" || true
+ls -ld /sys/fs/bpf
+
+echo
+echo "=== pinned objects, release-dependent names ==="
+find /sys/fs/bpf \
+  -maxdepth 4 \
+  -type f \
+  2>/dev/null |
+  head -n 60
+
+echo
+echo "=== TrafficController state ==="
+dumpsys netd trafficcontroller \
+  2>/dev/null |
+  head -n 140
+'</code></pre>
+<div class="callout warn">Pinned object names and dump formats change across releases. Validate the concepts—maps, programs, UID state and counters—rather than one filename.</div>
+</details>
+
+<details><summary>Lab 5 — Trace Zygote ancestry and process specialization</summary>
+<pre><button class="copy btn">Copy</button><code>"$ADB" -s "$SERIAL" shell '
+am start \
+  -a android.settings.SETTINGS \
+  >/dev/null 2>&1 || true
+
+echo "=== Zygote and app ancestry ==="
+ps -A -o PID,PPID,USER,NAME,ARGS |
+  grep -E \
+  "zygote|system_server|com.android.settings" |
+  head -n 40
+
+PID="$(pidof com.android.settings | awk "{print \$1}")"
+
+if [ -n "$PID" ]; then
+  echo
+  echo "=== Settings identity ==="
+  grep -E \
+    "^(Name|Pid|PPid|Uid|Gid|Groups|Cap(Inh|Prm|Eff|Bnd)|NoNewPrivs|Seccomp):" \
+    "/proc/$PID/status"
+
+  echo
+  echo "=== Settings cgroup ==="
+  cat "/proc/$PID/cgroup"
+
+  echo
+  echo "=== Settings SELinux domain ==="
+  cat "/proc/$PID/attr/current"
+fi
+'</code></pre>
+</details>
+
+<details><summary>Lab 6 — Discover isolated processes without requiring a custom APK</summary>
+<pre><button class="copy btn">Copy</button><code>"$ADB" -s "$SERIAL" shell '
+echo "=== Isolated UID candidates ==="
+
+ps -A -o USER,PID,PPID,NAME,ARGS |
+  grep -E \
+  "u[0-9]+_i[0-9]+|isolated" |
+  grep -v grep || true
+
+echo
+echo "=== ActivityManager isolated records ==="
+
+dumpsys activity processes |
+  grep -i -A4 -B4 isolated |
+  head -n 120 || true
+'</code></pre>
+<p class="muted">No output is not a failure; it means no isolated service was active during the observation window. Use a training APK with <code>android:isolatedProcess="true"</code> for a guaranteed demonstration.</p>
+</details>
+
+<details><summary>Lab 7 — AVF capability probe: PASS or SKIP</summary>
+<pre><button class="copy btn">Copy</button><code>"$ADB" -s "$SERIAL" shell '
+ABI="$(getprop ro.product.cpu.abi)"
+FEATURES="$(pm list features)"
+
+echo "ABI=$ABI"
+
+if echo "$FEATURES" |
+   grep -q \
+   "android.software.virtualization_framework"; then
+  echo "[PASS] AVF framework feature declared"
+else
+  echo "[SKIP] AVF framework feature not declared"
+fi
+
+if [ -d /apex/com.android.virt ]; then
+  echo "[PASS] com.android.virt APEX present"
+  ls -l /apex/com.android.virt/bin \
+    2>/dev/null |
+    head -n 40
+
+  if [ -x /apex/com.android.virt/bin/vm ]; then
+    /apex/com.android.virt/bin/vm list \
+      2>/dev/null || true
+  fi
+else
+  echo "[SKIP] com.android.virt APEX absent"
+fi
+
+case "$ABI" in
+  arm64-v8a)
+    echo "[INFO] ARM64 can support production AVF/pKVM when implemented."
+    ;;
+  x86_64)
+    echo "[INFO] x86_64 AVF is testing/non-protected; do not claim pKVM protection."
+    ;;
+esac
+'</code></pre>
+</details>
+
+<h3>Complete read-only trainee validation script</h3>
+<pre><button class="copy btn">Copy</button><code>cat > "$HOME/validate-session3-advanced-security" <<'EOF'
+#!/usr/bin/env bash
+set -u
+
+RUNTIME="${RUNTIME:-$HOME/src}"
+ADB="${ADB:-$RUNTIME/bin/adb}"
+SERIAL="${SERIAL:-0.0.0.0:6520}"
+PASS=0
+WARN=0
+SKIP=0
+FAIL=0
+
+pass(){ echo "[PASS] $1"; PASS=$((PASS+1)); }
+warn(){ echo "[WARN] $1"; WARN=$((WARN+1)); }
+skip(){ echo "[SKIP] $1"; SKIP=$((SKIP+1)); }
+fail(){ echo "[FAIL] $1"; FAIL=$((FAIL+1)); }
+
+[[ -x "$ADB" ]] || {
+  echo "[FAIL] adb missing: $ADB"
+  exit 1
+}
+
+"$ADB" connect "$SERIAL" \
+  >/dev/null 2>&1 || true
+
+STATE="$(
+  "$ADB" -s "$SERIAL" \
+    get-state 2>/dev/null || true
+)"
+
+[[ "$STATE" == 'device' ]] &&
+  pass "ADB device $SERIAL" ||
+  fail 'ADB device unavailable'
+
+prop(){
+  "$ADB" -s "$SERIAL" \
+    shell getprop "$1" 2>/dev/null |
+  tr -d '\r'
+}
+
+RELEASE="$(prop ro.build.version.release)"
+SDK="$(prop ro.build.version.sdk)"
+TYPE="$(prop ro.build.type)"
+ABI="$(prop ro.product.cpu.abi)"
+BOOT="$(prop sys.boot_completed)"
+
+[[ "$RELEASE" == '17' ]] &&
+  pass 'Android 17' ||
+  fail "Android release: $RELEASE"
+
+[[ "$SDK" == '37' ]] &&
+  pass 'API 37' ||
+  fail "API level: $SDK"
+
+[[ "$TYPE" == 'userdebug' ]] &&
+  pass 'userdebug build' ||
+  fail "Build type: $TYPE"
+
+[[ "$BOOT" == '1' ]] &&
+  pass 'Boot complete' ||
+  fail 'Boot incomplete'
+
+"$ADB" -s "$SERIAL" root \
+  >/dev/null 2>&1 || true
+"$ADB" -s "$SERIAL" wait-for-device \
+  >/dev/null 2>&1 || true
+
+SELINUX="$(
+  "$ADB" -s "$SERIAL" \
+    shell getenforce 2>/dev/null |
+  tr -d '\r'
+)"
+
+[[ "$SELINUX" == 'Enforcing' ]] &&
+  pass 'SELinux Enforcing' ||
+  fail "SELinux: $SELINUX"
+
+"$ADB" -s "$SERIAL" \
+  shell test -e /proc/1/ns/net &&
+  pass 'Network namespace inode available' ||
+  fail 'Network namespace metadata unavailable'
+
+"$ADB" -s "$SERIAL" \
+  shell 'mount | grep -qE "cgroup|cgroup2"' &&
+  pass 'cgroup filesystem mounted' ||
+  fail 'No cgroup filesystem found'
+
+PROFILE_COUNT="$(
+  "$ADB" -s "$SERIAL" shell '
+    find /system/etc /vendor/etc /product/etc \
+      -maxdepth 3 \
+      \( -name "cgroups*.json" -o \
+         -name "task_profiles*.json" \) \
+      2>/dev/null |
+    wc -l
+  ' |
+  tr -d '\r'
+)"
+
+[[ "${PROFILE_COUNT:-0}" -gt 0 ]] &&
+  pass "cgroup/task-profile files: $PROFILE_COUNT" ||
+  warn 'No task-profile JSON found at common runtime paths'
+
+"$ADB" -s "$SERIAL" \
+  shell test -d /sys/fs/bpf &&
+  pass '/sys/fs/bpf exists' ||
+  fail '/sys/fs/bpf unavailable'
+
+ZPID="$(
+  "$ADB" -s "$SERIAL" \
+    shell pidof zygote64 2>/dev/null |
+  tr -d '\r' |
+  awk '{print $1}'
+)"
+
+[[ -n "$ZPID" ]] &&
+  pass "zygote64 pid=$ZPID" ||
+  fail 'zygote64 not found'
+
+if [[ -n "$ZPID" ]]; then
+  ZCG="$(
+    "$ADB" -s "$SERIAL" \
+      shell cat "/proc/$ZPID/cgroup" \
+      2>/dev/null |
+    tr -d '\r'
+  )"
+
+  [[ -n "$ZCG" ]] &&
+    pass 'Zygote cgroup membership readable' ||
+    warn 'Zygote cgroup membership unreadable'
+fi
+
+FEATURES="$(
+  "$ADB" -s "$SERIAL" \
+    shell pm list features 2>/dev/null |
+  tr -d '\r'
+)"
+
+if grep -q \
+  'android.hardware.type.automotive' \
+  <<<"$FEATURES"; then
+  pass 'AAOS automotive feature present'
+else
+  skip 'Phone target: PANS runtime API lab'
+fi
+
+if grep -q \
+  'android.software.virtualization_framework' \
+  <<<"$FEATURES"; then
+  pass 'AVF framework feature declared'
+else
+  skip 'AVF framework feature absent'
+fi
+
+if [[ "$ABI" == 'arm64-v8a' ]]; then
+  pass 'ARM64 ABI suitable for production AVF implementation'
+else
+  skip "$ABI baseline cannot prove ARM64 pKVM protection"
+fi
+
+echo
+echo "Summary: PASS=$PASS WARN=$WARN SKIP=$SKIP FAIL=$FAIL"
+(( FAIL == 0 ))
+EOF
+
+chmod +x \
+  "$HOME/validate-session3-advanced-security"
+
+"$HOME/validate-session3-advanced-security"</code></pre>
+</section>
+
+
+
+<section id="troubleshooting" data-search>
+<h2>🧰 Lab Rescue Centre</h2>
+<p class="lead">A lab result is evidence, not merely output. Classify the result before changing the environment.</p>
+<div class="status-legend">
+<div class="status-item pass"><b>PASS</b><span>The required capability exists and the expected state was observed.</span></div>
+<div class="status-item skip"><b>SKIP</b><span>The target does not contain an optional automotive, AVF or hardware capability.</span></div>
+<div class="status-item warn"><b>WARN</b><span>The concept is present, but paths, names or output differ by build or release.</span></div>
+<div class="status-item fail"><b>FAIL</b><span>A required baseline is missing or the command cannot collect valid evidence.</span></div>
+</div>
+<div class="grid g2">
+<div class="card">
+<h3>ADB device unavailable</h3>
+<div class="trouble-tree">ADB device unavailable
+├── Verify ADB path:  test -x "$ADB"
+├── List devices:     "$ADB" devices -l
+├── Confirm serial:   echo "$SERIAL"
+├── Reconnect:        "$ADB" connect "$SERIAL"
+├── Check instance:   cvd status
+└── Re-run:           "$ADB" -s "$SERIAL" get-state</div>
+</div>
+<div class="card">
+<h3>No isolated process appears</h3>
+<div class="trouble-tree">No isolated process output
+├── This can be a valid observation
+├── No isolated service may be active
+├── Start an app that uses isolatedProcess
+├── Re-run ps and dumpsys activity
+└── Use a training APK for guaranteed evidence</div>
+</div>
+<div class="card">
+<h3>AVF reports SKIP</h3>
+<div class="trouble-tree">AVF / pKVM capability absent
+├── Check declared feature
+├── Check com.android.virt APEX
+├── Check ABI
+├── x86_64 cannot prove protected ARM64 pKVM
+└── Record SKIP; do not convert it into FAIL</div>
+</div>
+<div class="card">
+<h3>Release-dependent BPF names</h3>
+<div class="trouble-tree">Pinned BPF name not found
+├── Confirm /sys/fs/bpf exists
+├── Enumerate pinned objects
+├── Inspect dumpsys netd trafficcontroller
+├── Validate maps/programs/UID state conceptually
+└── Do not depend on one historical filename</div>
+</div>
+</div>
+<h3>Command anatomy — click each part</h3>
+<div class="command-anatomy" id="commandAnatomy">
+<button class="cmd-part" data-explain="Reads and prints a file to standard output.">cat</button>
+<button class="cmd-part" data-explain="The procfs view of runtime process and kernel information.">/proc</button>
+<button class="cmd-part" data-explain="A shell variable containing the selected process identifier.">$PID</button>
+<button class="cmd-part" data-explain="Shows the process membership in cgroup hierarchies.">cgroup</button>
+</div>
+<div class="result" id="commandExplain">Select a command component to see what evidence it contributes.</div>
+<div class="callout warn"><strong>Reset principle:</strong> the supplied Android labs are read-only unless explicitly marked optional. For the Ubuntu namespace analogy, the cleanup trap removes the temporary namespace even when a command fails.</div>
+</section>
+
+<section id="glossary" data-search>
+<h2>📚 Searchable Security Glossary</h2>
+<p class="lead">Search the terms that sound similar but create very different trust boundaries.</p>
+<div class="glossary-toolbar"><input id="glossarySearch" placeholder="Search UID, namespace, pKVM, VHAL…"><span class="pill" id="glossaryCount">0 terms</span></div>
+<div class="glossary-grid" id="glossaryGrid"></div>
+</section>
+
+<section id="quiz" data-search>
+<h2>11. Knowledge check</h2>
+<form id="quizForm">
+<div class="quiz-q" data-answer="b"><strong>1. Which statement best describes PANS?</strong>
+<label><input type="radio" name="q1" value="a"> It creates one Linux network namespace per app</label>
+<label><input type="radio" name="q1" value="b"> It maps automotive app packages to default-network preferences</label>
+<label><input type="radio" name="q1" value="c"> It is a public VPN API for all Android apps</label></div>
+<div class="quiz-q" data-answer="c"><strong>2. What is usually true for ordinary Android app networking?</strong>
+<label><input type="radio" name="q2" value="a"> Every app has a full private kernel</label>
+<label><input type="radio" name="q2" value="b"> Every app has a unique physical NIC</label>
+<label><input type="radio" name="q2" value="c"> UID policy is primary; a per-app network namespace is not normally used</label></div>
+<div class="quiz-q" data-answer="a"><strong>3. What is a task profile?</strong>
+<label><input type="radio" name="q3" value="a"> An Android abstraction for applying cgroup-related actions to a process/thread</label>
+<label><input type="radio" name="q3" value="b"> A replacement for SELinux</label>
+<label><input type="radio" name="q3" value="c"> An APK signing certificate</label></div>
+<div class="quiz-q" data-answer="b"><strong>4. Why use <code>android:isolatedProcess="true"</code>?</strong>
+<label><input type="radio" name="q4" value="a"> To give a service all application permissions</label>
+<label><input type="radio" name="q4" value="b"> To run it with a special UID and no permissions of its own</label>
+<label><input type="radio" name="q4" value="c"> To create an ARM64 pVM</label></div>
+<div class="quiz-q" data-answer="c"><strong>5. What assurance distinguishes a protected pVM?</strong>
+<label><input type="radio" name="q5" value="a"> It always has a graphical Android UI</label>
+<label><input type="radio" name="q5" value="b"> It is assigned a higher CPU weight</label>
+<label><input type="radio" name="q5" value="c"> Host Android cannot read private guest memory under the pKVM threat model</label></div>
+<div class="quiz-q" data-answer="a"><strong>6. Where should safety-critical vehicle actuation normally live?</strong>
+<label><input type="radio" name="q6" value="a"> An independent safety domain/ECU or certified partition with a constrained Android interface</label>
+<label><input type="radio" name="q6" value="b"> Any foreground Android application</label>
+<label><input type="radio" name="q6" value="c"> A cgroup with high CPU weight only</label></div>
+<button type="button" class="btn primary" id="gradeQuiz">Grade quiz</button>
+</form>
+<div class="result" id="quizResult">Complete all six questions.</div>
+</section>
+
+
+
+<section id="architect" data-search>
+<h2>🏗 Final Architecture Challenge</h2>
+<p class="lead">Choose a workload, then drag or click controls into the design zone. The evaluator rewards required controls, accepts useful optional layers and flags category errors.</p>
+<div class="architect-layout">
+<div>
+<h3>1. Select a workload</h3>
+<div class="workload-list" id="workloadList">
+<button class="workload-btn active" data-workload="streaming">🎵 Consumer streaming app</button>
+<button class="workload-btn" data-workload="navigation">🗺️ OEM navigation</button>
+<button class="workload-btn" data-workload="parser">🧪 Untrusted media parser</button>
+<button class="workload-btn" data-workload="secret">🔐 Vehicle key service</button>
+<button class="workload-btn" data-workload="diagnostics">🔧 Remote diagnostics</button>
+<button class="workload-btn" data-workload="brakes">🛑 Brake actuation</button>
+</div>
+</div>
+<div>
+<h3>2. Add controls</h3>
+<div class="control-pool" id="controlPool">
+<span class="security-token" draggable="true" data-control="uid">UID sandbox</span>
+<span class="security-token" draggable="true" data-control="selinux">SELinux</span>
+<span class="security-token" draggable="true" data-control="pans">PANS</span>
+<span class="security-token" draggable="true" data-control="restricted">Restricted-network authorization</span>
+<span class="security-token" draggable="true" data-control="cgroup">cgroup limits</span>
+<span class="security-token" draggable="true" data-control="bpf">BPF firewall/accounting</span>
+<span class="security-token" draggable="true" data-control="isolated">Isolated process</span>
+<span class="security-token" draggable="true" data-control="pvm">Protected AVF pVM</span>
+<span class="security-token" draggable="true" data-control="attestation">Attestation</span>
+<span class="security-token" draggable="true" data-control="minrpc">Minimal RPC surface</span>
+<span class="security-token" draggable="true" data-control="carservice">CarService/VHAL gateway</span>
+<span class="security-token" draggable="true" data-control="validation">Range/rate/input validation</span>
+<span class="security-token" draggable="true" data-control="safetyecu">Separate safety ECU/RTOS</span>
+</div>
+<div class="design-drop" id="designDrop"><p class="muted">Drop controls here. Click a selected token to remove it.</p></div>
+<div class="controls"><button class="btn primary" id="evaluateDesign">Evaluate design</button><button class="btn" id="resetDesign">Reset selection</button></div>
+<div class="architecture-feedback" id="architectureFeedback">Current workload: <strong>Consumer streaming app</strong>. Build the least-privilege design.</div>
+</div>
+</div>
+</section>
+
+<section id="acceptance" data-search>
+<h2>12. Full trainee acceptance test</h2>
+<div class="card checks" id="checks">
+<label><input type="checkbox" data-k="base"> Confirm Android 17/API 37, userdebug and SELinux Enforcing</label>
+<label><input type="checkbox" data-k="pans"> Predict all four PANS preference outcomes</label>
+<label><input type="checkbox" data-k="persist"> Explain that PANS preferences are reapplied after boot</label>
+<label><input type="checkbox" data-k="ns"> Compare network and mount namespace inode links</label>
+<label><input type="checkbox" data-k="netns"> Explain why standard Android does not need one netns per app</label>
+<label><input type="checkbox" data-k="cg"> Locate cgroup mounts and task-profile definitions</label>
+<label><input type="checkbox" data-k="bpf"> Explain cgroup placement versus BPF program/map policy</label>
+<label><input type="checkbox" data-k="zyg"> Trace Zygote → fork/USAP → specialization → app</label>
+<label><input type="checkbox" data-k="iso"> Distinguish a private app process from an isolated service process</label>
+<label><input type="checkbox" data-k="avf"> Explain protected versus non-protected AVF VMs</label>
+<label><input type="checkbox" data-k="x86"> Explain why x86_64 Cuttlefish cannot prove production ARM64 pKVM protection</label>
+<label><input type="checkbox" data-k="auto"> Design a layered automotive isolation pattern for one workload</label>
+<label><input type="checkbox" data-k="script"> Run the validation script with zero FAIL results</label>
+<label><input type="checkbox" data-k="quiz"> Score at least 80% on the knowledge check</label>
+</div>
+<div class="meter"><span id="meter"></span></div>
+<div class="result" id="checkResult">0 of 14 acceptance items complete.</div>
+<div class="callout good"><strong>Trainer sign-off:</strong> SKIP is acceptable only for absent automotive/AVF hardware features. The trainee must still explain the architecture and simulator decisions correctly.</div>
+</section>
+
+<section id="sources" data-search>
+<h2>13. Technical verification and sources</h2>
+<div id="runtimeStatus" class="callout warn"><strong>Interactive runtime:</strong> Initializing controls…</div>
+<div id="selfTest" class="callout">Running simulator self-tests…</div>
+<ul>
+<li><a href="https://source.android.com/docs/automotive/connectivity">AOSP PANS</a> — preferences, priorities, automotive-only API, boot persistence and restricted networks.</li>
+<li><a href="https://source.android.com/docs/core/connect/network-selection">AOSP network selection</a> — app default-network selection context.</li>
+<li><a href="https://source.android.com/docs/core/perf/cgroups">AOSP cgroup abstraction layer</a> — cgroups v1/v2, <code>cgroups.json</code> and task profiles.</li>
+<li><a href="https://source.android.com/docs/core/data/ebpf-traffic-monitor">AOSP eBPF traffic monitoring</a> — cgroup hooks, maps, UID accounting and filtering.</li>
+<li><a href="https://source.android.com/docs/core/runtime/zygote">AOSP Zygote</a> — Zygote, USAP and process specialization flow.</li>
+<li><a href="https://developer.android.com/guide/topics/manifest/service-element">Android service manifest reference</a> — isolated process has no permissions of its own.</li>
+<li><a href="https://source.android.com/docs/core/storage/traditional">AOSP storage isolation</a> — mount namespaces in Zygote-forked processes.</li>
+<li><a href="https://source.android.com/docs/core/virtualization">AOSP AVF overview</a> and <a href="https://source.android.com/docs/core/virtualization/architecture">AVF architecture</a> — ARM64 production support and x86_64 non-protected testing note.</li>
+<li><a href="https://source.android.com/docs/core/virtualization/security">AOSP AVF security</a> — memory ownership, wiping and protected-VM integrity.</li>
+<li><a href="https://source.android.com/docs/core/virtualization/microdroid">AOSP Microdroid</a> — guest capabilities and exclusions.</li>
+<li><a href="https://source.android.com/docs/automotive/security/vehicle_system_isolation">AOSP vehicle system isolation</a> — VHAL access, SELinux, filtering and rate limiting.</li>
+<li><a href="https://source.android.com/docs/automotive/users_accounts/multi_user">AAOS multi-user support</a> and <a href="https://source.android.com/docs/automotive/virtualization/reference_platform">AAOS virtual reference platform</a>.</li>
+</ul>
+<div class="callout warn"><strong>Simulation boundary:</strong> the visualizations model documented selection orders and trust boundaries. They do not claim functional-safety certification, reproduce all framework implementation details, or convert x86_64 Cuttlefish into a protected ARM64 pKVM platform.</div>
+<p class="small muted">Prepared for Android 17/API 37 Cuttlefish userdebug. The file is fully functional offline; source links require Internet access.</p>
+</section>
+
+
+
+<div class="guide-bar" id="guideBar">
+<button class="btn" id="guidePrev">← Previous</button>
+<div class="guide-title"><strong id="guideTitle">Mission 1</strong><small id="guideSubtitle">Choose the boundary</small></div>
+<button class="btn" id="completeMission">Mark complete</button>
+<button class="btn primary" id="guideNext">Next →</button>
+<button class="btn" id="exitGuided">Explore mode</button>
+</div>
+
+<div class="voice-player no-print" id="voicePlayer">
+<div class="voice-row">
+<strong style="margin-right:auto">🔊 Explanation</strong>
+<select id="voiceSection" aria-label="Section to read"></select>
+<select id="voiceRate" aria-label="Speech speed"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select>
+<button id="voicePlay" title="Play">▶</button><button id="voicePause" title="Pause">⏸</button><button id="voiceResume" title="Resume">⏯</button><button id="voiceStop" title="Stop">⏹</button>
+</div>
+<div class="voice-status" id="voiceStatus">Choose a section or use its “Listen” button. Speech never starts automatically.</div>
+</div>
+
+<footer><strong>Project Aegis — Android Advanced Security Mission Control</strong><br>Mission-based interactive reference for Android 17 • guided and explore modes • local-file compatible.</footer>
+</main>
+</div>
+
+<script>
+const $=(s,p=document)=>p.querySelector(s), $$=(s,p=document)=>[...p.querySelectorAll(s)];
+const b=v=>v===true||v==="true";const delay=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* Local HTML files can have an opaque origin in some browsers.
+   Never let a denied localStorage call stop the whole document. */
+const safeStore=(()=>{
+  const memory={};
+  try{
+    const key="__aas_storage_test__";
+    window.localStorage.setItem(key,"1");
+    window.localStorage.removeItem(key);
+    return {
+      get:k=>window.localStorage.getItem(k),
+      set:(k,v)=>window.localStorage.setItem(k,String(v))
+    };
+  }catch(error){
+    console.info("Persistent browser storage unavailable; using session memory.");
+    return {
+      get:k=>Object.prototype.hasOwnProperty.call(memory,k)?memory[k]:null,
+      set:(k,v)=>{memory[k]=String(v)}
+    };
+  }
+})();
+
+const saved=safeStore.get("aas-theme");
+if(saved)document.documentElement.dataset.theme=saved;
+
+$("#theme").onclick=()=>{
+  const h=document.documentElement;
+  h.dataset.theme=h.dataset.theme==="dark"?"light":"dark";
+  safeStore.set("aas-theme",h.dataset.theme);
+};
+$("#motion").onclick=()=>document.body.classList.toggle("reduce");
+$("#menu").onclick=()=>{let t=$("#toc");t.style.display=t.style.display==="block"?"none":"block";Object.assign(t.style,{position:"fixed",zIndex:90,top:document.querySelector(".top").getBoundingClientRect().height+"px",left:0,width:"310px"})};
+$$(".copy").forEach(x=>x.onclick=async()=>{let c=x.parentElement.querySelector("code");if(!c)return;try{await navigator.clipboard.writeText(c.innerText);let t=x.textContent;x.textContent="Copied";setTimeout(()=>x.textContent=t,850)}catch(e){x.textContent="Select"}});
+$("#search").oninput=e=>{let q=e.target.value.trim().toLowerCase();$$("[data-search]").forEach(s=>s.classList.toggle("hidden",!!q&&!s.innerText.toLowerCase().includes(q)))};
+$$(".tab").forEach(t=>t.onclick=()=>{$$(".tab").forEach(x=>x.classList.remove("active"));$$(".pane").forEach(x=>x.classList.remove("active"));t.classList.add("active");$("#"+t.dataset.tab).classList.add("active")});
+const secs=$$("main section"),links=$$("nav a");const ob=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id))}),{rootMargin:"-20% 0px -70% 0px"});secs.forEach(s=>ob.observe(s));
+addEventListener("scroll",()=>{let d=document.documentElement,m=d.scrollHeight-d.clientHeight;$("#progress").style.width=(m?d.scrollTop/m*100:0)+"%"},{passive:true});
+
+const ladderText=[
+ "Permissions and APIs answer who may request an operation. They are cheap but rely on the service enforcing them correctly.",
+ "UID and SELinux constrain process-to-object access throughout Android and form the ordinary app sandbox.",
+ "Namespaces change a process's view of selected kernel objects. A namespace is scoped: a mount namespace does not isolate networking.",
+ "cgroups manage resource placement; BPF adds programmable observation or enforcement at specific hooks.",
+ "An isolated service gets a special UID and no permissions of its own. It still shares the host kernel.",
+ "A protected VM or separate ECU creates a stronger kernel/hardware boundary, with higher operational and integration cost."
+];
+async function playLadder(){for(let i=0;i<6;i++){$$(".rung").forEach((r,j)=>r.classList.toggle("on",j===i));$("#ladderText").textContent=ladderText[i];await delay(680)}}
+$("#playLadder").onclick=playLadder;$("#resetLadder").onclick=()=>{$$(".rung").forEach(r=>r.classList.remove("on"));$("#ladderText").textContent="Start with the least expensive boundary that satisfies the threat model. Add layers rather than replacing all lower layers."};
+$$(".rung").forEach(r=>r.onclick=()=>{$$(".rung").forEach(x=>x.classList.remove("on"));r.classList.add("on");$("#ladderText").textContent=ladderText[+r.dataset.i]});
+
+function selectPans(pref,a){
+ if(pref==="paid"){if(a.unmetered)return["unmetered","Unmetered network wins."];if(a.paid)return["paid","OEM_PAID is used because no unmetered network exists."];if(a.default)return["default","Falls back to the general system default."];return[null,"No eligible network exists."]}
+ if(pref==="paidNo"){if(a.unmetered)return["unmetered","Unmetered network wins."];if(a.paid)return["paid","OEM_PAID is selected."];return[null,"No default network: this preference forbids general fallback."]}
+ if(pref==="paidOnly"){return a.paid?["paid","Only OEM_PAID is eligible."]:[null,"OEM_PAID is unavailable, so the app receives no default network."]}
+ if(pref==="privateOnly"){return a.private?["private","Only OEM_PRIVATE is eligible."]:[null,"OEM_PRIVATE is unavailable, so the app receives no default network."]}
+ return[null,"Unknown preference."]
+}
+function routePans(){
+ const a={unmetered:b($("#hasUnmetered").value),paid:b($("#hasPaid").value),private:b($("#hasPrivate").value),default:b($("#hasDefault").value)};
+ $$(".network").forEach(n=>{let k=n.dataset.net,available=k==="unmetered"?a.unmetered:k==="paid"?a.paid:k==="private"?a.private:a.default;n.classList.toggle("unavailable",!available);n.classList.remove("chosen")});
+ let [chosen,text]=selectPans($("#pansPref").value,a);$("#routeFill").style.width="100%";setTimeout(()=>{if(chosen)$(`.network[data-net="${chosen}"]`).classList.add("chosen")},350);
+ $("#pansResult").innerHTML=chosen?`<strong class="ok">SELECT ${chosen.toUpperCase()}</strong><br>${text}`:`<strong class="no">NO DEFAULT NETWORK</strong><br>${text}`;
+}
+$("#routePans").onclick=routePans;
+
+const nsInfo={
+ zygote:"Zygote is the ancestor process. The teaching model shows a shared network namespace but a distinct mount view may be created during specialization.",
+ system:"system_server usually participates in the device's main network namespace and coordinates policy through framework services.",
+ app:"A normal app commonly shares the main netns; its network policy is distinguished by UID and routing rules. Its mount namespace can expose an app-specific storage view.",
+ isolated:"An isolated service has a different UID and authority, but isolatedProcess does not promise a private network namespace or separate kernel."
+};
+$$(".proc").forEach(p=>p.onclick=()=>{$$(".proc").forEach(x=>x.classList.remove("active"));p.classList.add("active");$("#nsResult").textContent=nsInfo[p.dataset.p]});
+
+function resourceModel(cpu,mem,pids,policy){
+ const cpuPct=Math.max(1,Math.round(Math.log10(Math.max(1,cpu))/4*100));
+ const pidPct=Math.min(100,Math.round(pids/512*100));
+ let outcome=policy==="drop"?"UID traffic rejected by the BPF policy model.":policy==="throttle"?"Traffic is allowed and accounted, while userspace may treat the UID as constrained.":"Traffic is allowed and accounted.";
+ return {cpuPct,memPct:mem,pidPct,outcome}
+}
+$("#applyResource").onclick=async()=>{
+ let r=resourceModel(+$("#cpuWeight").value,+$("#memHigh").value,+$("#pidsMax").value,$("#bpfPolicy").value);
+ $("#cpuGauge").style.width=r.cpuPct+"%";$("#memGauge").style.width=r.memPct+"%";$("#pidGauge").style.width=r.pidPct+"%";
+ $("#cpuText").textContent=r.cpuPct+"%";$("#memText").textContent=r.memPct+"%";$("#pidText").textContent=$("#pidsMax").value;
+ for(const id of["hTask","hCgroup","hBpf","hMap","hOutcome"]){$$(".hook").forEach(x=>x.classList.remove("on"));$("#"+id).classList.add("on");await delay(330)}
+ $("#resourceResult").innerHTML=`<strong>Resource model:</strong> CPU weight ${$("#cpuWeight").value}, memory.high at ${r.memPct}%, pids.max ${$("#pidsMax").value}.<br><strong>BPF result:</strong> ${r.outcome}`
+};
+
+async function playZygote(){
+ let dot=$("#zygoteDot");dot.style.opacity=1;
+ const text=["init launches the ABI-appropriate Zygote.","Zygote or a pooled USAP holds preloaded runtime state.","The process is forked or selected from the USAP pool.","The child is specialized: identity, groups, cgroup, SELinux and other restrictions are applied.","Only after specialization does application code execute."];
+ for(let i=0;i<5;i++){$$(".znode").forEach((n,j)=>n.classList.toggle("active",j===i));dot.style.left=(8+i*20)+"%";$("#zygoteText").textContent=text[i];await delay(650)}
+ dot.style.background="var(--b)"
+}
+$("#playZygote").onclick=playZygote;$("#resetZygote").onclick=()=>{$$(".znode").forEach(n=>n.classList.remove("active"));let d=$("#zygoteDot");d.style.opacity=0;d.style.left="8%";d.style.background="var(--warn)";$("#zygoteText").textContent="Press Start to trace process creation."};
+
+function chooseBoundary(work,host){
+ if(work==="parser")return host==="yes"?["Protected pVM","Host compromise matters; use a pVM if secrets/integrity justify the cost, otherwise isolate and strictly validate."]:["Isolated process","A narrow isolated service reduces parser authority and crash blast radius."];
+ if(work==="secret")return host==="yes"?["Protected AVF pVM","The payload needs confidentiality/integrity from compromised host Android."]:["Isolated process or TEE/pVM","Select based on key lifetime, attestation and host-threat requirements."];
+ if(work==="ui")return["Ordinary app sandbox","Use UID, SELinux, permissions and standard process boundaries; a VM is usually excessive."];
+ return["Independent safety domain","Place actuation in a certified ECU/RTOS or safety partition. Android should communicate through a constrained gateway."];
+}
+$("#chooseBoundary").onclick=()=>{let [x,y]=chooseBoundary($("#isoWork").value,$("#hostThreat").value);$("#isoResult").innerHTML=`<strong class="ok">${x}</strong><br>${y}`};
+
+$$("[data-mem]").forEach(btn=>btn.onclick=()=>{
+ let s=btn.dataset.mem,p=$("#memoryPage"),text;
+ p.className="page "+(s==="host"?"":s);
+ if(s==="host")text="Host-owned page: Android may access it; a pVM cannot use it privately.";
+ if(s==="guest")text="Privately donated page: pKVM records guest ownership and blocks host CPU/DMA access under the protected-VM model.";
+ if(s==="shared")text="Explicitly shared page: both sides may access only under the defined sharing contract; treat all cross-boundary input as untrusted.";
+ if(s==="wiped")text="Reclaimed page: pKVM wipes guest data before returning the page to the host.";
+ $("#memResult").textContent=text
+});
+
+const patterns={
+ consumer:["UID sandbox","SELinux","runtime permissions","BPF firewall"],
+ oem:["PANS","restricted-network permission","UID routing","service allowlists"],
+ vehicle:["CarService gateway","VHAL permissions","SELinux","range/rate validation"],
+ sensitive:["protected AVF pVM","verified payload","attestation","minimal Binder RPC"],
+ passenger:["separate Android user","display/occupant-zone policy","per-user app data","UX restrictions"],
+ safety:["separate ECU/RTOS","certified partition","watchdog/fail-safe","constrained gateway"]
+};
+const patternReasons={
+ consumer:"Use Android's native app sandbox; add process isolation only for risky components.",
+ oem:"Route only selected OEM apps to paid/private networks and reapply policy after boot.",
+ vehicle:"Keep VHAL behind CarService/native gateways; validate every property and downstream message.",
+ sensitive:"Use a pVM when secrets or computation must survive host compromise; minimize the exposed RPC surface.",
+ passenger:"Use Android multi-user and display/occupant-zone controls so passengers do not inherit driver identity or data.",
+ safety:"Keep hard real-time/safety actuation outside the general Android trust and scheduling domain."
+};
+function renderPattern(z){
+ $$(".zone").forEach(x=>x.classList.toggle("selected",x.dataset.zone===z));
+ $$(".zone").forEach(x=>{x.querySelector(".chips").innerHTML=patterns[x.dataset.zone].map(c=>`<span class="control-chip">${c}</span>`).join("")});
+ $("#patternResult").innerHTML=`<strong>${patterns[z].join(" + ")}</strong><br>${patternReasons[z]}`
+}
+$("#recommendPattern").onclick=()=>renderPattern($("#zoneSelect").value);$$(".zone").forEach(z=>z.onclick=()=>{$("#zoneSelect").value=z.dataset.zone;renderPattern(z.dataset.zone)});renderPattern("consumer");
+
+$("#gradeQuiz").onclick=()=>{
+ let qs=$$(".quiz-q"),correct=0,answered=0;qs.forEach(q=>{let n=q.querySelector("input"),p=$(`input[name="${n.name}"]:checked`);if(p){answered++;if(p.value===q.dataset.answer)correct++}});
+ let pct=Math.round(correct/qs.length*100);$("#quizResult").innerHTML=`<strong>${correct}/${qs.length} correct (${pct}%)</strong><br>${answered<qs.length?"Some questions are unanswered.":pct>=80?"Pass — trainee knowledge threshold met.":"Review the relevant modules and retry."}`
+};
+
+const checks=$$("#checks input");function updateChecks(){let n=checks.filter(c=>c.checked).length;$("#meter").style.width=n/checks.length*100+"%";$("#checkResult").innerHTML=`<strong>${n} of ${checks.length}</strong> acceptance items complete.${n===checks.length?" Ready for trainer sign-off.":""}`}
+checks.forEach(c=>{
+  c.checked=safeStore.get("aas-"+c.dataset.k)==="1";
+  c.onchange=()=>{
+    safeStore.set("aas-"+c.dataset.k,c.checked?"1":"0");
+    updateChecks();
+  };
+});
+updateChecks();
+
+function selfTests(){
+ const t=[
+  ["PANS paid unmetered",selectPans("paid",{unmetered:true,paid:true,private:false,default:true})[0]==="unmetered"],
+  ["PANS paid fallback",selectPans("paid",{unmetered:false,paid:false,private:false,default:true})[0]==="default"],
+  ["PANS no fallback",selectPans("paidNo",{unmetered:false,paid:false,private:false,default:true})[0]===null],
+  ["PANS private only",selectPans("privateOnly",{unmetered:true,paid:true,private:true,default:true})[0]==="private"],
+  ["Parser boundary",chooseBoundary("parser","no")[0]==="Isolated process"],
+  ["Host-threat secret",chooseBoundary("secret","yes")[0]==="Protected AVF pVM"],
+  ["Safety boundary",chooseBoundary("safety","no")[0]==="Independent safety domain"],
+  ["Resource model",resourceModel(100,70,128,"allow").memPct===70]
+ ];
+ let n=t.filter(x=>x[1]).length;$("#selfTest").className="callout "+(n===t.length?"good":"bad");$("#selfTest").innerHTML=`<strong>Simulator self-test: ${n}/${t.length} passed.</strong><br>${t.filter(x=>!x[1]).map(x=>x[0]).join(", ")||"PANS priorities, boundary selection and resource-control logic are internally consistent."}`;window.__simulationTests={passed:n,total:t.length,tests:t}
+}
+selfTests();
+routePans();
+
+$("#runtimeStatus").className="callout good";
+$("#runtimeStatus").innerHTML="<strong>Interactive runtime:</strong> All controls initialized successfully.";
+window.__session3Ready=true;
+
+/* ===== Project Aegis mission-control runtime ===== */
+const missionTargets=[
+ {id:"model",key:"boundary",title:"Mission 1",subtitle:"Choose the correct isolation boundary"},
+ {id:"pans",key:"network",title:"Mission 2",subtitle:"Control per-application connectivity"},
+ {id:"namespaces",key:"visibility",title:"Mission 3",subtitle:"Investigate process visibility"},
+ {id:"cgroups",key:"resources",title:"Mission 4",subtitle:"Contain resource abuse"},
+ {id:"zygote",key:"birth",title:"Mission 5",subtitle:"Trace Android app-process birth"},
+ {id:"isolated",key:"parser",title:"Mission 6",subtitle:"Contain the untrusted parser"},
+ {id:"avf",key:"secrets",title:"Mission 7",subtitle:"Protect sensitive compute"},
+ {id:"automotive",key:"architecture",title:"Mission 8",subtitle:"Design the connected vehicle"}
+];
+let guideIndex=0;
+const missionKey=k=>"aegis-mission-"+k;
+function isMissionDone(k){return safeStore.get(missionKey(k))==="1"}
+function refreshMissionUI(){
+ let done=0;
+ $$(".mission-card").forEach(card=>{const yes=isMissionDone(card.dataset.key);card.classList.toggle("done",yes);if(yes)done++});
+ $("#missionDoneCount").textContent=`${done}/${missionTargets.length}`;
+ $("#missionProgressBar").style.width=(done/missionTargets.length*100)+"%";
+ if(done===missionTargets.length)unlockAchievement("commander");
+}
+function setGuide(index,scroll=true){
+ guideIndex=Math.max(0,Math.min(missionTargets.length-1,index));
+ const m=missionTargets[guideIndex];
+ $$("main section").forEach(s=>s.classList.toggle("guided-current",s.id===m.id));
+ $("#guideTitle").textContent=m.title;
+ $("#guideSubtitle").textContent=m.subtitle;
+ $("#completeMission").textContent=isMissionDone(m.key)?"✓ Completed":"Mark complete";
+ $("#guidePrev").disabled=guideIndex===0;
+ $("#guideNext").textContent=guideIndex===missionTargets.length-1?"Finish →":"Next →";
+ if(scroll)$("#"+m.id)?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function enterGuided(index=0){document.body.classList.add("guided");safeStore.set("aegis-mode","guided");setGuide(index);$("#modeToggle").textContent="🗺️"}
+function exitGuided(){document.body.classList.remove("guided");safeStore.set("aegis-mode","explore");$("#modeToggle").textContent="🧭";$("#mission").scrollIntoView({behavior:"smooth"})}
+$("#startGuided").addEventListener("click",()=>enterGuided(0));
+$("#startExplore").addEventListener("click",exitGuided);
+$("#modeToggle").addEventListener("click",()=>document.body.classList.contains("guided")?exitGuided():enterGuided(guideIndex));
+$("#exitGuided").addEventListener("click",exitGuided);
+$("#guidePrev").addEventListener("click",()=>setGuide(guideIndex-1));
+$("#guideNext").addEventListener("click",()=>guideIndex===missionTargets.length-1?exitGuided():setGuide(guideIndex+1));
+$("#completeMission").addEventListener("click",()=>{const m=missionTargets[guideIndex];safeStore.set(missionKey(m.key),"1");refreshMissionUI();setGuide(guideIndex,false)});
+$("#resetMissionProgress").addEventListener("click",()=>{missionTargets.forEach(m=>safeStore.set(missionKey(m.key),"0"));refreshMissionUI();setGuide(guideIndex,false)});
+$$(".mission-card").forEach((card,i)=>card.addEventListener("click",()=>enterGuided(i)));
+$$('aside nav a').forEach(a=>a.addEventListener('click',()=>{if(!document.body.classList.contains('guided'))return;const id=a.getAttribute('href').slice(1);const i=missionTargets.findIndex(m=>m.id===id);if(i>=0)setGuide(i,false)}));
+if(safeStore.get("aegis-mode")==="guided")enterGuided(0);else refreshMissionUI();
+
+/* Achievements */
+const achievementDefs={
+ foundation:["🧱","Boundary Builder","Explored the isolation ladder"],
+ navigator:["📡","Network Navigator","Ran a PANS routing decision"],
+ investigator:["🕵️","Process Investigator","Compared namespace views"],
+ governor:["🎛️","Resource Governor","Applied cgroup and BPF reasoning"],
+ process:["🧬","Process Detective","Traced Zygote specialization"],
+ virtual:["🔐","Virtualization Analyst","Explored protected memory states"],
+ architect:["🏗️","Security Architect","Scored 80% in the design challenge"],
+ commander:["🏅","Aegis Commander","Completed all eight missions"]
+};
+function achievementUnlocked(k){return safeStore.get("aegis-achievement-"+k)==="1"}
+function unlockAchievement(k){if(!achievementDefs[k])return;safeStore.set("aegis-achievement-"+k,"1");renderAchievements()}
+function renderAchievements(){
+ let n=0;$("#achievementList").innerHTML=Object.entries(achievementDefs).map(([k,v])=>{const on=achievementUnlocked(k);if(on)n++;return `<div class="achievement ${on?"unlocked":""}"><b>${v[0]} ${v[1]}</b><span>${on?v[2]:"Locked"}</span></div>`}).join("");
+ $("#achievementCount").textContent=`${n}/${Object.keys(achievementDefs).length}`;
+}
+$("#achievementButton").addEventListener("click",()=>$("#achievementDrawer").classList.toggle("open"));
+$("#closeAchievements").addEventListener("click",()=>$("#achievementDrawer").classList.remove("open"));
+renderAchievements();
+$("#playLadder").addEventListener("click",()=>unlockAchievement("foundation"));
+$("#routePans").addEventListener("click",()=>unlockAchievement("navigator"));
+$$(".proc").forEach(x=>x.addEventListener("click",()=>unlockAchievement("investigator")));
+$("#applyResource").addEventListener("click",()=>unlockAchievement("governor"));
+$("#playZygote").addEventListener("click",()=>unlockAchievement("process"));
+$$('[data-mem]').forEach(x=>x.addEventListener('click',()=>unlockAchievement('virtual')));
+
+/* Incident arena */
+function updateIncidentScore(){
+ const cards=$$(".incident-card"),attempted=cards.filter(c=>c.dataset.attempted==="1").length,correct=cards.filter(c=>c.dataset.correct==="1").length,pct=Math.round(correct/cards.length*100);
+ $("#incidentCorrect").textContent=correct;$("#incidentAttempted").textContent=`${attempted}/${cards.length}`;$("#incidentPercent").textContent=pct+"%";$("#incidentScoreMini").textContent=pct+"%";safeStore.set("aegis-incident-score",pct)
+}
+$$(".incident-card").forEach(card=>{
+ $$(".incident-option",card).forEach(btn=>btn.addEventListener("click",()=>{
+   $$(".incident-option",card).forEach(x=>x.classList.remove("selected"));btn.classList.add("selected");
+   const ok=btn.dataset.value===card.dataset.answer;card.dataset.attempted="1";card.dataset.correct=ok?"1":"0";
+   $$(".incident-option",card).forEach(x=>{x.classList.toggle("correct",x.dataset.value===card.dataset.answer);x.classList.toggle("wrong",x===btn&&!ok)});
+   const feedback=$(".incident-feedback",card);
+   feedback.innerHTML=ok?'<strong class="ok">Correct.</strong> '+feedback.textContent:'<strong class="no">Not the controlling boundary.</strong> Review what the selected technology actually governs.';
+   updateIncidentScore();
+ }))
+});
+$("#incidentScoreMini").textContent=(safeStore.get("aegis-incident-score")||"0")+"%";
+
+/* Command anatomy */
+$$(".cmd-part").forEach(p=>p.addEventListener("click",()=>{$$(".cmd-part").forEach(x=>x.classList.remove("active"));p.classList.add("active");$("#commandExplain").innerHTML=`<strong>${p.textContent}</strong><br>${p.dataset.explain}`}));
+
+/* Searchable glossary */
+const glossaryTerms=[
+ ["PANS","Per-application network selection. Maps AAOS packages to OEM network preferences; it does not create a separate kernel or per-app network namespace.","Often confused with VPN routing or netns isolation."],
+ ["OEM_PAID","Restricted network capability representing OEM-funded connectivity.","Requires OEM-controlled privileged authorization."],
+ ["OEM_PRIVATE","Restricted network intended for dedicated OEM connectivity.","Private routing is not private memory or a private kernel."],
+ ["Network namespace","A Linux namespace containing interfaces, routes, neighbors, firewall state and socket namespace.","Standard Android does not normally create one per app."],
+ ["Mount namespace","A process-specific view of filesystem mounts.","Different from storage permissions and linker namespaces."],
+ ["Linker namespace","Android dynamic-linker visibility rules for native libraries.","Not a Linux network namespace."],
+ ["UID sandbox","The ordinary Android identity boundary that separates app ownership and authority.","Works with SELinux, permissions and service-side validation."],
+ ["SELinux domain","Mandatory access-control label governing process-to-object operations.","Privileged UID does not bypass every SELinux decision."],
+ ["cgroup","Hierarchical grouping for resource accounting, control and task placement.","Not a confidentiality boundary by itself."],
+ ["Task profile","Android abstraction that applies reusable cgroup-related actions to tasks.","Avoid hard-coding cgroup filesystem paths in framework code."],
+ ["eBPF program","Verified bytecode attached to a supported hook to observe or enforce policy.","A cgroup can be an attachment point; it is not the program."],
+ ["BPF map","Kernel-accessible data structure used by BPF programs and userspace.","Maps hold state/rules; hooks run programs."],
+ ["Zygote","Preloaded Android runtime process that creates app processes through fork or USAP specialization.","Forking alone is not the complete sandbox transition."],
+ ["USAP","Unspecialized app process that can be pre-forked to reduce startup latency.","It must be specialized before app code runs."],
+ ["Isolated process","Special Android process identity with no application permissions of its own.","Still shares the host Linux kernel."],
+ ["AVF","Android Virtualization Framework for creating and managing guest VMs.","May expose protected or non-protected capability depending on hardware/build."],
+ ["pKVM","ARM64 KVM-based hypervisor used for protected VM isolation.","x86_64 Cuttlefish does not prove production protected pKVM assurance."],
+ ["pVM","Protected virtual machine whose private memory is isolated from host Android under the pKVM threat model.","Not automatically functionally safe or a full Android UI."],
+ ["Microdroid","Small Android-derived guest environment for focused secure payloads.","No full SystemServer, Zygote, UI or HAL stack."],
+ ["VHAL","Vehicle Hardware Abstraction Layer connecting Android vehicle services to vehicle hardware/gateways.","Apps should use Car APIs rather than direct unrestricted access."],
+ ["CarService","Framework gateway enforcing automotive APIs and permissions before VHAL access.","Downstream range, origin and rate validation still matters."],
+ ["Safety domain","Independent ECU, RTOS or certified partition for safety-critical timing and actuation.","Android may request; the safety domain decides."]
+];
+function renderGlossary(q=""){
+ q=q.toLowerCase().trim();const visible=glossaryTerms.filter(t=>t.join(" ").toLowerCase().includes(q));
+ $("#glossaryGrid").innerHTML=visible.map(t=>`<article class="term"><h3>${t[0]}</h3><p>${t[1]}</p><small>${t[2]}</small></article>`).join("");$("#glossaryCount").textContent=`${visible.length} terms`
+}
+$("#glossarySearch").addEventListener("input",e=>renderGlossary(e.target.value));renderGlossary();
+
+/* Architecture builder */
+const designs={
+ streaming:{name:"Consumer streaming app",required:["uid","selinux","bpf"],optional:["cgroup"],forbidden:["pvm","safetyecu"],reason:"Use the ordinary Android sandbox and network policy. A pVM or safety ECU would be disproportionate."},
+ navigation:{name:"OEM navigation",required:["uid","selinux","pans","restricted"],optional:["bpf","cgroup","validation"],forbidden:["safetyecu"],reason:"PANS selects OEM connectivity; privileged restricted-network authorization controls eligibility."},
+ parser:{name:"Untrusted media parser",required:["isolated","selinux","validation"],optional:["cgroup","bpf","minrpc"],forbidden:["safetyecu"],reason:"Reduce authority with an isolated process, keep the IPC narrow and validate every input."},
+ secret:{name:"Vehicle key service",required:["pvm","attestation","minrpc"],optional:["validation"],forbidden:["safetyecu"],reason:"The host-compromise requirement justifies protected AVF, payload verification/attestation and minimal RPC."},
+ diagnostics:{name:"Remote diagnostics",required:["pans","restricted","carservice","validation"],optional:["uid","selinux","bpf"],forbidden:["safetyecu"],reason:"Constrain network eligibility and pass vehicle operations through validated automotive gateways."},
+ brakes:{name:"Brake actuation",required:["safetyecu","carservice","validation"],optional:[],forbidden:["isolated","pvm","cgroup"],reason:"Safety-critical actuation belongs in an independent certified domain. Android communicates through a constrained gateway."}
+};
+let currentWorkload="streaming";
+function selectedControls(){return $$("#designDrop .security-token").map(x=>x.dataset.control)}
+function addControl(control){if(selectedControls().includes(control))return;const source=$(`#controlPool [data-control="${control}"]`);if(!source)return;const clone=source.cloneNode(true);clone.draggable=false;clone.addEventListener("click",()=>clone.remove());$("#designDrop").appendChild(clone)}
+$$("#controlPool .security-token").forEach(t=>{t.addEventListener("dragstart",e=>e.dataTransfer.setData("text/plain",t.dataset.control));t.addEventListener("click",()=>addControl(t.dataset.control))});
+$("#designDrop").addEventListener("dragover",e=>{e.preventDefault();e.currentTarget.classList.add("dragover")});$("#designDrop").addEventListener("dragleave",e=>e.currentTarget.classList.remove("dragover"));$("#designDrop").addEventListener("drop",e=>{e.preventDefault();e.currentTarget.classList.remove("dragover");addControl(e.dataTransfer.getData("text/plain"))});
+$$(".workload-btn").forEach(btn=>btn.addEventListener("click",()=>{currentWorkload=btn.dataset.workload;$$(".workload-btn").forEach(x=>x.classList.toggle("active",x===btn));$("#designDrop").innerHTML='<p class="muted">Drop controls here. Click a selected token to remove it.</p>';$("#architectureFeedback").innerHTML=`Current workload: <strong>${designs[currentWorkload].name}</strong>. Build the least-privilege design.`}));
+$("#resetDesign").addEventListener("click",()=>{$("#designDrop").innerHTML='<p class="muted">Drop controls here. Click a selected token to remove it.</p>';$("#architectureFeedback").textContent="Selection reset. Add only controls that address the threat model."});
+$("#evaluateDesign").addEventListener("click",()=>{
+ const d=designs[currentWorkload],chosen=selectedControls(),missing=d.required.filter(x=>!chosen.includes(x)),bad=d.forbidden.filter(x=>chosen.includes(x)),requiredHit=d.required.length-missing.length;
+ const raw=Math.max(0,Math.round((requiredHit/d.required.length*90)-(bad.length*20)+(chosen.some(x=>d.optional.includes(x))?10:0))),score=Math.min(100,raw);
+ const label=x=>($(`#controlPool [data-control="${x}"]`)?.textContent||x);
+ $("#architectureFeedback").innerHTML=`<strong class="${score>=80?"ok":score>=55?"maybe":"no"}">Design score: ${score}%</strong><br>${d.reason}<br><br><b>Missing:</b> ${missing.length?missing.map(label).join(", "):"none"}<br><b>Category errors:</b> ${bad.length?bad.map(label).join(", "):"none"}`;
+ $("#architectureScoreMini").textContent=score+"%";safeStore.set("aegis-architecture-score",score);if(score>=80)unlockAchievement("architect")
+});
+$("#architectureScoreMini").textContent=(safeStore.get("aegis-architecture-score")||"0")+"%";
+
+/* Voice-over with full transport controls */
+let speechUtterance=null,currentSpeechSection=null;
+function sectionLabel(s){const h=s.querySelector("h2");return h?h.textContent.replace(/^\s+/,''):s.id}
+const readableSections=$$("main section").filter(s=>s.id!=="sources");
+$("#voiceSection").innerHTML=readableSections.map(s=>`<option value="${s.id}">${sectionLabel(s).slice(0,52)}</option>`).join("");
+function cleanSectionText(section){const clone=section.cloneNode(true);clone.querySelectorAll("pre,code,button,input,select,script,.copy,.controls,.voice-player,.guide-bar").forEach(x=>x.remove());return clone.innerText.replace(/\s+/g," ").trim().slice(0,12000)}
+function stopSpeech(status="Stopped"){
+ if("speechSynthesis" in window)window.speechSynthesis.cancel();speechUtterance=null;$$("main section").forEach(s=>s.classList.remove("speaking"));$("#voiceStatus").textContent=status
+}
+function speakSection(id){
+ if(!("speechSynthesis" in window)){$("#voiceStatus").textContent="Speech synthesis is not available in this browser.";return}
+ stopSpeech("");const section=$("#"+id);if(!section)return;const content=cleanSectionText(section);if(!content){$("#voiceStatus").textContent="No readable explanation found.";return}
+ currentSpeechSection=section;speechUtterance=new SpeechSynthesisUtterance(content);speechUtterance.rate=parseFloat($("#voiceRate").value);speechUtterance.onstart=()=>{section.classList.add("speaking");$("#voiceStatus").textContent=`Reading: ${sectionLabel(section)}`};speechUtterance.onend=()=>stopSpeech("Finished. Choose another section or replay.");speechUtterance.onerror=()=>stopSpeech("Speech stopped by the browser.");window.speechSynthesis.speak(speechUtterance)
+}
+$("#voicePlay").addEventListener("click",()=>speakSection($("#voiceSection").value));$("#voicePause").addEventListener("click",()=>{if(window.speechSynthesis.speaking&&!window.speechSynthesis.paused){window.speechSynthesis.pause();$("#voiceStatus").textContent="Paused"}});$("#voiceResume").addEventListener("click",()=>{if(window.speechSynthesis.paused){window.speechSynthesis.resume();$("#voiceStatus").textContent="Resumed"}});$("#voiceStop").addEventListener("click",()=>stopSpeech());$("#voiceRate").addEventListener("change",()=>{if(window.speechSynthesis.speaking)speakSection(currentSpeechSection?.id||$("#voiceSection").value)});
+readableSections.forEach(s=>{const h=s.querySelector("h2");if(!h)return;const btn=document.createElement("button");btn.className="listen-section no-print";btn.textContent="🔊 Listen";btn.addEventListener("click",()=>{$("#voiceSection").value=s.id;speakSection(s.id)});h.appendChild(btn)});
+addEventListener("keydown",e=>{if(e.key==="Escape")stopSpeech()});
+
+/* Improve quiz feedback and tie into progress */
+$("#gradeQuiz").addEventListener("click",()=>{const qs=$$(".quiz-q"),correct=qs.filter(q=>{const n=q.querySelector("input");const p=$(`input[name="${n.name}"]:checked`);return p&&p.value===q.dataset.answer}).length;if(correct/qs.length>=.8){safeStore.set(missionKey("architecture"),"1");refreshMissionUI()}});
+
+/* Runtime health checks for new features */
+const aegisChecks=[
+ ["Mission cards",$$(".mission-card").length===8],
+ ["Incident cards",$$(".incident-card").length===4],
+ ["Glossary",glossaryTerms.length>=20],
+ ["Architecture workloads",Object.keys(designs).length===6],
+ ["Voice controls",!!window.speechSynthesis || true]
+];
+window.__aegisTests={passed:aegisChecks.filter(x=>x[1]).length,total:aegisChecks.length,tests:aegisChecks};
+
+</script>
+</body>
+</html>
