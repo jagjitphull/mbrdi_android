@@ -1,0 +1,1714 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>Session 4 — Phantom Unlock Incident Mission</title>
+<style>
+:root{
+ --bg:#07111b;--panel:#0d1b2a;--panel2:#13273b;--panel3:#1a3149;
+ --text:#eef8ff;--muted:#a9bfd2;--line:#2a4b64;--a:#68dcff;--b:#8cf0b4;
+ --c:#c2a8ff;--warn:#ffd166;--bad:#ff7e8d;--code:#050b12;
+ --shadow:0 16px 44px rgba(0,0,0,.3);--r:18px;--nav:318px
+}
+html[data-theme="light"]{
+ --bg:#f3f8fb;--panel:#fff;--panel2:#edf5fa;--panel3:#e1edf6;
+ --text:#102337;--muted:#526c81;--line:#c5d9e8;--a:#006f9d;--b:#087f5b;
+ --c:#6549c9;--warn:#8b5a00;--bad:#b42338;--code:#eef3f7;
+ --shadow:0 12px 32px rgba(21,55,82,.12)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+ margin:0;color:var(--text);font:16px/1.64 system-ui,-apple-system,"Segoe UI",sans-serif;
+ background:radial-gradient(circle at 90% -8%,rgba(104,220,255,.14),transparent 34%),
+ radial-gradient(circle at 0 28%,rgba(194,168,255,.09),transparent 28%),var(--bg)
+}
+a{color:var(--a)}button,input,select{font:inherit}
+.top{
+ position:sticky;top:0;z-index:80;display:flex;gap:.55rem;align-items:center;
+ padding:.65rem 1rem;border-bottom:1px solid var(--line);
+ background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px)
+}
+.brand{margin-right:auto;font-weight:900}.brand span{color:var(--a)}
+.btn,.icon{
+ border:1px solid var(--line);background:var(--panel);color:var(--text);
+ border-radius:11px;padding:.55rem .76rem;cursor:pointer;transition:.18s
+}
+.btn:hover,.icon:hover{border-color:var(--a);transform:translateY(-1px)}
+.btn.primary{border:0;background:linear-gradient(135deg,var(--a),var(--b));color:#03161e;font-weight:900}
+.search{width:min(34vw,340px);border:1px solid var(--line);background:var(--panel);color:var(--text);padding:.58rem .8rem;border-radius:11px}
+.layout{display:grid;grid-template-columns:var(--nav) minmax(0,1fr)}
+aside{
+ position:sticky;top:58px;height:calc(100vh - 58px);overflow:auto;padding:1rem;
+ border-right:1px solid var(--line);background:color-mix(in srgb,var(--panel) 89%,transparent)
+}
+aside h2{font-size:.8rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+nav a{display:block;text-decoration:none;color:var(--muted);padding:.43rem .62rem;border-radius:9px}
+nav a:hover,nav a.active{background:var(--panel2);color:var(--text)}
+.track{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b))}
+main{min-width:0;max-width:1540px;padding:clamp(1rem,3vw,3rem)}
+.hero{
+ position:relative;overflow:hidden;padding:clamp(1.4rem,4vw,3.8rem);
+ border:1px solid var(--line);border-radius:28px;
+ background:linear-gradient(145deg,var(--panel),var(--panel2));box-shadow:var(--shadow)
+}
+.hero:after{
+ content:"";position:absolute;width:420px;height:420px;border:1px solid rgba(104,220,255,.28);
+ border-radius:50%;right:-170px;top:-205px;
+ box-shadow:0 0 0 55px rgba(104,220,255,.04),0 0 0 110px rgba(104,220,255,.02)
+}
+.tag,.pill{
+ display:inline-flex;align-items:center;gap:.35rem;border:1px solid var(--line);
+ background:var(--panel);color:var(--muted);border-radius:999px;padding:.25rem .65rem;font-size:.84rem
+}
+h1{font-size:clamp(2.1rem,5.1vw,4.8rem);line-height:1.02;margin:.75rem 0;max-width:1130px}
+h1 em{font-style:normal;color:var(--a)}.hero p{max-width:1000px;color:var(--muted);font-size:1.08rem}
+.badges{display:flex;gap:.5rem;flex-wrap:wrap}
+section{
+ scroll-margin-top:78px;margin:2.2rem 0;padding:clamp(1rem,2.4vw,2rem);
+ border:1px solid var(--line);border-radius:var(--r);background:var(--panel);box-shadow:var(--shadow)
+}
+section>h2{font-size:clamp(1.45rem,3vw,2.3rem);margin:.1rem 0 .45rem}
+h3{line-height:1.25}.lead,.muted{color:var(--muted)}.small{font-size:.9rem}.tiny{font-size:.79rem}
+.grid{display:grid;gap:1rem}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{border:1px solid var(--line);background:var(--panel2);border-radius:15px;padding:1rem;min-width:0}
+.card h3{margin-top:0}
+.callout{border-left:4px solid var(--a);background:var(--panel2);padding:.9rem 1rem;border-radius:0 12px 12px 0;margin:1rem 0}
+.callout.good{border-color:var(--b)}.callout.warn{border-color:var(--warn)}.callout.bad{border-color:var(--bad)}
+pre{
+ position:relative;background:var(--code);border:1px solid var(--line);border-radius:14px;
+ padding:1rem;overflow:auto;white-space:pre;line-height:1.44;max-height:680px
+}
+code,kbd{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.copy{position:absolute;right:.5rem;top:.5rem;font-size:.74rem}.expected{border-left:3px solid var(--b)}
+table{width:100%;border-collapse:collapse;display:block;overflow:auto}
+th,td{padding:.68rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--a);white-space:nowrap}
+.controls{display:flex;gap:.65rem;flex-wrap:wrap;align-items:end}
+.field{display:grid;gap:.3rem;min-width:150px;flex:1}.field label{font-size:.83rem;color:var(--muted)}
+.field input,.field select{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--code);color:var(--text);padding:.58rem}
+.result{margin-top:1rem;padding:1rem;border:1px dashed var(--line);border-radius:13px;background:var(--code)}
+.ok{color:var(--b)}.no{color:var(--bad)}.maybe{color:var(--warn)}
+details{border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:.65rem .85rem;margin:.65rem 0}
+summary{cursor:pointer;font-weight:800}
+.tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem}
+.tab{border:1px solid var(--line);background:var(--panel2);color:var(--muted);padding:.45rem .72rem;border-radius:10px;cursor:pointer}
+.tab.active{color:var(--text);border-color:var(--a)}.pane{display:none}.pane.active{display:block}
+.pipeline{display:grid;grid-template-columns:repeat(8,minmax(130px,1fr));gap:.7rem;overflow:auto;padding:.5rem}
+.stage{min-width:130px;border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:.85rem;text-align:center;transition:.25s}
+.stage.on{border-color:var(--a);transform:translateY(-5px);box-shadow:0 0 24px rgba(104,220,255,.15)}
+.stage strong{display:block}.stage span{font-size:.78rem;color:var(--muted)}
+.signal{width:23px;height:23px;border-radius:50%;background:var(--bad);box-shadow:0 0 22px var(--bad);margin:.75rem;transition:transform .55s,background .2s}
+.ruleflow{display:grid;grid-template-columns:repeat(6,1fr);gap:.65rem}
+.rule{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:.78rem;text-align:center}
+.rule.on{border-color:var(--a);box-shadow:inset 0 -4px var(--a)}
+.logpath{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}
+.logbox{border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:.85rem}
+.logbox.active{border-color:var(--b)}
+.dlt-table{display:grid;grid-template-columns:.8fr .7fr .7fr .7fr 2.4fr;border:1px solid var(--line);border-radius:13px;overflow:hidden}
+.dlt-table>div{padding:.55rem;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:90px}
+.dlt-table>div:nth-child(5n){border-right:0}.head{font-weight:900;color:var(--a);background:var(--panel3)}
+.alerts{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}.alert{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:.75rem}
+.alert.hit{border-color:var(--bad);box-shadow:inset 0 -4px var(--bad)}
+.auditgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}.audit{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:.8rem;cursor:pointer}
+.audit.pass{border-color:var(--b)}.audit.fail{border-color:var(--bad)}
+.compliance{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}
+.comp{border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:.82rem;cursor:pointer}
+.comp.active{border-color:var(--a)}
+.timeline{position:relative;margin:1rem 0;padding-left:30px}
+.timeline:before{content:"";position:absolute;left:12px;top:0;bottom:0;width:3px;background:var(--line)}
+.event{position:relative;border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:.75rem;margin:.65rem 0}
+.event:before{content:"";position:absolute;width:13px;height:13px;border-radius:50%;background:var(--muted);left:-25px;top:1rem}
+.event.active{border-color:var(--a)}.event.active:before{background:var(--a);box-shadow:0 0 15px var(--a)}
+.harden-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}.hard{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:.8rem;cursor:pointer}
+.hard.selected{border-color:var(--b)}
+.quiz-q{border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:1rem;margin:.8rem 0}
+.quiz-q label{display:block;padding:.35rem;border-radius:8px}.quiz-q label:hover{background:var(--panel3)}
+.checks label{display:flex;gap:.6rem;padding:.55rem;border-bottom:1px dashed var(--line)}.checks input{margin-top:.35rem}
+.meter{height:11px;border-radius:99px;background:var(--panel3);overflow:hidden}.meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--b),var(--a));transition:.3s}
+.hidden{display:none!important}.mobile{display:none}footer{padding:2rem 0;color:var(--muted)}
+@media(max-width:1180px){
+ .pipeline{grid-template-columns:repeat(4,minmax(145px,1fr))}
+ .ruleflow,.logpath,.alerts,.auditgrid,.compliance,.harden-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:980px){
+ .layout{display:block}aside{display:none}.mobile{display:inline-flex}.search{width:min(44vw,280px)}
+ .g2,.g3,.g4,.ruleflow,.logpath,.alerts,.auditgrid,.compliance,.harden-grid{grid-template-columns:1fr}
+ .pipeline{grid-template-columns:1fr}.dlt-table{font-size:.8rem}
+}
+@media print{
+ .top,aside,.copy,.no-print{display:none!important}.layout{display:block}body{background:white;color:#111}
+ main{max-width:none;padding:0}section,.hero,.card{box-shadow:none;border-color:#bbb;break-inside:avoid}
+ pre{white-space:pre-wrap;background:#f5f5f5;color:#111;max-height:none}.pane{display:block!important}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+body.reduce *{animation:none!important;transition:none!important}
+
+/* ===== Phantom Unlock learning-experience layer ===== */
+.mode-switch,.badge-shelf,.evidence-board{display:flex;gap:.6rem;flex-wrap:wrap}
+.mode-btn,.role-chip{
+ border:1px solid var(--line);background:var(--panel2);color:var(--muted);
+ border-radius:999px;padding:.42rem .72rem;cursor:pointer
+}
+.mode-btn.active{background:var(--a);border-color:transparent;color:#03202a;font-weight:900}
+.mission-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:1rem}
+.mission-panel{border:1px solid var(--line);background:var(--panel2);border-radius:17px;padding:1rem}
+.mission-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}
+.stat{border:1px solid var(--line);background:var(--code);border-radius:14px;padding:.8rem;text-align:center}
+.stat strong{display:block;font-size:1.45rem;color:var(--a)}
+.case-tape{border:1px dashed var(--warn);background:color-mix(in srgb,var(--warn) 8%,var(--panel2));border-radius:14px;padding:1rem}
+.evidence-card{
+ min-width:150px;flex:1;border:1px solid var(--line);background:var(--panel3);
+ border-radius:13px;padding:.75rem;cursor:pointer;transition:.2s
+}
+.evidence-card:hover{transform:translateY(-2px);border-color:var(--a)}
+.evidence-card.collected{border-color:var(--b);box-shadow:inset 0 -4px var(--b)}
+.evidence-card.locked{opacity:.55}
+.evidence-card .ev-icon{font-size:1.45rem}
+.badge{
+ border:1px solid var(--line);background:var(--code);border-radius:999px;
+ padding:.38rem .65rem;color:var(--muted);font-size:.84rem
+}
+.badge.earned{border-color:var(--warn);color:var(--text);box-shadow:0 0 14px rgba(255,209,102,.13)}
+.role-hint{border-left:4px solid var(--c);background:var(--panel3);padding:.8rem 1rem;border-radius:0 12px 12px 0}
+.fun-card{border:1px solid var(--line);background:var(--panel2);border-radius:16px;padding:1rem}
+.clue-options{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem}
+.clue-option{
+ border:1px solid var(--line);background:var(--panel3);border-radius:12px;
+ padding:.7rem;cursor:pointer;text-align:left;color:var(--text)
+}
+.clue-option.selected{border-color:var(--a);box-shadow:inset 0 -4px var(--a)}
+.sort-list{display:grid;gap:.55rem}
+.sort-item{
+ display:grid;grid-template-columns:42px 1fr 84px;gap:.6rem;align-items:center;
+ border:1px solid var(--line);background:var(--panel3);border-radius:12px;padding:.6rem
+}
+.sort-num{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--a);color:#03202a;font-weight:900}
+.sort-actions{display:flex;gap:.3rem}
+.sort-actions button{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:8px;cursor:pointer}
+.decision-options{display:grid;gap:.6rem}
+.decision-option{
+ border:1px solid var(--line);background:var(--panel3);border-radius:12px;
+ padding:.75rem;cursor:pointer
+}
+.decision-option.selected{border-color:var(--a)}
+.escape-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem}
+.case-stamp{
+ border:3px solid var(--b);color:var(--b);font-weight:1000;font-size:1.5rem;
+ display:inline-block;padding:.55rem .9rem;border-radius:10px;transform:rotate(-2deg);
+ letter-spacing:.08em
+}
+.didyouknow{border:1px solid var(--line);background:linear-gradient(135deg,var(--panel2),var(--panel3));border-radius:15px;padding:1rem}
+.didyouknow strong{color:var(--warn)}
+.command-guide{border:1px solid var(--line);background:var(--panel2);border-radius:16px;padding:1rem;margin:1rem 0}
+.command-panes .pane{min-height:105px}
+.trainer-note{border-left:4px solid var(--c);background:color-mix(in srgb,var(--c) 8%,var(--panel2));padding:.8rem 1rem;border-radius:0 12px 12px 0;margin:1rem 0}
+body:not(.mode-trainer) .trainer-note{display:none}
+body.mode-quick details,body.mode-quick .deep{display:none!important}
+body.mode-quick section{padding:1rem}
+body.mode-quick section>h2{font-size:1.55rem}
+body.mode-quick .lead{font-size:.98rem}
+body.mode-learning .trainer-note{display:none}
+.challenge-status{font-weight:900}
+@media(max-width:1100px){
+ .mission-grid,.escape-grid{grid-template-columns:1fr}
+ .mission-stats{grid-template-columns:repeat(2,1fr)}
+ .clue-options{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+ .mission-stats,.clue-options{grid-template-columns:1fr}
+ .sort-item{grid-template-columns:34px 1fr}
+ .sort-actions{grid-column:2}
+}
+
+</style>
+</head>
+<body>
+<header class="top">
+<button class="icon mobile" id="menu">☰</button>
+<div class="brand">Session 4 • <span>Debugging, Compliance & Incident Response</span></div>
+<input class="search" id="search" placeholder="Search NFLOG, DLT, R155…">
+<button class="icon" id="motion">◫</button>
+<button class="icon" id="theme">☀</button>
+<button class="icon" onclick="print()">⎙</button>
+</header>
+<div class="layout">
+<aside id="toc">
+<h2>Production simulation</h2>
+<nav>
+<a href="#mission">1. Mission control</a>
+<a href="#overview">2. Session plan</a>
+<a href="#evidence">3. Evidence pipeline</a>
+<a href="#nft">4. nftables, NFLOG & tcpdump</a>
+<a href="#dlt">5. DLT & SOME/IP IDS</a>
+<a href="#audit">6. Rule auditing</a>
+<a href="#r155">7. WP.29 / R155</a>
+<a href="#timeline">8. Timeline reconstruction</a>
+<a href="#hardening">9. Hardening</a>
+<a href="#challenges">10. Investigator challenges</a>
+<a href="#labs">11. Production labs</a>
+<a href="#cuttlefish">12. Cuttlefish evidence</a>
+<a href="#quiz">13. Knowledge check</a>
+<a href="#acceptance">14. Acceptance test</a>
+<a href="#sources">15. Sources</a>
+</nav>
+<p class="small muted">Reading progress</p><div class="track"><div class="bar" id="progress"></div></div>
+</aside>
+
+<main>
+<article class="hero">
+<span class="tag">Ubuntu 24.x KVM • Android 17 Cuttlefish • mixed automotive incidents</span>
+<h1>Turn scattered logs into a <em>defensible incident story</em></h1>
+<p>Capture the packet, preserve the firewall decision, correlate DLT and SOME/IP alerts, test the policy, map evidence to R155 cybersecurity-management expectations, and prove that hardening fixes the attack without breaking approved traffic.</p>
+<div class="badges">
+<span class="pill">Automotive cybersecurity engineers</span>
+<span class="pill">Full production simulation</span>
+<span class="pill">Disposable network namespaces</span>
+<span class="pill">14-test portable validation</span>
+</div>
+</article>
+
+<section id="mission" data-search>
+<h2>1. Mission Control — Case IR-2026-0802: “The Phantom Unlock” 🕵️‍♀️🚗</h2>
+<div class="mode-switch no-print" aria-label="Reading mode">
+<button class="mode-btn" data-mode="quick">⚡ Quick Review</button>
+<button class="mode-btn active" data-mode="learning">📘 Learning Mode</button>
+<button class="mode-btn" data-mode="trainer">🎓 Trainer Mode</button>
+</div>
+
+<div class="mission-grid">
+<div class="mission-panel">
+<div class="case-tape">
+<strong>09:00 — Incoming incident</strong>
+<p>A connected vehicle reports repeated remote-unlock requests. The source is not on the approved list. The gateway sees malformed and replayed SOME/IP traffic, while the Android vehicle-control client restarts. Your job is to preserve evidence, explain the sequence, contain the threat and prove the hardening.</p>
+</div>
+
+<h3>Choose your investigation role</h3>
+<div class="controls">
+<div class="field"><label>Role</label>
+<select id="missionRole">
+<option value="soc">🔵 SOC Analyst</option>
+<option value="network">🟢 Vehicle Network Engineer</option>
+<option value="commander">🟣 Incident Commander</option>
+<option value="compliance">🟠 Compliance Analyst</option>
+<option value="red">🔴 Adversary Simulation Analyst</option>
+</select></div>
+<button class="btn primary" id="applyRole">Apply role</button>
+</div>
+<div class="role-hint" id="roleHint">SOC hint: correlate the first authentication warning with the first NFLOG and SOME/IP IDS records.</div>
+
+<h3>Mission status</h3>
+<div class="mission-stats">
+<div class="stat"><strong id="missionScore">0</strong>Investigation score</div>
+<div class="stat"><strong id="evidenceCount">0/8</strong>Evidence collected</div>
+<div class="stat"><strong id="rootCauseState">UNKNOWN</strong>Root cause</div>
+<div class="stat"><strong id="containmentState">NO</strong>Threat contained</div>
+</div>
+</div>
+
+<div class="mission-panel">
+<h3>Open questions</h3>
+<ul id="openQuestions">
+<li>Was the packet accepted or only observed?</li>
+<li>Was the request new, malformed or replayed?</li>
+<li>Which component rejected the unlock?</li>
+<li>Which policy weakness allowed the attack path?</li>
+<li>What evidence supports post-production monitoring?</li>
+</ul>
+<h3>Investigator tip</h3>
+<p>Keep facts and interpretations separate. “UDP packet observed” is a fact. “Attacker attempted remote unlock” is an interpretation supported by service-aware and application evidence.</p>
+</div>
+</div>
+
+<h3>Virtual evidence board — click items after reviewing them</h3>
+<div class="evidence-board" id="evidenceBoard">
+<div class="evidence-card" data-evidence="pcap"><span class="ev-icon">📦</span><br><strong>PCAP</strong><br><span class="muted">Raw packet sequence</span></div>
+<div class="evidence-card" data-evidence="nflog"><span class="ev-icon">🔥</span><br><strong>NFLOG</strong><br><span class="muted">Firewall-selected drops</span></div>
+<div class="evidence-card" data-evidence="dlt"><span class="ev-icon">🚘</span><br><strong>DLT</strong><br><span class="muted">ECU and application context</span></div>
+<div class="evidence-card" data-evidence="ids"><span class="ev-icon">🚨</span><br><strong>SOME/IP IDS</strong><br><span class="muted">Protocol anomaly</span></div>
+<div class="evidence-card" data-evidence="ruleset"><span class="ev-icon">🧾</span><br><strong>Ruleset</strong><br><span class="muted">Handles and counters</span></div>
+<div class="evidence-card" data-evidence="clock"><span class="ev-icon">🕒</span><br><strong>Clock record</strong><br><span class="muted">UTC normalization</span></div>
+<div class="evidence-card" data-evidence="logcat"><span class="ev-icon">📱</span><br><strong>Android logcat</strong><br><span class="muted">Client process context</span></div>
+<div class="evidence-card" data-evidence="gateway"><span class="ev-icon">🔐</span><br><strong>Gateway event</strong><br><span class="muted">Command rejection</span></div>
+</div>
+
+<h3>Achievement shelf</h3>
+<div class="badge-shelf" id="badgeShelf">
+<span class="badge" data-badge="collector">🔎 Evidence Collector</span>
+<span class="badge" data-badge="firewall">🔥 Firewall Auditor</span>
+<span class="badge" data-badge="packet">📡 Packet Detective</span>
+<span class="badge" data-badge="someip">🚘 SOME/IP Analyst</span>
+<span class="badge" data-badge="timeline">🕒 Timeline Builder</span>
+<span class="badge" data-badge="r155">📋 R155 Evidence Mapper</span>
+<span class="badge" data-badge="contained">🛡️ Incident Contained</span>
+</div>
+<div class="trainer-note"><strong>Trainer prompt:</strong> ask each role to describe what “good evidence” means from its viewpoint before showing the technical sections.</div>
+</section>
+
+
+<section id="overview" data-search>
+<h2>1. Full-day session plan</h2>
+<table><thead><tr><th>Time</th><th>Module</th><th>Method</th><th>Outcome</th></tr></thead><tbody>
+<tr><td>09:30–10:15</td><td>Evidence architecture</td><td>Animated incident pipeline</td><td>Separate packet, decision, application and alert evidence</td></tr>
+<tr><td>10:15–11:30</td><td>nftables, tcpdump and NFLOG</td><td>Rule-flow simulator + namespace lab</td><td>Capture allowed and denied paths safely</td></tr>
+<tr><td>11:45–12:45</td><td>DLT and SOME/IP IDS</td><td>Structured log explorer + binary frame analysis</td><td>Detect replay, scan, version, length and flood anomalies</td></tr>
+<tr><td>12:45–13:15</td><td>Policy auditing</td><td>Static and dynamic rule tests</td><td>Prove intended allow/drop behavior</td></tr>
+<tr><td>14:00–15:00</td><td>WP.29 / R155</td><td>Evidence-mapping exercise</td><td>Connect incident work to CSMS lifecycle evidence</td></tr>
+<tr><td>15:00–16:00</td><td>Timeline reconstruction</td><td>Cross-source correlation</td><td>Build a timestamped, sourced incident narrative</td></tr>
+<tr><td>16:15–17:00</td><td>Post-incident hardening</td><td>Control-selection and regression testing</td><td>Reduce recurrence while preserving service</td></tr>
+<tr><td>17:00–17:30</td><td>Acceptance</td><td>14 checks + quiz</td><td>Demonstrate an end-to-end response</td></tr>
+</tbody></table>
+<div class="callout good"><strong>Safety boundary:</strong> the privileged nftables exercise creates its own Linux network namespaces and deletes them on exit. It never flushes or replaces the VM host’s firewall ruleset.</div>
+</section>
+
+<section id="evidence" data-search>
+<h2>2. Incident evidence pipeline</h2>
+<p class="lead">One source rarely explains an incident. Play the pipeline to see what each evidence type contributes.</p>
+<div class="pipeline" id="pipeline">
+<div class="stage"><strong>Attack activity</strong><span>scan, replay, flood or malformed frame</span></div>
+<div class="stage"><strong>nftables verdict</strong><span>rule, handle, counter and log prefix</span></div>
+<div class="stage"><strong>Packet capture</strong><span>headers and payload bytes</span></div>
+<div class="stage"><strong>DLT context</strong><span>ECU, APID, CTID and application meaning</span></div>
+<div class="stage"><strong>SOME/IP IDS</strong><span>service-aware anomaly</span></div>
+<div class="stage"><strong>Timeline</strong><span>clock-normalized correlation</span></div>
+<div class="stage"><strong>Containment</strong><span>block, isolate, disable campaign</span></div>
+<div class="stage"><strong>Hardening</strong><span>rule, code and monitoring changes</span></div>
+</div>
+<div class="signal" id="signal"></div>
+<div class="controls no-print"><button class="btn primary" id="playPipeline">Play incident</button><button class="btn" id="resetPipeline">Reset</button></div>
+<div class="result" id="pipelineResult">Ready.</div>
+<div class="grid g4">
+<div class="card"><h3>Packet evidence</h3><p>Shows what crossed an interface: addresses, ports, timing, TCP flags and SOME/IP bytes.</p></div>
+<div class="card"><h3>Firewall evidence</h3><p>Shows what policy decided: chain, match, counter, log prefix and verdict.</p></div>
+<div class="card"><h3>DLT evidence</h3><p>Adds application and ECU meaning that raw packets cannot provide.</p></div>
+<div class="card"><h3>IDS evidence</h3><p>Explains why protocol behavior is anomalous, not merely that packets exist.</p></div>
+</div>
+</section>
+
+<section id="nft" data-search>
+<h2>3. nftables logging, tcpdump and NFLOG</h2>
+<div class="grid g2">
+<div class="card"><h3>Kernel log form</h3><pre><code>tcp dport 4040 \
+  limit rate 5/second \
+  log prefix "IR_DENY " \
+  level warning \
+  drop</code></pre><p>The <code>log</code> statement does not terminate rule evaluation. A verdict such as <code>drop</code> must follow when the policy requires a drop.</p></div>
+<div class="card"><h3>NFLOG form</h3><pre><code>limit rate 5/second \
+  log group 100 \
+  prefix "IR_DENY " \
+  snaplen 128 \
+  drop</code></pre><p>The kernel sends matching packet metadata/payload samples to an NFLOG netlink group. A userspace consumer such as ulogd2 or a compatible capture tool subscribes to that group.</p></div>
+</div>
+
+<h3>Interactive rule-flow simulator</h3>
+<div class="controls">
+<div class="field"><label>Source</label><select id="fwSource"><option value="trusted">Trusted 10.55.0.10</option><option value="untrusted">Untrusted 10.55.0.99</option></select></div>
+<div class="field"><label>Protocol/port</label><select id="fwPort"><option value="8080">TCP 8080 management</option><option value="30490">UDP 30490 lab SOME/IP</option><option value="4040">TCP 4040 prohibited</option><option value="22">TCP 22 prohibited</option></select></div>
+<div class="field"><label>Connection state</label><select id="fwState"><option value="new">New</option><option value="established">Established/related</option></select></div>
+<button class="btn primary" id="evalFirewall">Evaluate packet</button>
+</div>
+<div class="ruleflow">
+<div class="rule" data-rule="loopback">Loopback</div><div class="rule" data-rule="state">Established/related</div>
+<div class="rule" data-rule="mgmt">Trusted TCP 8080</div><div class="rule" data-rule="someip">Trusted UDP 30490</div>
+<div class="rule" data-rule="log">Rate-limited NFLOG 100</div><div class="rule" data-rule="drop">Default drop</div>
+</div>
+<div class="result" id="fwResult">Evaluate a packet.</div>
+
+<h3>Capture paths</h3>
+<div class="logpath">
+<div class="logbox"><strong>Interface PCAP</strong><br><code>tcpdump -i veth-gateway -w raw.pcap</code><br><span class="muted">Sees packets reaching the interface, even before a later drop.</span></div>
+<div class="logbox"><strong>NFLOG PCAP</strong><br><code>tcpdump -i nflog:100 -w denied.pcap</code><br><span class="muted">Sees only packets selected by the NFLOG statement when libpcap supports it.</span></div>
+<div class="logbox"><strong>ulogd2 output</strong><br><span class="muted">Can write packet/flow records to text, CSV, XML or database outputs.</span></div>
+<div class="logbox"><strong>Ruleset evidence</strong><br><code>nft -a -j list ruleset</code><br><span class="muted">Preserves handles, rules, expressions and counters.</span></div>
+</div>
+<div class="didyouknow"><strong>💡 Did you know?</strong> tcpdump may capture a packet that nftables later drops. Seeing a packet in a PCAP does not prove the firewall allowed it.</div>
+<div class="callout warn"><strong>Capture placement matters:</strong> a packet capture proves observation at a capture point. It does not by itself prove the final nftables verdict. Correlate PCAP timestamps with rule counters or NFLOG/kernel-log records.</div>
+</section>
+
+<section id="dlt" data-search>
+<h2>4. DLT logs and SOME/IP IDS alerts</h2>
+<div class="grid g2">
+<div class="card"><h3>DLT mental model</h3><p>Diagnostic Log and Trace gives automotive applications structured context. Common fields include ECU identity, application ID (APID), context ID (CTID), severity and message payload.</p><p>DLT complements packet evidence: a packet may show service <code>0x1234</code>; DLT can explain that the gateway rejected an unauthorized remote-unlock request.</p></div>
+<div class="card"><h3>SOME/IP IDS mental model</h3><p>The IDS parses the 16-byte SOME/IP header and applies service-aware policy: source, service ID, method/event ID, client/session request ID, protocol/interface version, message type, return code and declared length.</p><p>The lab uses UDP port 30490 for a controlled exercise. Production service ports are configuration-specific.</p></div>
+</div>
+
+<h3>DLT-style incident log explorer</h3>
+<div class="controls">
+<div class="field"><label>Minimum severity</label><select id="dltLevel"><option value="INFO">INFO</option><option value="WARN">WARN</option><option value="ERROR">ERROR</option><option value="FATAL">FATAL</option></select></div>
+<div class="field"><label>ECU</label><select id="dltEcu"><option value="ALL">All</option><option value="IVI1">IVI1</option><option value="TCU1">TCU1</option><option value="GW01">GW01</option></select></div>
+<button class="btn primary" id="filterDlt">Filter</button>
+</div>
+<div class="dlt-table" id="dltTable"></div>
+
+<div class="didyouknow"><strong>🕵️ Investigator tip:</strong> the strongest replay evidence combines a repeated request ID with a freshness window and the same service/method context.</div>
+<h3>SOME/IP IDS frame simulator</h3>
+<div class="controls">
+<div class="field"><label>Source</label><select id="siSource"><option value="10.55.0.10">Trusted</option><option value="10.55.0.99">Untrusted</option></select></div>
+<div class="field"><label>Method</label><select id="siMethod"><option value="1">0x0001 allowed</option><option value="2">0x0002 unknown</option><option value="3">0x0003 unknown</option></select></div>
+<div class="field"><label>Session</label><input id="siSession" type="number" min="1" value="66"></div>
+<div class="field"><label>Replay previous ID</label><select id="siReplay"><option value="false">No</option><option value="true">Yes</option></select></div>
+<div class="field"><label>Interface version</label><select id="siIface"><option value="1">1 expected</option><option value="9">9 invalid</option></select></div>
+<div class="field"><label>Length</label><select id="siLength"><option value="valid">Valid</option><option value="invalid">Invalid</option></select></div>
+<div class="field"><label>Requests in one second</label><input id="siRate" type="number" min="1" max="20" value="1"></div>
+<button class="btn primary" id="evalSomeip">Analyze frame</button>
+</div>
+<div class="alerts">
+<div class="alert" data-alert="UNAUTHORIZED_SOURCE">Unauthorized source</div>
+<div class="alert" data-alert="UNKNOWN_SERVICE_METHOD">Unknown service/method</div>
+<div class="alert" data-alert="REPLAY">Replay</div>
+<div class="alert" data-alert="INTERFACE_VERSION">Interface version</div>
+<div class="alert" data-alert="INVALID_LENGTH">Invalid length</div>
+<div class="alert" data-alert="RATE_EXCEEDED">Rate exceeded</div>
+</div>
+<div class="result" id="someipResult">Analyze a frame.</div>
+</section>
+
+<section id="audit" data-search>
+<h2>5. Firewall rule auditing and policy testing</h2>
+<div class="grid g2">
+<div class="card"><h3>Static checks</h3><ul><li><code>nft -c -f ruleset.nft</code> checks syntax without applying it.</li><li>JSON export supports automated review.</li><li>Comments, handles and named sets improve traceability.</li><li>Look for shadowed rules, broad accepts and unbounded logging.</li></ul></div>
+<div class="card"><h3>Dynamic checks</h3><ul><li>Positive tests prove approved traffic still works.</li><li>Negative tests prove prohibited traffic is blocked.</li><li>Counters prove the intended rule matched.</li><li>PCAP/NFLOG evidence proves observation and logging.</li></ul></div>
+</div>
+<h3>Policy audit board</h3>
+<div class="auditgrid" id="auditGrid">
+<div class="audit pass" data-audit="default">Default drop</div>
+<div class="audit pass" data-audit="loopback">Loopback allowed</div>
+<div class="audit pass" data-audit="state">Established/related return traffic</div>
+<div class="audit pass" data-audit="source">SOME/IP source allowlist</div>
+<div class="audit pass" data-audit="log">Rate-limited NFLOG before drop</div>
+<div class="audit pass" data-audit="counter">Counters/comments enabled</div>
+<div class="audit pass" data-audit="syntax">Syntax check before apply</div>
+<div class="audit pass" data-audit="rollback">Cleanup/rollback plan</div>
+</div>
+<div class="controls"><button class="btn" id="breakPolicy">Inject audit defect</button><button class="btn primary" id="runAudit">Run audit</button><button class="btn" id="repairPolicy">Repair</button></div>
+<div class="result" id="auditResult">All controls currently present.</div>
+<div class="callout bad"><strong>Never test by flushing the host firewall.</strong> Use a namespace, a disposable VM, a separately named table, a timed rollback, console access and an approved change window.</div>
+</section>
+
+<section id="r155" data-search>
+<h2>6. WP.29 / UN Regulation No. 155 compliance overview</h2>
+<div class="callout warn"><strong>Compliance boundary:</strong> this is an engineering overview and evidence-mapping exercise, not legal advice, a CSMS audit, a type-approval decision or a claim of compliance.</div>
+<div class="grid g3">
+<div class="card"><h3>CSMS</h3><p>A systematic, risk-based organizational approach defining processes, responsibilities and governance for vehicle cybersecurity.</p></div>
+<div class="card"><h3>Vehicle type</h3><p>The manufacturer must demonstrate that cybersecurity risks for the vehicle type are identified, mitigated and managed with evidence.</p></div>
+<div class="card"><h3>Lifecycle</h3><p>Evidence spans development, production and post-production—including monitoring, incident response, supplier dependencies and continuing risk management.</p></div>
+</div>
+<h3>Incident evidence mapper</h3>
+<div class="compliance" id="compGrid">
+<div class="comp" data-comp="monitor"><strong>Monitoring & detection</strong><br>fleet telemetry, firewall, DLT, IDS</div>
+<div class="comp" data-comp="response"><strong>Response process</strong><br>triage, ownership, containment, recovery</div>
+<div class="comp" data-comp="forensics"><strong>Logs & forensics</strong><br>time, integrity, retention, source</div>
+<div class="comp" data-comp="risk"><strong>Risk treatment</strong><br>hardening, residual risk, validation</div>
+<div class="comp" data-comp="supplier"><strong>Supplier dependencies</strong><br>contacts, evidence, SLAs, fixes</div>
+<div class="comp" data-comp="post"><strong>Post-production</strong><br>fleet monitoring and vulnerability response</div>
+<div class="comp" data-comp="effect"><strong>Effectiveness</strong><br>regression tests and alert verification</div>
+<div class="comp" data-comp="trace"><strong>Traceability</strong><br>vehicle type, versions, rules and approvals</div>
+</div>
+<div class="result" id="compResult">Select an evidence theme.</div>
+<table><thead><tr><th>Lab evidence</th><th>Engineering question</th><th>Limitation</th></tr></thead><tbody>
+<tr><td>PCAP + NFLOG + DLT + IDS</td><td>Can the organization detect and analyse attempted/successful attacks?</td><td>One lab trace does not prove fleet-wide coverage.</td></tr>
+<tr><td>Incident timeline</td><td>Are actions, decisions and evidence traceable?</td><td>Clock quality, retention and integrity still require governance.</td></tr>
+<tr><td>Containment and recovery</td><td>Is there a defined process with owners and safe recovery?</td><td>Must be tested against vehicle safety and availability requirements.</td></tr>
+<tr><td>Hardening + regression tests</td><td>Did treatment reduce recurrence without breaking service?</td><td>Residual risk and vehicle-type applicability need formal approval.</td></tr>
+<tr><td>Supplier escalation</td><td>Are third-party dependencies managed?</td><td>Contracts, evidence exchange and responsibilities must exist outside the lab.</td></tr>
+</tbody></table>
+</section>
+
+<section id="timeline" data-search>
+<h2>7. Incident timeline reconstruction</h2>
+<p class="lead">A defensible timeline preserves the original timestamp, normalized timestamp, source, event interpretation and evidence location.</p>
+<div class="timeline" id="timelineList"></div>
+<div class="controls no-print"><button class="btn primary" id="playTimeline">Play timeline</button><button class="btn" id="resetTimeline">Reset</button></div>
+<div class="result" id="timelineResult">Ready to reconstruct IR-2026-0802-01.</div>
+<div class="didyouknow"><strong>⏱️ Clock trap:</strong> a perfect event order can still be wrong when ECUs have different clock offsets. Preserve original timestamps and document every conversion.</div>
+<div class="grid g3">
+<div class="card"><h3>Normalize time</h3><p>Record UTC offset, NTP/PTP status, boot-relative clocks, drift and collection delay. Never silently rewrite original evidence.</p></div>
+<div class="card"><h3>Correlate identifiers</h3><p>Source IP, ECU, APID/CTID, service/method, client/session, rule handle, vehicle ID and process identity connect records.</p></div>
+<div class="card"><h3>Separate fact from inference</h3><p>“Packet observed” is fact. “Attacker attempted unlock” is an interpretation supported by SOME/IP and application context.</p></div>
+</div>
+</section>
+
+<section id="hardening" data-search>
+<h2>8. Post-incident hardening</h2>
+<p class="lead">Select controls. A strong plan covers prevention, detection, containment, recovery and verification.</p>
+<div class="harden-grid" id="hardGrid">
+<div class="hard" data-weight="5">Authenticate SOME/IP consumers</div>
+<div class="hard" data-weight="4">Service/method allowlist</div>
+<div class="hard" data-weight="5">Replay/freshness enforcement</div>
+<div class="hard" data-weight="3">Per-source rate limits</div>
+<div class="hard" data-weight="3">Length/version validation</div>
+<div class="hard" data-weight="2">Temporary nft timeout set</div>
+<div class="hard" data-weight="4">DLT/IDS correlation rule</div>
+<div class="hard" data-weight="4">Gateway fail-safe state checks</div>
+<div class="hard" data-weight="3">Supplier fix and evidence request</div>
+</div>
+<div class="controls"><button class="btn primary" id="scoreHardening">Score plan</button><button class="btn" id="clearHardening">Clear</button></div>
+<div class="result" id="hardResult">Choose controls based on root cause and risk, not by selecting everything blindly.</div>
+<div class="callout good"><strong>Definition of done:</strong> the exploit path is blocked, legitimate traffic passes, alerts fire with acceptable noise, recovery is safe, evidence is retained, changes are approved, and fleet/supplier follow-up is owned.</div>
+</section>
+
+
+<section id="challenges" data-search>
+<h2>10. Investigator challenges — solve the case 🎯</h2>
+<p class="lead">These short challenges turn the technical modules into one connected investigation. Complete them to raise the mission score and unlock badges.</p>
+
+<div class="grid g2">
+<div class="fun-card">
+<h3>Challenge 1 — Find the replay clue</h3>
+<pre><code>09:00:03.100 IDS service=0x1234 method=0x0001 request_id=0x00420042
+09:00:03.200 DLT session=66 command=unlock status=rejected
+09:00:03.350 IDS service=0x1234 method=0x0001 request_id=0x00420042</code></pre>
+<p>Select the <strong>two observations</strong> that establish a replay condition.</p>
+<div class="clue-options" id="clueOptions">
+<button class="clue-option" data-clue="request">Repeated client/session request ID</button>
+<button class="clue-option" data-clue="freshness">Repeated within the freshness window</button>
+<button class="clue-option" data-clue="port">Destination port is UDP</button>
+<button class="clue-option" data-clue="service">Service ID is 0x1234</button>
+</div>
+<button class="btn primary" id="checkClue">Check clue</button>
+<div class="result" id="clueResult">Choose exactly two observations.</div>
+</div>
+
+<div class="fun-card">
+<h3>Challenge 2 — Put the firewall in safe order</h3>
+<p>Move rules so return traffic and approved services are accepted before bounded logging and default drop.</p>
+<div class="sort-list" id="ruleOrderList"></div>
+<div class="controls"><button class="btn" id="shuffleRules">Shuffle</button><button class="btn primary" id="checkRules">Check order</button></div>
+<div class="result" id="ruleOrderResult">Arrange all six rules.</div>
+</div>
+</div>
+
+<div class="grid g2">
+<div class="fun-card">
+<h3>Challenge 3 — Reconstruct the mini-timeline</h3>
+<p>Arrange the event meanings in chronological order. Times are revealed after validation.</p>
+<div class="sort-list" id="timelinePuzzle"></div>
+<div class="controls"><button class="btn" id="shuffleTimeline">Shuffle</button><button class="btn primary" id="checkTimelinePuzzle">Check timeline</button></div>
+<div class="result" id="timelinePuzzleResult">Build the six-event incident story.</div>
+</div>
+
+<div class="fun-card">
+<h3>Challenge 4 — Incident commander decision</h3>
+<p>Repeated unlock traffic is active while a legitimate OTA campaign is running. What is the best first response?</p>
+<div class="decision-options" id="decisionOptions">
+<div class="decision-option" data-decision="shutdown">Shut down all vehicle connectivity immediately.</div>
+<div class="decision-option" data-decision="observe">Continue observing without containment until every packet is understood.</div>
+<div class="decision-option" data-decision="preserve-contain">Preserve a short evidence window, isolate the source, pause only remote-command operations and protect safety/OTA channels.</div>
+<div class="decision-option" data-decision="ignore">Ignore it because the gateway rejected some requests.</div>
+</div>
+<button class="btn primary" id="checkDecision">Decide</button>
+<div class="result" id="decisionResult">Choose one response.</div>
+</div>
+</div>
+
+<div class="fun-card">
+<h3>Final challenge — Incident escape room 🔐</h3>
+<p>An unseen review finds CPU spikes, UDP bursts, repeated request IDs and a rule counter showing traffic was accepted. Close the case.</p>
+<div class="escape-grid">
+<div class="field"><label>Attack</label><select id="escapeAttack"><option value="">Choose</option><option value="replay-flood">Replay plus request flood</option><option value="dns">DNS cache issue</option><option value="ota">Normal OTA download</option></select></div>
+<div class="field"><label>Root cause</label><select id="escapeRoot"><option value="">Choose</option><option value="broad-rule">Overly broad SOME/IP source rule</option><option value="disk">Low disk space</option><option value="clock">Only clock drift</option></select></div>
+<div class="field"><label>Containment</label><select id="escapeContain"><option value="">Choose</option><option value="scoped">Temporary source block plus remote-command pause</option><option value="flush">Flush the host firewall</option><option value="none">No containment</option></select></div>
+<div class="field"><label>Proof of hardening</label><select id="escapeProof"><option value="">Choose</option><option value="regression">Positive/negative policy tests, IDS alert test and rule counters</option><option value="reboot">One successful reboot</option><option value="screenshot">A screenshot of the rules</option></select></div>
+</div>
+<button class="btn primary" id="solveEscape">Close incident</button>
+<div class="result" id="escapeResult">The incident remains open.</div>
+</div>
+
+<div class="trainer-note"><strong>Trainer debrief:</strong> ask why “block everything” and “observe forever” are both weak answers. Good incident response balances evidence preservation, safety, service continuity and scoped containment.</div>
+</section>
+
+<section id="labs" data-search>
+<h2>9. Full production simulation labs</h2>
+<p class="lead">The bootstrap installs a portable, fully validated incident case under <code>~/android-ir-lab</code> and includes a privileged namespace lab for actual nftables and tcpdump.</p>
+
+<div class="command-guide">
+<h3>How to read the acceptance command</h3>
+<div class="tabs no-print" id="commandTabs">
+<button class="tab active" data-command-tab="cmd">Command</button>
+<button class="tab" data-command-tab="does">What it does</button>
+<button class="tab" data-command-tab="expected">Expected output</button>
+<button class="tab" data-command-tab="failure">Failure meaning</button>
+</div>
+<div class="command-panes">
+<div class="pane active" id="commandPane-cmd"><pre><code>IR_LAB_HOME="$HOME/android-ir-lab" \
+  "$HOME/android-ir-lab/scripts/validate_all.sh"</code></pre></div>
+<div class="pane" id="commandPane-does"><p>Runs all portable positive and negative tests against generated PCAP, SOME/IP, nftables-style, DLT, timeline, hardening and R155 evidence.</p></div>
+<div class="pane" id="commandPane-expected"><p><code>Summary: PASS=14 FAIL=0</code>. Every expected attack is detected, every expected policy result is observed, and all reports are generated.</p></div>
+<div class="pane" id="commandPane-failure"><p>A FAIL identifies the specific missing artifact or incorrect conclusion. Do not simply rerun—inspect the named report, PCAP, alert or policy file and explain the cause.</p></div>
+</div>
+</div>
+
+<h3>Ubuntu 24.x prerequisites</h3>
+<pre><button class="copy btn">Copy</button><code>sudo apt update
+sudo apt install -y \
+  nftables \
+  tcpdump \
+  iproute2 \
+  curl \
+  jq \
+  python3 \
+  ulogd2 \
+  dlt-daemon \
+  dlt-tools</code></pre>
+<div class="callout warn"><strong>Package note:</strong> DLT packages are in Ubuntu’s Universe repository. The portable lab does not require a running DLT daemon; it uses structured DLT-style exports so every trainee can complete correlation. A real DLT capture is an additional exercise.</div>
+
+<details open><summary>Complete lab bootstrap — copy once</summary>
+<pre><button class="copy btn">Copy</button><code>#!/usr/bin/env bash
+set -Eeuo pipefail
+
+BASE=&quot;${IR_LAB_HOME:-$HOME/android-ir-lab}&quot;
+mkdir -p &quot;$BASE&quot;/{config,logs,pcaps,reports,scripts,work}
+
+cat &gt; &quot;$BASE/config/policy.json&quot; &lt;&lt;&#x27;JSON&#x27;
+{
+  &quot;incident_id&quot;: &quot;IR-2026-0802-01&quot;,
+  &quot;trusted_someip_sources&quot;: [&quot;10.55.0.10&quot;],
+  &quot;someip&quot;: {
+    &quot;service_id&quot;: 4660,
+    &quot;allowed_methods&quot;: [1],
+    &quot;interface_version&quot;: 1,
+    &quot;max_requests_per_second&quot;: 5
+  },
+  &quot;firewall&quot;: {
+    &quot;default_policy&quot;: &quot;drop&quot;,
+    &quot;nflog_group&quot;: 100,
+    &quot;log_prefix&quot;: &quot;IR_DENY &quot;,
+    &quot;log_rate_per_second&quot;: 5,
+    &quot;allow_established_related&quot;: true,
+    &quot;allow_loopback&quot;: true,
+    &quot;allowed_tcp&quot;: [8080],
+    &quot;allowed_udp&quot;: [30490]
+  }
+}
+JSON
+
+cat &gt; &quot;$BASE/config/r155_evidence.json&quot; &lt;&lt;&#x27;JSON&#x27;
+{
+  &quot;csms_process&quot;: &quot;IR-01 Cybersecurity Incident Management&quot;,
+  &quot;vehicle_type&quot;: &quot;Training Connected Vehicle&quot;,
+  &quot;evidence&quot;: [
+    &quot;time-synchronised firewall, packet and application logs&quot;,
+    &quot;fleet detection rule and alert triage record&quot;,
+    &quot;incident timeline and root-cause analysis&quot;,
+    &quot;containment and recovery evidence&quot;,
+    &quot;post-incident firewall/IDS hardening&quot;,
+    &quot;supplier and service-provider escalation record&quot;,
+    &quot;lessons learned and effectiveness verification&quot;
+  ],
+  &quot;disclaimer&quot;: &quot;Training evidence map only; not a type-approval certificate or legal compliance determination.&quot;
+}
+JSON
+
+cat &gt; &quot;$BASE/scripts/generate_incident.py&quot; &lt;&lt;&#x27;PY&#x27;
+#!/usr/bin/env python3
+from __future__ import annotations
+import argparse, datetime as dt, ipaddress, json, pathlib, socket, struct
+
+PCAP_MAGIC = 0xA1B2C3D4
+BASE_TIME = dt.datetime(2026, 8, 2, 9, 0, 0, tzinfo=dt.timezone.utc)
+
+def iso(offset_ms: int) -&gt; str:
+    return (BASE_TIME + dt.timedelta(milliseconds=offset_ms)).isoformat(timespec=&quot;milliseconds&quot;).replace(&quot;+00:00&quot;, &quot;Z&quot;)
+
+def checksum(data: bytes) -&gt; int:
+    if len(data) % 2: data += b&quot;\x00&quot;
+    total = sum(struct.unpack(&quot;!%dH&quot; % (len(data)//2), data))
+    total = (total &gt;&gt; 16) + (total &amp; 0xFFFF)
+    total += total &gt;&gt; 16
+    return (~total) &amp; 0xFFFF
+
+def someip(service: int, method: int, client: int, session: int, iface: int, payload: bytes, *, length_override: int | None = None) -&gt; bytes:
+    message_id = (service &lt;&lt; 16) | method
+    request_id = (client &lt;&lt; 16) | session
+    length = 8 + len(payload) if length_override is None else length_override
+    return struct.pack(&quot;!III4B&quot;, message_id, length, request_id, 1, iface, 0x00, 0x00) + payload
+
+def udp_frame(src: str, dst: str, sport: int, dport: int, payload: bytes, ident: int) -&gt; bytes:
+    src_b = ipaddress.IPv4Address(src).packed; dst_b = ipaddress.IPv4Address(dst).packed
+    udp_len = 8 + len(payload)
+    pseudo = src_b + dst_b + struct.pack(&quot;!BBH&quot;, 0, socket.IPPROTO_UDP, udp_len)
+    udp_hdr = struct.pack(&quot;!HHHH&quot;, sport, dport, udp_len, 0)
+    udp_sum = checksum(pseudo + udp_hdr + payload)
+    udp_hdr = struct.pack(&quot;!HHHH&quot;, sport, dport, udp_len, udp_sum)
+    total_len = 20 + udp_len
+    ip_hdr = struct.pack(&quot;!BBHHHBBH4s4s&quot;, 0x45, 0, total_len, ident, 0, 64, socket.IPPROTO_UDP, 0, src_b, dst_b)
+    ip_sum = checksum(ip_hdr)
+    ip_hdr = struct.pack(&quot;!BBHHHBBH4s4s&quot;, 0x45, 0, total_len, ident, 0, 64, socket.IPPROTO_UDP, ip_sum, src_b, dst_b)
+    eth = b&quot;\x02\x00\x00\x00\x00\x20&quot; + b&quot;\x02\x00\x00\x00\x00\x10&quot; + struct.pack(&quot;!H&quot;, 0x0800)
+    return eth + ip_hdr + udp_hdr + payload
+
+def write_pcap(path: pathlib.Path, packets: list[tuple[int, bytes]]) -&gt; None:
+    with path.open(&quot;wb&quot;) as f:
+        f.write(struct.pack(&quot;&lt;IHHIIII&quot;, PCAP_MAGIC, 2, 4, 0, 0, 65535, 1))
+        for offset_ms, packet in packets:
+            t = BASE_TIME + dt.timedelta(milliseconds=offset_ms)
+            sec = int(t.timestamp()); usec = t.microsecond
+            f.write(struct.pack(&quot;&lt;IIII&quot;, sec, usec, len(packet), len(packet)))
+            f.write(packet)
+
+def main() -&gt; None:
+    ap = argparse.ArgumentParser(); ap.add_argument(&quot;--base&quot;, required=True); args = ap.parse_args()
+    base = pathlib.Path(args.base); logs=base/&quot;logs&quot;; pcaps=base/&quot;pcaps&quot;
+    logs.mkdir(parents=True, exist_ok=True); pcaps.mkdir(parents=True, exist_ok=True)
+    firewall = [
+      {&quot;ts&quot;:iso(600),&quot;source&quot;:&quot;nftables&quot;,&quot;event&quot;:&quot;allow&quot;,&quot;prefix&quot;:&quot;IR_ALLOW&quot;,&quot;src&quot;:&quot;10.55.0.10&quot;,&quot;dst&quot;:&quot;10.55.0.20&quot;,&quot;proto&quot;:&quot;tcp&quot;,&quot;dport&quot;:8080,&quot;rule_handle&quot;:10},
+      {&quot;ts&quot;:iso(1200),&quot;source&quot;:&quot;nftables&quot;,&quot;event&quot;:&quot;drop&quot;,&quot;prefix&quot;:&quot;IR_DENY&quot;,&quot;src&quot;:&quot;10.55.0.99&quot;,&quot;dst&quot;:&quot;10.55.0.20&quot;,&quot;proto&quot;:&quot;tcp&quot;,&quot;dport&quot;:22,&quot;rule_handle&quot;:40},
+      {&quot;ts&quot;:iso(1350),&quot;source&quot;:&quot;nftables&quot;,&quot;event&quot;:&quot;drop&quot;,&quot;prefix&quot;:&quot;IR_DENY&quot;,&quot;src&quot;:&quot;10.55.0.99&quot;,&quot;dst&quot;:&quot;10.55.0.20&quot;,&quot;proto&quot;:&quot;tcp&quot;,&quot;dport&quot;:4040,&quot;rule_handle&quot;:40},
+      {&quot;ts&quot;:iso(1500),&quot;source&quot;:&quot;nftables&quot;,&quot;event&quot;:&quot;drop&quot;,&quot;prefix&quot;:&quot;IR_DENY&quot;,&quot;src&quot;:&quot;10.55.0.99&quot;,&quot;dst&quot;:&quot;10.55.0.20&quot;,&quot;proto&quot;:&quot;tcp&quot;,&quot;dport&quot;:4041,&quot;rule_handle&quot;:40}
+    ]
+    dlt = [
+      {&quot;ts&quot;:iso(300),&quot;source&quot;:&quot;DLT&quot;,&quot;ecu&quot;:&quot;IVI1&quot;,&quot;apid&quot;:&quot;AUTH&quot;,&quot;ctid&quot;:&quot;RMT1&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;message&quot;:&quot;remote command session opened principal=driver-a vehicle=VEH-001&quot;},
+      {&quot;ts&quot;:iso(1100),&quot;source&quot;:&quot;DLT&quot;,&quot;ecu&quot;:&quot;TCU1&quot;,&quot;apid&quot;:&quot;AUTH&quot;,&quot;ctid&quot;:&quot;RMT1&quot;,&quot;level&quot;:&quot;WARN&quot;,&quot;message&quot;:&quot;authentication failures exceeded threshold source=10.55.0.99&quot;},
+      {&quot;ts&quot;:iso(2100),&quot;source&quot;:&quot;DLT&quot;,&quot;ecu&quot;:&quot;GW01&quot;,&quot;apid&quot;:&quot;SOME&quot;,&quot;ctid&quot;:&quot;IDS1&quot;,&quot;level&quot;:&quot;ERROR&quot;,&quot;message&quot;:&quot;unauthorized SOME/IP source requested service=0x1234 method=0x0001&quot;},
+      {&quot;ts&quot;:iso(3200),&quot;source&quot;:&quot;DLT&quot;,&quot;ecu&quot;:&quot;GW01&quot;,&quot;apid&quot;:&quot;SOME&quot;,&quot;ctid&quot;:&quot;IDS1&quot;,&quot;level&quot;:&quot;ERROR&quot;,&quot;message&quot;:&quot;replayed SOME/IP request session=66 rejected&quot;},
+      {&quot;ts&quot;:iso(4700),&quot;source&quot;:&quot;DLT&quot;,&quot;ecu&quot;:&quot;IVI1&quot;,&quot;apid&quot;:&quot;APP1&quot;,&quot;ctid&quot;:&quot;MAIN&quot;,&quot;level&quot;:&quot;FATAL&quot;,&quot;message&quot;:&quot;vehicle-control client restarted after malformed response&quot;}
+    ]
+    system = [
+      {&quot;ts&quot;:iso(0),&quot;source&quot;:&quot;system&quot;,&quot;event&quot;:&quot;case_opened&quot;,&quot;message&quot;:&quot;SOC opened incident IR-2026-0802-01&quot;},
+      {&quot;ts&quot;:iso(5000),&quot;source&quot;:&quot;system&quot;,&quot;event&quot;:&quot;containment&quot;,&quot;message&quot;:&quot;blocked source 10.55.0.99 and disabled remote-command campaign&quot;},
+      {&quot;ts&quot;:iso(6200),&quot;source&quot;:&quot;system&quot;,&quot;event&quot;:&quot;recovery&quot;,&quot;message&quot;:&quot;gateway policy reloaded; health checks passed&quot;}
+    ]
+    for name, rows in [(&quot;firewall.jsonl&quot;,firewall),(&quot;dlt.jsonl&quot;,dlt),(&quot;system.jsonl&quot;,system)]:
+      with (logs/name).open(&quot;w&quot;) as f:
+        for row in rows: f.write(json.dumps(row, sort_keys=True)+&quot;\n&quot;)
+    packets=[]; ident=1
+    def add(ms,src,method,session,iface=1,payload=b&quot;OK&quot;,length_override=None):
+      nonlocal ident
+      p=someip(0x1234,method,0x0042,session,iface,payload,length_override=length_override)
+      packets.append((ms,udp_frame(src,&quot;10.55.0.20&quot;,40000+ident,30490,p,ident)));ident+=1
+    add(700,&quot;10.55.0.10&quot;,1,1,payload=b&quot;status&quot;)
+    add(2000,&quot;10.55.0.99&quot;,1,20,payload=b&quot;unlock&quot;)
+    add(2300,&quot;10.55.0.99&quot;,2,21,payload=b&quot;scan&quot;)
+    add(2500,&quot;10.55.0.99&quot;,3,22,payload=b&quot;scan&quot;)
+    add(2800,&quot;10.55.0.99&quot;,1,66,payload=b&quot;unlock&quot;)
+    add(3100,&quot;10.55.0.99&quot;,1,66,payload=b&quot;unlock&quot;)
+    add(3400,&quot;10.55.0.99&quot;,1,70,iface=9,payload=b&quot;version&quot;)
+    add(3700,&quot;10.55.0.99&quot;,1,71,payload=b&quot;length&quot;,length_override=999)
+    for i in range(8): add(4000+i*80,&quot;10.55.0.99&quot;,1,100+i,payload=b&quot;flood&quot;)
+    write_pcap(pcaps/&quot;someip_incident.pcap&quot;,packets)
+    print(f&quot;[PASS] generated incident evidence: packets={len(packets)}&quot;)
+if __name__ == &quot;__main__&quot;: main()
+PY
+chmod +x &quot;$BASE/scripts/generate_incident.py&quot;
+
+cat &gt; &quot;$BASE/scripts/analyze_someip.py&quot; &lt;&lt;&#x27;PY&#x27;
+#!/usr/bin/env python3
+from __future__ import annotations
+import argparse, collections, datetime as dt, ipaddress, json, pathlib, struct
+
+def iso(sec:int,usec:int)-&gt;str:
+    return dt.datetime.fromtimestamp(sec+usec/1_000_000,dt.timezone.utc).isoformat(timespec=&quot;milliseconds&quot;).replace(&quot;+00:00&quot;,&quot;Z&quot;)
+
+def parse_pcap(path:pathlib.Path):
+    data=path.read_bytes(); off=24
+    if len(data)&lt;24 or data[:4] not in (b&quot;\xd4\xc3\xb2\xa1&quot;,b&quot;\xa1\xb2\xc3\xd4&quot;): raise ValueError(&quot;not a classic pcap&quot;)
+    little=data[:4]==b&quot;\xd4\xc3\xb2\xa1&quot;
+    endian=&quot;&lt;&quot; if little else &quot;&gt;&quot;
+    while off+16&lt;=len(data):
+        sec,usec,cap,orig=struct.unpack_from(endian+&quot;IIII&quot;,data,off);off+=16
+        frame=data[off:off+cap];off+=cap
+        yield sec,usec,frame
+
+def main():
+    ap=argparse.ArgumentParser();ap.add_argument(&quot;--base&quot;,required=True);a=ap.parse_args();base=pathlib.Path(a.base)
+    policy=json.loads((base/&quot;config/policy.json&quot;).read_text()); cfg=policy[&quot;someip&quot;]; trusted=set(policy[&quot;trusted_someip_sources&quot;])
+    alerts=[]; seen={}; rates=collections.defaultdict(list); parsed=0; normal=0
+    for sec,usec,frame in parse_pcap(base/&quot;pcaps/someip_incident.pcap&quot;):
+        if len(frame)&lt;42 or frame[12:14]!=b&quot;\x08\x00&quot;: continue
+        ihl=(frame[14]&amp;0x0F)*4; proto=frame[23]
+        if proto!=17: continue
+        src=str(ipaddress.IPv4Address(frame[26:30])); udp=14+ihl; dport=struct.unpack_from(&quot;!H&quot;,frame,udp+2)[0]
+        if dport!=30490: continue
+        payload=frame[udp+8:];
+        if len(payload)&lt;16: continue
+        parsed+=1; mid,length,rid,pv,iface,mtype,rc=struct.unpack_from(&quot;!III4B&quot;,payload,0)
+        service=mid&gt;&gt;16; method=mid&amp;0xFFFF; client=rid&gt;&gt;16; session=rid&amp;0xFFFF; ts=sec+usec/1_000_000
+        def alert(kind,severity,detail): alerts.append({&quot;ts&quot;:iso(sec,usec),&quot;source&quot;:&quot;SOMEIP_IDS&quot;,&quot;kind&quot;:kind,&quot;severity&quot;:severity,&quot;src&quot;:src,&quot;service&quot;:service,&quot;method&quot;:method,&quot;session&quot;:session,&quot;detail&quot;:detail})
+        if src not in trusted: alert(&quot;UNAUTHORIZED_SOURCE&quot;,&quot;high&quot;,&quot;source is outside trusted SOME/IP allowlist&quot;)
+        if service!=cfg[&quot;service_id&quot;] or method not in cfg[&quot;allowed_methods&quot;]: alert(&quot;UNKNOWN_SERVICE_METHOD&quot;,&quot;medium&quot;,&quot;service or method is not allowed by policy&quot;)
+        key=(src,client,session,service,method)
+        if key in seen and ts-seen[key] &lt;=5: alert(&quot;REPLAY&quot;,&quot;high&quot;,&quot;request identifier repeated inside replay window&quot;)
+        seen[key]=ts
+        if iface!=cfg[&quot;interface_version&quot;]: alert(&quot;INTERFACE_VERSION&quot;,&quot;medium&quot;,f&quot;expected {cfg[&#x27;interface_version&#x27;]} got {iface}&quot;)
+        actual_length=len(payload)-8
+        if length!=actual_length: alert(&quot;INVALID_LENGTH&quot;,&quot;high&quot;,f&quot;declared {length} actual {actual_length}&quot;)
+        rates[src]=[x for x in rates[src] if ts-x&lt;1.0]; rates[src].append(ts)
+        if len(rates[src])==cfg[&quot;max_requests_per_second&quot;]+1: alert(&quot;RATE_EXCEEDED&quot;,&quot;high&quot;,&quot;per-source request threshold exceeded&quot;)
+        if src in trusted and method in cfg[&quot;allowed_methods&quot;] and iface==cfg[&quot;interface_version&quot;] and length==actual_length: normal+=1
+    out=base/&quot;logs/ids_alerts.jsonl&quot;
+    with out.open(&quot;w&quot;) as f:
+        for row in alerts:f.write(json.dumps(row,sort_keys=True)+&quot;\n&quot;)
+    summary={&quot;parsed&quot;:parsed,&quot;normal&quot;:normal,&quot;alerts&quot;:len(alerts),&quot;kinds&quot;:sorted(set(x[&quot;kind&quot;] for x in alerts))}
+    (base/&quot;reports/ids_summary.json&quot;).write_text(json.dumps(summary,indent=2)+&quot;\n&quot;)
+    print(f&quot;[PASS] SOME/IP IDS parsed={parsed} alerts={len(alerts)} kinds={&#x27;,&#x27;.join(summary[&#x27;kinds&#x27;])}&quot;)
+if __name__==&quot;__main__&quot;:main()
+PY
+chmod +x &quot;$BASE/scripts/analyze_someip.py&quot;
+
+cat &gt; &quot;$BASE/scripts/audit_policy.py&quot; &lt;&lt;&#x27;PY&#x27;
+#!/usr/bin/env python3
+import argparse,json,pathlib,sys
+ap=argparse.ArgumentParser();ap.add_argument(&quot;--base&quot;,required=True);a=ap.parse_args();b=pathlib.Path(a.base)
+p=json.loads((b/&quot;config/policy.json&quot;).read_text());fw=p[&quot;firewall&quot;];checks={
+ &quot;default_drop&quot;:fw.get(&quot;default_policy&quot;)==&quot;drop&quot;,
+ &quot;loopback&quot;:fw.get(&quot;allow_loopback&quot;) is True,
+ &quot;stateful_return&quot;:fw.get(&quot;allow_established_related&quot;) is True,
+ &quot;nflog_group&quot;:isinstance(fw.get(&quot;nflog_group&quot;),int) and 0&lt;fw[&quot;nflog_group&quot;]&lt;65536,
+ &quot;rate_limited_logging&quot;:0&lt;fw.get(&quot;log_rate_per_second&quot;,0)&lt;=20,
+ &quot;someip_udp&quot;:30490 in fw.get(&quot;allowed_udp&quot;,[]),
+ &quot;management_tcp&quot;:8080 in fw.get(&quot;allowed_tcp&quot;,[]),
+ &quot;trusted_source_defined&quot;:bool(p.get(&quot;trusted_someip_sources&quot;)),
+}
+report={&quot;checks&quot;:checks,&quot;pass&quot;:all(checks.values())};(b/&quot;reports/policy_audit.json&quot;).write_text(json.dumps(report,indent=2)+&quot;\n&quot;)
+for k,v in checks.items():print(f&quot;[{&#x27;PASS&#x27; if v else &#x27;FAIL&#x27;}] {k}&quot;)
+sys.exit(0 if report[&quot;pass&quot;] else 1)
+PY
+chmod +x &quot;$BASE/scripts/audit_policy.py&quot;
+
+cat &gt; &quot;$BASE/scripts/reconstruct_timeline.py&quot; &lt;&lt;&#x27;PY&#x27;
+#!/usr/bin/env python3
+import argparse,csv,json,pathlib
+ap=argparse.ArgumentParser();ap.add_argument(&quot;--base&quot;,required=True);a=ap.parse_args();b=pathlib.Path(a.base);rows=[]
+for name in [&quot;system.jsonl&quot;,&quot;firewall.jsonl&quot;,&quot;dlt.jsonl&quot;,&quot;ids_alerts.jsonl&quot;]:
+ p=b/&quot;logs&quot;/name
+ if not p.exists():continue
+ for line in p.read_text().splitlines():
+  x=json.loads(line);x[&quot;file&quot;]=name;rows.append(x)
+rows.sort(key=lambda x:x[&quot;ts&quot;])
+with (b/&quot;reports/timeline.csv&quot;).open(&quot;w&quot;,newline=&quot;&quot;) as f:
+ w=csv.writer(f);w.writerow([&quot;timestamp&quot;,&quot;source&quot;,&quot;event&quot;,&quot;severity&quot;,&quot;summary&quot;,&quot;evidence_file&quot;])
+ for x in rows:
+  summary=x.get(&quot;message&quot;) or x.get(&quot;detail&quot;) or f&quot;{x.get(&#x27;event&#x27;,&#x27;&#x27;)} src={x.get(&#x27;src&#x27;,&#x27;&#x27;)} dport={x.get(&#x27;dport&#x27;,&#x27;&#x27;)}&quot;
+  w.writerow([x[&quot;ts&quot;],x.get(&quot;source&quot;,&quot;&quot;),x.get(&quot;kind&quot;) or x.get(&quot;event&quot;,&quot;&quot;),x.get(&quot;severity&quot;) or x.get(&quot;level&quot;,&quot;&quot;),summary,x[&quot;file&quot;]])
+(b/&quot;reports/timeline.json&quot;).write_text(json.dumps(rows,indent=2)+&quot;\n&quot;)
+print(f&quot;[PASS] timeline reconstructed events={len(rows)} first={rows[0][&#x27;ts&#x27;]} last={rows[-1][&#x27;ts&#x27;]}&quot;)
+PY
+chmod +x &quot;$BASE/scripts/reconstruct_timeline.py&quot;
+
+cat &gt; &quot;$BASE/scripts/hardening_report.py&quot; &lt;&lt;&#x27;PY&#x27;
+#!/usr/bin/env python3
+import argparse,json,pathlib,collections
+ap=argparse.ArgumentParser();ap.add_argument(&quot;--base&quot;,required=True);a=ap.parse_args();b=pathlib.Path(a.base)
+alerts=[json.loads(x) for x in (b/&quot;logs/ids_alerts.jsonl&quot;).read_text().splitlines() if x.strip()];k=collections.Counter(x[&quot;kind&quot;] for x in alerts)
+actions=[
+ (&quot;UNAUTHORIZED_SOURCE&quot;,&quot;Constrain SOME/IP sources at the vehicle gateway and authenticate service consumers.&quot;),
+ (&quot;REPLAY&quot;,&quot;Bind request identifiers to a freshness window and reject repeated client/session IDs.&quot;),
+ (&quot;INTERFACE_VERSION&quot;,&quot;Enforce configured interface versions and reject downgrade/unknown versions.&quot;),
+ (&quot;INVALID_LENGTH&quot;,&quot;Validate SOME/IP length before deserializing application payloads.&quot;),
+ (&quot;RATE_EXCEEDED&quot;,&quot;Apply per-source service/method rate limits and bounded queues.&quot;),
+ (&quot;UNKNOWN_SERVICE_METHOD&quot;,&quot;Use an explicit service/method allowlist and alert on discovery scans.&quot;),
+]
+lines=[&quot;# Post-incident hardening report&quot;,&quot;&quot;,f&quot;Incident alerts: {len(alerts)}&quot;,&quot;&quot;]
+for kind,action in actions:
+ if k[kind]:lines += [f&quot;## {kind} ({k[kind]})&quot;,action,&quot;&quot;]
+lines += [&quot;## Firewall changes&quot;,&quot;- Keep default-drop.&quot;,&quot;- Log denied traffic to a dedicated NFLOG group with rate limiting.&quot;,&quot;- Add temporary source blocks using timeout sets rather than permanent ad-hoc rules.&quot;,&quot;- Preserve rule handles, counters, ruleset JSON and change approval as evidence.&quot;,&quot;&quot;,&quot;## Verification&quot;,&quot;- Re-run positive and negative policy tests.&quot;,&quot;- Confirm legitimate SOME/IP and management traffic still passes.&quot;,&quot;- Confirm alert timestamps are synchronized and correlated with DLT and packet evidence.&quot;]
+(b/&quot;reports/hardening.md&quot;).write_text(&quot;\n&quot;.join(lines)+&quot;\n&quot;)
+print(&quot;[PASS] hardening report generated&quot;)
+PY
+chmod +x &quot;$BASE/scripts/hardening_report.py&quot;
+
+cat &gt; &quot;$BASE/scripts/production_nft_lab.sh&quot; &lt;&lt;&#x27;SH&#x27;
+#!/usr/bin/env bash
+set -Eeuo pipefail
+BASE=&quot;${IR_LAB_HOME:-$HOME/android-ir-lab}&quot;
+CLIENT=ir-client; GATEWAY=ir-gateway; CDEV=veth-client; GDEV=veth-gateway
+for c in ip nft tcpdump python3 curl;do command -v &quot;$c&quot; &gt;/dev/null||{ echo &quot;[FAIL] missing $c&quot;;exit 1;};done
+cleanup(){
+ set +e
+ [[ -n &quot;${HTTP_PID:-}&quot; ]]&amp;&amp;kill &quot;$HTTP_PID&quot; 2&gt;/dev/null
+ [[ -n &quot;${RAW_PID:-}&quot; ]]&amp;&amp;kill &quot;$RAW_PID&quot; 2&gt;/dev/null
+ [[ -n &quot;${NFLOG_PID:-}&quot; ]]&amp;&amp;kill &quot;$NFLOG_PID&quot; 2&gt;/dev/null
+ ip netns del &quot;$CLIENT&quot; 2&gt;/dev/null
+ ip netns del &quot;$GATEWAY&quot; 2&gt;/dev/null
+}
+trap cleanup EXIT
+cleanup
+ip netns add &quot;$CLIENT&quot;;ip netns add &quot;$GATEWAY&quot;
+ip link add &quot;$CDEV&quot; type veth peer name &quot;$GDEV&quot;
+ip link set &quot;$CDEV&quot; netns &quot;$CLIENT&quot;;ip link set &quot;$GDEV&quot; netns &quot;$GATEWAY&quot;
+ip -n &quot;$CLIENT&quot; addr add 10.55.0.10/24 dev &quot;$CDEV&quot;;ip -n &quot;$GATEWAY&quot; addr add 10.55.0.20/24 dev &quot;$GDEV&quot;
+ip -n &quot;$CLIENT&quot; link set lo up;ip -n &quot;$GATEWAY&quot; link set lo up;ip -n &quot;$CLIENT&quot; link set &quot;$CDEV&quot; up;ip -n &quot;$GATEWAY&quot; link set &quot;$GDEV&quot; up
+cat &gt; &quot;$BASE/work/ir_ruleset.nft&quot; &lt;&lt;&#x27;NFT&#x27;
+table inet ir_lab {
+ chain input {
+  type filter hook input priority filter; policy drop;
+  iifname &quot;lo&quot; accept
+  ct state established,related accept
+  ip saddr 10.55.0.10 tcp dport 8080 counter accept comment &quot;approved management&quot;
+  ip saddr 10.55.0.10 udp dport 30490 counter accept comment &quot;approved SOME/IP source&quot;
+  limit rate 5/second burst 10 packets counter log group 100 prefix &quot;IR_DENY &quot; snaplen 128 drop
+ }
+}
+NFT
+ip netns exec &quot;$GATEWAY&quot; nft -c -f &quot;$BASE/work/ir_ruleset.nft&quot;
+ip netns exec &quot;$GATEWAY&quot; nft -f &quot;$BASE/work/ir_ruleset.nft&quot;
+ip netns exec &quot;$GATEWAY&quot; python3 -m http.server 8080 --bind 10.55.0.20 &gt;&quot;$BASE/logs/http.log&quot; 2&gt;&amp;1 &amp; HTTP_PID=$!
+ip netns exec &quot;$GATEWAY&quot; tcpdump -U -i &quot;$GDEV&quot; -nn -s0 -w &quot;$BASE/pcaps/namespace_traffic.pcap&quot; &gt;&quot;$BASE/logs/tcpdump.log&quot; 2&gt;&amp;1 &amp; RAW_PID=$!
+if ip netns exec &quot;$GATEWAY&quot; tcpdump -D 2&gt;/dev/null|grep -qi nflog;then
+ ip netns exec &quot;$GATEWAY&quot; tcpdump -U -i nflog:100 -nn -s128 -w &quot;$BASE/pcaps/nflog100.pcap&quot; &gt;&quot;$BASE/logs/nflog_tcpdump.log&quot; 2&gt;&amp;1 &amp; NFLOG_PID=$!
+fi
+sleep 1
+ip netns exec &quot;$CLIENT&quot; curl --fail --max-time 3 http://10.55.0.20:8080/ &gt;&quot;$BASE/logs/allowed_http.out&quot;
+for port in 22 4040 4041;do ip netns exec &quot;$CLIENT&quot; python3 - &quot;$port&quot; &lt;&lt;&#x27;PY&#x27; || true
+import socket,sys
+s=socket.socket();s.settimeout(.4)
+try:s.connect((&quot;10.55.0.20&quot;,int(sys.argv[1])))
+except OSError:pass
+finally:s.close()
+PY
+done
+sleep 1
+ip netns exec &quot;$GATEWAY&quot; nft -a -j list ruleset &gt;&quot;$BASE/reports/nft_ruleset.json&quot;
+ip netns exec &quot;$GATEWAY&quot; nft -a list chain inet ir_lab input &gt;&quot;$BASE/reports/nft_chain.txt&quot;
+kill &quot;$RAW_PID&quot; 2&gt;/dev/null||true;RAW_PID=
+[[ -n &quot;${NFLOG_PID:-}&quot; ]]&amp;&amp;{ kill &quot;$NFLOG_PID&quot; 2&gt;/dev/null||true;NFLOG_PID=; }
+[[ -s &quot;$BASE/pcaps/namespace_traffic.pcap&quot; ]]||{ echo &quot;[FAIL] raw pcap empty&quot;;exit 1;}
+grep -q &#x27;approved management&#x27; &quot;$BASE/reports/nft_chain.txt&quot;||{ echo &quot;[FAIL] rule audit missing&quot;;exit 1;}
+grep -Eq &#x27;packets [1-9][0-9]*&#x27; &quot;$BASE/reports/nft_chain.txt&quot;||{ echo &quot;[FAIL] counters did not increase&quot;;exit 1;}
+echo &quot;[PASS] production namespace nftables/tcpdump lab&quot;
+SH
+chmod +x &quot;$BASE/scripts/production_nft_lab.sh&quot;
+
+cat &gt; &quot;$BASE/scripts/validate_all.sh&quot; &lt;&lt;&#x27;SH&#x27;
+#!/usr/bin/env bash
+set -Eeuo pipefail
+BASE=&quot;${IR_LAB_HOME:-$HOME/android-ir-lab}&quot;;PASS=0;FAIL=0
+pass(){ echo &quot;[PASS] $1&quot;;PASS=$((PASS+1));};fail(){ echo &quot;[FAIL] $1&quot;;FAIL=$((FAIL+1));}
+python3 &quot;$BASE/scripts/generate_incident.py&quot; --base &quot;$BASE&quot; &gt;/dev/null
+python3 &quot;$BASE/scripts/analyze_someip.py&quot; --base &quot;$BASE&quot; &gt;/dev/null
+python3 &quot;$BASE/scripts/audit_policy.py&quot; --base &quot;$BASE&quot; &gt;/dev/null
+python3 &quot;$BASE/scripts/reconstruct_timeline.py&quot; --base &quot;$BASE&quot; &gt;/dev/null
+python3 &quot;$BASE/scripts/hardening_report.py&quot; --base &quot;$BASE&quot; &gt;/dev/null
+[[ -s &quot;$BASE/pcaps/someip_incident.pcap&quot; ]]&amp;&amp;pass &quot;incident PCAP generated&quot;||fail &quot;incident PCAP&quot;
+python3 - &quot;$BASE&quot; &lt;&lt;&#x27;PY&#x27; &amp;&amp; pass &quot;PCAP and SOME/IP frame parsing&quot; || fail &quot;PCAP parsing&quot;
+import pathlib,struct,sys
+p=pathlib.Path(sys.argv[1])/&quot;pcaps/someip_incident.pcap&quot;;d=p.read_bytes();assert d[:4]==b&quot;\xd4\xc3\xb2\xa1&quot;;off=24;n=0
+while off+16&lt;=len(d):
+ _,_,cap,_=struct.unpack_from(&quot;&lt;IIII&quot;,d,off);off+=16+cap;n+=1
+assert n&gt;=16
+PY
+IDS=&quot;$BASE/logs/ids_alerts.jsonl&quot;
+for kind in UNAUTHORIZED_SOURCE REPLAY INTERFACE_VERSION INVALID_LENGTH RATE_EXCEEDED UNKNOWN_SERVICE_METHOD;do grep -q &quot;\&quot;kind\&quot;: \&quot;$kind\&quot;&quot; &quot;$IDS&quot;&amp;&amp;pass &quot;SOME/IP IDS $kind&quot;||fail &quot;SOME/IP IDS $kind&quot;;done
+grep -q &#x27;&quot;event&quot;: &quot;drop&quot;&#x27; &quot;$BASE/logs/firewall.jsonl&quot;&amp;&amp;pass &quot;nftables drop evidence&quot;||fail &quot;firewall drop evidence&quot;
+grep -q &#x27;&quot;level&quot;: &quot;FATAL&quot;&#x27; &quot;$BASE/logs/dlt.jsonl&quot;&amp;&amp;grep -q &#x27;&quot;level&quot;: &quot;ERROR&quot;&#x27; &quot;$BASE/logs/dlt.jsonl&quot;&amp;&amp;pass &quot;DLT warning/error evidence&quot;||fail &quot;DLT evidence&quot;
+if command -v jq &gt;/dev/null 2&gt;&amp;1; then
+  if jq -e &#x27;.pass == true&#x27; &quot;$BASE/reports/policy_audit.json&quot; &gt;/dev/null 2&gt;&amp;1; then pass &quot;firewall policy audit&quot;; else fail &quot;policy audit&quot;; fi
+else
+  if python3 - &quot;$BASE&quot; &lt;&lt;&#x27;PY&#x27;
+import json,pathlib,sys
+x=json.loads((pathlib.Path(sys.argv[1])/&quot;reports/policy_audit.json&quot;).read_text());assert x[&quot;pass&quot;]
+PY
+  then pass &quot;firewall policy audit&quot;; else fail &quot;policy audit&quot;; fi
+fi
+python3 - &quot;$BASE&quot; &lt;&lt;&#x27;PY&#x27; &amp;&amp; pass &quot;timeline ordering and correlation&quot; || fail &quot;timeline&quot;
+import csv,pathlib,sys
+r=list(csv.DictReader((pathlib.Path(sys.argv[1])/&quot;reports/timeline.csv&quot;).open()));assert len(r)&gt;=20;ts=[x[&quot;timestamp&quot;] for x in r];assert ts==sorted(ts);sources={x[&quot;source&quot;] for x in r};assert {&quot;nftables&quot;,&quot;DLT&quot;,&quot;SOMEIP_IDS&quot;,&quot;system&quot;}&lt;=sources
+PY
+grep -q &#x27;Post-incident hardening report&#x27; &quot;$BASE/reports/hardening.md&quot;&amp;&amp;pass &quot;post-incident hardening report&quot;||fail &quot;hardening report&quot;
+python3 - &quot;$BASE&quot; &lt;&lt;&#x27;PY&#x27; &amp;&amp; pass &quot;R155 evidence mapping&quot; || fail &quot;R155 evidence mapping&quot;
+import json,pathlib,sys
+x=json.loads((pathlib.Path(sys.argv[1])/&quot;config/r155_evidence.json&quot;).read_text());assert len(x[&quot;evidence&quot;])&gt;=6 and &quot;not a type-approval&quot; in x[&quot;disclaimer&quot;]
+PY
+echo;echo &quot;Summary: PASS=$PASS FAIL=$FAIL&quot;;((FAIL==0))
+SH
+chmod +x &quot;$BASE/scripts/validate_all.sh&quot;
+
+cat &gt; &quot;$BASE/README.txt&quot; &lt;&lt;&#x27;TXT&#x27;
+Run portable validated case:
+  IR_LAB_HOME=&quot;$HOME/android-ir-lab&quot; &quot;$HOME/android-ir-lab/scripts/validate_all.sh&quot;
+
+Run privileged production namespace exercise after installing nftables/tcpdump:
+  sudo IR_LAB_HOME=&quot;$HOME/android-ir-lab&quot; &quot;$HOME/android-ir-lab/scripts/production_nft_lab.sh&quot;
+TXT
+
+echo &quot;[PASS] lab installed at $BASE&quot;
+echo &quot;Run: IR_LAB_HOME=\&quot;$BASE\&quot; \&quot;$BASE/scripts/validate_all.sh\&quot;&quot;
+</code></pre>
+</details>
+<pre><button class="copy btn">Copy</button><code># Save the copied bootstrap as:
+nano "$HOME/setup-android-ir-lab.sh"
+
+chmod +x "$HOME/setup-android-ir-lab.sh"
+"$HOME/setup-android-ir-lab.sh"</code></pre>
+
+<details><summary>Lab A — Portable mixed-incident case</summary>
+<pre><button class="copy btn">Copy</button><code>IR_LAB_HOME="$HOME/android-ir-lab" \
+  "$HOME/android-ir-lab/scripts/validate_all.sh"</code></pre>
+<pre class="expected"><code>[PASS] incident PCAP generated
+[PASS] PCAP and SOME/IP frame parsing
+[PASS] SOME/IP IDS UNAUTHORIZED_SOURCE
+[PASS] SOME/IP IDS REPLAY
+[PASS] SOME/IP IDS INTERFACE_VERSION
+[PASS] SOME/IP IDS INVALID_LENGTH
+[PASS] SOME/IP IDS RATE_EXCEEDED
+[PASS] SOME/IP IDS UNKNOWN_SERVICE_METHOD
+[PASS] nftables drop evidence
+[PASS] DLT warning/error evidence
+[PASS] firewall policy audit
+[PASS] timeline ordering and correlation
+[PASS] post-incident hardening report
+[PASS] R155 evidence mapping
+
+Summary: PASS=14 FAIL=0</code></pre>
+</details>
+
+<details><summary>Lab B — Real nftables, tcpdump and NFLOG in namespaces</summary>
+<pre><button class="copy btn">Copy</button><code>sudo IR_LAB_HOME="$HOME/android-ir-lab" \
+  "$HOME/android-ir-lab/scripts/production_nft_lab.sh"</code></pre>
+<p>The script performs these safety and validation steps:</p>
+<ul>
+<li>Checks required commands.</li>
+<li>Creates <code>ir-client</code> and <code>ir-gateway</code> namespaces.</li>
+<li>Checks the ruleset using <code>nft -c</code> before applying it.</li>
+<li>Runs an approved HTTP service and both positive and negative tests.</li>
+<li>Captures interface traffic and attempts an NFLOG group-100 capture when supported.</li>
+<li>Exports ruleset JSON, handles and counters.</li>
+<li>Requires a non-empty PCAP and incremented rule counters.</li>
+<li>Deletes both namespaces on success, failure or interruption.</li>
+</ul>
+<pre class="expected"><code>[PASS] production namespace nftables/tcpdump lab</code></pre>
+</details>
+
+<details><summary>Lab C — Inspect the generated evidence</summary>
+<pre><button class="copy btn">Copy</button><code>BASE="$HOME/android-ir-lab"
+
+python3 "$BASE/scripts/analyze_someip.py" \
+  --base "$BASE"
+
+column -s, -t \
+  < "$BASE/reports/timeline.csv" |
+  less -S
+
+cat "$BASE/reports/hardening.md"
+
+tcpdump -nn -tttt -vv \
+  -r "$BASE/pcaps/someip_incident.pcap" \
+  'udp port 30490'</code></pre>
+</details>
+
+<details><summary>Lab D — Real DLT receiver where DLT is integrated</summary>
+<pre><button class="copy btn">Copy</button><code>sudo systemctl enable --now dlt
+systemctl status dlt --no-pager
+
+# Console receiver from a local DLT daemon:
+dlt-receive -s localhost
+
+# Store binary DLT output for later analysis:
+dlt-receive -o "$HOME/android-ir-lab/logs/live-capture.dlt" localhost</code></pre>
+<div class="callout warn">A stock phone Cuttlefish image does not automatically emit AUTOSAR DLT. Run this against an automotive Linux/AAOS component that has been integrated with the COVESA DLT daemon or use the validated structured DLT export in Lab A.</div>
+</details>
+
+<details><summary>Lab E — Policy change and regression test</summary>
+<pre><button class="copy btn">Copy</button><code>BASE="$HOME/android-ir-lab"
+
+# Review policy before changing it.
+python3 "$BASE/scripts/audit_policy.py" \
+  --base "$BASE"
+
+# Re-run all positive and negative cases after hardening.
+IR_LAB_HOME="$BASE" \
+  "$BASE/scripts/validate_all.sh"
+
+# On the namespace lab, verify handles and counters:
+cat "$BASE/reports/nft_chain.txt"
+python3 -m json.tool \
+  "$BASE/reports/nft_ruleset.json" |
+  less</code></pre>
+</details>
+</section>
+
+<section id="cuttlefish" data-search>
+<h2>12. Android 17 Cuttlefish evidence collection</h2>
+<p class="lead">These commands are read-only and add Android process, routing, netd and logcat context to the incident case.</p>
+
+<div class="callout good"><strong>Android 17 correction:</strong> do not treat <code>dumpsys netd</code> as a required command. In modern Android, TrafficController/BPF diagnostics are exposed through <code>dumpsys connectivity trafficcontroller</code>. The <code>netd</code> native daemon may still be running even when there is no dumpable service named <code>netd</code>.</div>
+<div class="didyouknow"><strong>🔍 Quick field check</strong> Run <code>adb shell dumpsys -l | grep -E 'connectivity|netstats|netpolicy|netd'</code> first. Use only service names actually advertised by that build.</div>
+
+<pre><button class="copy btn">Copy</button><code>RUNTIME="${RUNTIME:-$HOME/src}"
+ADB="${ADB:-$RUNTIME/bin/adb}"
+SERIAL="${SERIAL:-0.0.0.0:6520}"
+OUT="$HOME/android-ir-lab/logs/cuttlefish"
+mkdir -p "$OUT"
+
+"$ADB" connect "$SERIAL" >/dev/null 2>&1 || true
+"$ADB" -s "$SERIAL" get-state
+
+"$ADB" -s "$SERIAL" shell getprop \
+  > "$OUT/getprop.txt"
+
+"$ADB" -s "$SERIAL" shell ip -brief address \
+  > "$OUT/ip-address.txt"
+
+"$ADB" -s "$SERIAL" shell ip route \
+  > "$OUT/ip-route.txt"
+
+"$ADB" -s "$SERIAL" shell ss -H -lntu \
+  > "$OUT/listeners.txt" 2>&1 || true
+
+echo '=== Available networking dumpsys services ==='
+"$ADB" -s "$SERIAL" shell '
+  dumpsys -l |
+    grep -E "^(connectivity|netstats|netpolicy|network_management)$" ||
+    true
+' > "$OUT/network-dumpsys-services.txt"
+
+# Android 13+ / Android 17:
+# TrafficController and BPF diagnostics are exposed through ConnectivityService.
+"$ADB" -s "$SERIAL" shell dumpsys connectivity \
+  > "$OUT/dumpsys-connectivity.txt"
+
+if "$ADB" -s "$SERIAL" shell '
+  dumpsys -l | grep -qx connectivity
+'; then
+  "$ADB" -s "$SERIAL" \
+    shell dumpsys connectivity trafficcontroller \
+    > "$OUT/dumpsys-trafficcontroller.txt" \
+    2>&1 || true
+else
+  printf '%s\n' \
+    'SKIP: connectivity dumpsys service unavailable' \
+    > "$OUT/dumpsys-trafficcontroller.txt"
+fi
+
+# Additional networking-policy/accounting evidence.
+"$ADB" -s "$SERIAL" shell dumpsys netpolicy \
+  > "$OUT/dumpsys-netpolicy.txt" \
+  2>&1 || true
+
+"$ADB" -s "$SERIAL" shell dumpsys netstats \
+  > "$OUT/dumpsys-netstats.txt" \
+  2>&1 || true
+
+# netd is still a native daemon, but do not assume it is a dumpsys service.
+"$ADB" -s "$SERIAL" shell '
+  echo "=== netd process ==="
+  pidof netd 2>/dev/null ||
+    ps -A | grep -E "[[:space:]]netd([[:space:]]|$)" ||
+    echo "netd process not visible"
+
+  echo
+  echo "=== BPF filesystem ==="
+  mount | grep -E " type bpf |/sys/fs/bpf" || true
+  ls -ld /sys/fs/bpf 2>/dev/null || true
+' > "$OUT/netd-bpf-runtime.txt"
+
+"$ADB" -s "$SERIAL" logcat \
+  -b all \
+  -d \
+  -v threadtime \
+  > "$OUT/logcat-all.txt"
+
+sha256sum "$OUT"/* \
+  > "$OUT/SHA256SUMS"</code></pre>
+
+<details>
+<summary>Troubleshooting — “Can&apos;t find service: netd”</summary>
+<p><strong>This is not evidence that networking is broken.</strong> It means the current build does not expose a dumpable Binder service using the literal name <code>netd</code>.</p>
+<pre><button class="copy btn">Copy</button><code># 1. Discover what dumpsys can actually dump.
+"$ADB" -s "$SERIAL" shell dumpsys -l |
+  grep -E 'connectivity|netstats|netpolicy|network|netd'
+
+# 2. Android 13+ / Android 17 TrafficController dump.
+"$ADB" -s "$SERIAL" \
+  shell dumpsys connectivity trafficcontroller |
+  head -n 120
+
+# 3. Confirm the native daemon separately.
+"$ADB" -s "$SERIAL" shell '
+  pidof netd ||
+    ps -A | grep -E "[[:space:]]netd([[:space:]]|$)"
+'
+
+# 4. Inspect BPF runtime state.
+"$ADB" -s "$SERIAL" shell '
+  mount | grep -E " type bpf |/sys/fs/bpf"
+  ls -la /sys/fs/bpf | head -n 60
+'</code></pre>
+<p><strong>Expected interpretation:</strong> <code>connectivity trafficcontroller</code> should be preferred on Android 17. If it is absent too, record it as a capability difference and continue with <code>dumpsys connectivity</code>, <code>netstats</code>, <code>netpolicy</code>, process evidence and <code>/sys/fs/bpf</code>.</p>
+</details>
+
+<div class="callout good"><strong>Evidence discipline:</strong> record acquisition time, host/device clock, Android build fingerprint, ADB serial, commands, collector identity and hashes. Keep originals read-only and perform analysis on copies.</div>
+</section>
+
+<section id="quiz" data-search>
+<h2>11. Knowledge check</h2>
+<form id="quizForm">
+<div class="quiz-q" data-answer="c"><strong>1. What does an nftables <code>log</code> statement do by itself?</strong>
+<label><input type="radio" name="q1" value="a"> Always accepts the packet</label>
+<label><input type="radio" name="q1" value="b"> Always drops the packet</label>
+<label><input type="radio" name="q1" value="c"> Logs and continues rule evaluation unless a verdict follows</label></div>
+<div class="quiz-q" data-answer="b"><strong>2. What is the main benefit of NFLOG?</strong>
+<label><input type="radio" name="q2" value="a"> It replaces all packet captures</label>
+<label><input type="radio" name="q2" value="b"> It sends selected packet records to a userspace subscriber through a netlink group</label>
+<label><input type="radio" name="q2" value="c"> It encrypts SOME/IP</label></div>
+<div class="quiz-q" data-answer="a"><strong>3. Which evidence adds application meaning such as ECU, APID and CTID?</strong>
+<label><input type="radio" name="q3" value="a"> DLT</label>
+<label><input type="radio" name="q3" value="b"> ARP only</label>
+<label><input type="radio" name="q3" value="c"> Disk free-space output</label></div>
+<div class="quiz-q" data-answer="c"><strong>4. A repeated SOME/IP client/session request ID inside the freshness window indicates:</strong>
+<label><input type="radio" name="q4" value="a"> Normal DNS resolution</label>
+<label><input type="radio" name="q4" value="b"> A successful software update</label>
+<label><input type="radio" name="q4" value="c"> A possible replay</label></div>
+<div class="quiz-q" data-answer="b"><strong>5. What does the R155 lab mapping prove?</strong>
+<label><input type="radio" name="q5" value="a"> Automatic legal compliance</label>
+<label><input type="radio" name="q5" value="b"> How technical evidence can support CSMS processes, while formal compliance needs broader audited evidence</label>
+<label><input type="radio" name="q5" value="c"> That every vehicle uses the same firewall</label></div>
+<div class="quiz-q" data-answer="a"><strong>6. What must happen after hardening?</strong>
+<label><input type="radio" name="q6" value="a"> Positive and negative regression tests, alert verification and residual-risk review</label>
+<label><input type="radio" name="q6" value="b"> Delete all evidence immediately</label>
+<label><input type="radio" name="q6" value="c"> Disable logging to improve performance</label></div>
+<button type="button" class="btn primary" id="gradeQuiz">Grade quiz</button>
+</form>
+<div class="result" id="quizResult">Complete all six questions.</div>
+</section>
+
+<section id="acceptance" data-search>
+<h2>12. Full trainee acceptance test</h2>
+<div class="card checks" id="checks">
+<label><input type="checkbox" data-k="nft"> Explain nftables log versus verdict behavior</label>
+<label><input type="checkbox" data-k="nflog"> Capture or inspect NFLOG group evidence</label>
+<label><input type="checkbox" data-k="pcap"> Produce and analyse a packet capture</label>
+<label><input type="checkbox" data-k="dlt"> Filter DLT evidence by ECU, APID/CTID and severity</label>
+<label><input type="checkbox" data-k="ids"> Detect all six SOME/IP anomaly classes</label>
+<label><input type="checkbox" data-k="audit"> Pass static firewall policy audit</label>
+<label><input type="checkbox" data-k="dynamic"> Pass approved and prohibited traffic tests</label>
+<label><input type="checkbox" data-k="counter"> Preserve ruleset handles and counters</label>
+<label><input type="checkbox" data-k="r155"> Map incident evidence to R155/CSMS themes without claiming certification</label>
+<label><input type="checkbox" data-k="timeline"> Reconstruct an ordered cross-source timeline</label>
+<label><input type="checkbox" data-k="harden"> Produce hardening actions tied to detected causes</label>
+<label><input type="checkbox" data-k="android"> Collect and hash Cuttlefish evidence</label>
+<label><input type="checkbox" data-k="runner"> Complete portable validation with <code>PASS=14 FAIL=0</code></label>
+<label><input type="checkbox" data-k="quiz"> Score at least 80% on the knowledge check</label>
+</div>
+<div class="meter"><span id="meter"></span></div>
+<div class="result" id="checkResult">0 of 14 acceptance items complete.</div>
+</section>
+
+<section id="sources" data-search>
+<h2>13. Technical verification and source notes</h2>
+<div id="runtimeStatus" class="callout warn"><strong>Interactive runtime:</strong> Initializing…</div>
+<div id="selfTest" class="callout">Running simulator self-tests…</div>
+<ul>
+<li><a href="https://www.netfilter.org/projects/nftables/manpage.html">Netfilter nftables man page</a> — syntax checking, ruleset JSON, hooks and log/NFLOG statement behavior.</li>
+<li><a href="https://www.netfilter.org/projects/ulogd/index.html">Netfilter ulogd project</a> — packet and flow logging, accounting and userspace outputs.</li>
+<li><a href="https://covesa.global/project/diagnostic-log-trace/">COVESA Diagnostic Log and Trace</a> — DLT daemon, library and viewer ecosystem.</li>
+<li><a href="https://www.autosar.org/fileadmin/standards/R24-11/FO/AUTOSAR_FO_PRS_SOMEIPProtocol.pdf">AUTOSAR SOME/IP Protocol Specification</a> — header format, messages and semantics.</li>
+<li><a href="https://unece.org/transport/documents/2021/03/standards/un-regulation-no-155-cyber-security-and-cyber-security">UNECE UN Regulation No. 155</a> — cybersecurity and Cyber Security Management System.</li>
+<li><a href="https://unece.org/sustainable-development/press/un-regulations-cybersecurity-and-software-updates-pave-way-mass-roll">UNECE R155/R156 overview</a> — lifecycle monitoring, detecting and responding to fleet cybersecurity incidents.</li>
+</ul>
+<div class="callout warn"><strong>Validation scope:</strong> the embedded portable incident harness was executed end to end and passed 14/14 checks. The privileged namespace script passed shell syntax and structural safety validation. Its actual nftables/NFLOG execution must run on the Ubuntu 24.x trainee VM after the listed packages are installed, because this artifact-building environment does not provide those packages.</div>
+<p class="small muted">Single-file offline HTML. External source links require network access.</p>
+</section>
+
+<footer><strong>Session 4 — Phantom Unlock Incident Mission</strong><br>Production-style automotive cybersecurity reference for Ubuntu 24.x and Android 17 Cuttlefish.</footer>
+</main>
+</div>
+
+<script>
+const $=(s,p=document)=>p.querySelector(s), $$=(s,p=document)=>[...p.querySelectorAll(s)];
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+const safeStore=(()=>{
+ const m={};
+ try{
+  localStorage.setItem("__ir_test","1");localStorage.removeItem("__ir_test");
+  return{get:k=>localStorage.getItem(k),set:(k,v)=>localStorage.setItem(k,String(v))}
+ }catch(e){
+  return{get:k=>Object.prototype.hasOwnProperty.call(m,k)?m[k]:null,set:(k,v)=>m[k]=String(v)}
+ }
+})();
+const saved=safeStore.get("ir-theme");if(saved)document.documentElement.dataset.theme=saved;
+$("#theme").onclick=()=>{let h=document.documentElement;h.dataset.theme=h.dataset.theme==="dark"?"light":"dark";safeStore.set("ir-theme",h.dataset.theme)};
+$("#motion").onclick=()=>document.body.classList.toggle("reduce");
+$("#menu").onclick=()=>{let t=$("#toc");t.style.display=t.style.display==="block"?"none":"block";Object.assign(t.style,{position:"fixed",zIndex:90,top:"58px",left:0,width:"318px"})};
+$$(".copy").forEach(x=>x.onclick=async()=>{let c=x.parentElement.querySelector("code");if(!c)return;try{await navigator.clipboard.writeText(c.innerText);let t=x.textContent;x.textContent="Copied";setTimeout(()=>x.textContent=t,850)}catch(e){x.textContent="Select"}});
+$("#search").oninput=e=>{let q=e.target.value.trim().toLowerCase();$$("[data-search]").forEach(s=>s.classList.toggle("hidden",!!q&&!s.innerText.toLowerCase().includes(q)))};
+const secs=$$("main section"),links=$$("nav a");
+if("IntersectionObserver" in window){
+ const ob=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id))}),{rootMargin:"-20% 0px -70% 0px"});
+ secs.forEach(s=>ob.observe(s));
+}
+addEventListener("scroll",()=>{let d=document.documentElement,m=d.scrollHeight-d.clientHeight;$("#progress").style.width=(m?d.scrollTop/m*100:0)+"%"},{passive:true});
+
+async function playPipeline(){
+ const stages=$$(".stage"),sig=$("#signal"),text=[
+ "Attacker scans prohibited ports and sends malformed/replayed SOME/IP requests.",
+ "nftables evaluates packet state, source and service policy; denied traffic is logged and dropped.",
+ "tcpdump preserves raw interface evidence; NFLOG can preserve the policy-selected subset.",
+ "DLT records ECU/application context: authentication failure, gateway rejection and client crash.",
+ "SOME/IP IDS identifies unauthorized source, unknown method, replay, version, length and rate anomalies.",
+ "Events are normalized to UTC and correlated by IP, ECU, service/method, request ID and rule evidence.",
+ "SOC blocks the source, disables the campaign and validates vehicle/gateway health.",
+ "Engineering adds authentication, replay defense, allowlists, validation and regression tests."
+ ];
+ sig.style.background="var(--bad)";
+ for(let i=0;i<stages.length;i++){
+  stages.forEach((s,j)=>s.classList.toggle("on",i===j));
+  sig.style.transform=`translateX(${Math.min(i*118,820)}px)`;
+  $("#pipelineResult").textContent=text[i];
+  await delay(520);
+ }
+ sig.style.background="var(--b)";
+ $("#pipelineResult").innerHTML="<strong class='ok'>CASE CLOSED WITH EVIDENCE:</strong> detection, response and hardening are traceable."
+}
+$("#playPipeline").onclick=playPipeline;
+$("#resetPipeline").onclick=()=>{$$(".stage").forEach(s=>s.classList.remove("on"));$("#signal").style.transform="translateX(0)";$("#signal").style.background="var(--bad)";$("#pipelineResult").textContent="Ready."};
+
+function firewallDecision(src,port,state){
+ const trace=[];
+ if(state==="established"){trace.push("state");return{allow:true,trace,reason:"Established/related return traffic accepted."}}
+ if(src==="trusted"&&port==="8080"){trace.push("state","mgmt");return{allow:true,trace,reason:"Trusted management source accepted on TCP 8080."}}
+ if(src==="trusted"&&port==="30490"){trace.push("state","mgmt","someip");return{allow:true,trace,reason:"Trusted source accepted on the lab SOME/IP UDP port."}}
+ trace.push("state","mgmt","someip","log","drop");
+ return{allow:false,trace,reason:"No allow rule matched; packet is rate-limited into NFLOG group 100 and dropped."}
+}
+$("#evalFirewall").onclick=()=>{
+ let r=firewallDecision($("#fwSource").value,$("#fwPort").value,$("#fwState").value);
+ $$(".rule").forEach(x=>x.classList.toggle("on",r.trace.includes(x.dataset.rule)));
+ $("#fwResult").innerHTML=`<strong class="${r.allow?"ok":"no"}">${r.allow?"ACCEPT":"LOG + DROP"}</strong><br>${r.reason}`
+};
+
+const dltRows=[
+ {ts:"09:00:00.300",ecu:"IVI1",apid:"AUTH",ctid:"RMT1",level:"INFO",msg:"remote command session opened principal=driver-a"},
+ {ts:"09:00:01.100",ecu:"TCU1",apid:"AUTH",ctid:"RMT1",level:"WARN",msg:"authentication failures exceeded threshold"},
+ {ts:"09:00:02.100",ecu:"GW01",apid:"SOME",ctid:"IDS1",level:"ERROR",msg:"unauthorized SOME/IP source requested unlock"},
+ {ts:"09:00:03.200",ecu:"GW01",apid:"SOME",ctid:"IDS1",level:"ERROR",msg:"replayed request session=66 rejected"},
+ {ts:"09:00:04.700",ecu:"IVI1",apid:"APP1",ctid:"MAIN",level:"FATAL",msg:"vehicle-control client restarted after malformed response"}
+];
+const levels={INFO:1,WARN:2,ERROR:3,FATAL:4};
+function renderDlt(){
+ let min=levels[$("#dltLevel").value],ecu=$("#dltEcu").value,rows=dltRows.filter(x=>levels[x.level]>=min&&(ecu==="ALL"||x.ecu===ecu));
+ let cells=["Time","ECU","APID/CTID","Level","Message"];
+ rows.forEach(x=>cells.push(x.ts,x.ecu,x.apid+"/"+x.ctid,x.level,x.msg));
+ $("#dltTable").innerHTML=cells.map((x,i)=>`<div class="${i<5?"head":""}">${x}</div>`).join("")
+}
+$("#filterDlt").onclick=renderDlt;renderDlt();
+
+let previousSession=null;
+function someipAlerts(o){
+ const hits=[];
+ if(o.src!=="10.55.0.10")hits.push("UNAUTHORIZED_SOURCE");
+ if(o.method!==1)hits.push("UNKNOWN_SERVICE_METHOD");
+ if(o.replay||previousSession===o.session)hits.push("REPLAY");
+ if(o.iface!==1)hits.push("INTERFACE_VERSION");
+ if(o.length!=="valid")hits.push("INVALID_LENGTH");
+ if(o.rate>5)hits.push("RATE_EXCEEDED");
+ previousSession=o.session;
+ return hits
+}
+$("#evalSomeip").onclick=()=>{
+ let hits=someipAlerts({src:$("#siSource").value,method:+$("#siMethod").value,session:+$("#siSession").value,replay:$("#siReplay").value==="true",iface:+$("#siIface").value,length:$("#siLength").value,rate:+$("#siRate").value});
+ $$(".alert").forEach(x=>x.classList.toggle("hit",hits.includes(x.dataset.alert)));
+ $("#someipResult").innerHTML=hits.length?`<strong class="no">${hits.length} ALERT(S)</strong><br>${hits.join(", ")}`:"<strong class='ok'>NORMAL FRAME</strong><br>Source, method, request ID, interface version, length and rate comply with policy."
+};
+
+let defect=null;
+$("#breakPolicy").onclick=()=>{const choices=["default","source","log","syntax"];defect=choices[Math.floor(Math.random()*choices.length)];$$(".audit").forEach(x=>{if(x.dataset.audit===defect){x.classList.remove("pass");x.classList.add("fail")}});$("#auditResult").innerHTML="<strong class='no'>Defect injected.</strong> Run the audit to locate it."};
+$("#runAudit").onclick=()=>{let fails=$$(".audit.fail").map(x=>x.textContent.trim());$("#auditResult").innerHTML=fails.length?`<strong class="no">AUDIT FAILED:</strong> ${fails.join(", ")}`:"<strong class='ok'>AUDIT PASSED:</strong> default drop, stateful return, source allowlist, bounded logging, traceability and rollback are present."};
+$("#repairPolicy").onclick=()=>{defect=null;$$(".audit").forEach(x=>{x.classList.remove("fail");x.classList.add("pass")});$("#auditResult").textContent="Policy repaired. Re-run the audit and dynamic tests."};
+
+const compInfo={
+ monitor:"Evidence: fleet alert rules, NFLOG/DLT/SOME-IP detections, coverage statement, time synchronization and triage thresholds.",
+ response:"Evidence: severity model, roles, escalation, containment approvals, safe recovery and communications.",
+ forensics:"Evidence: original logs/PCAPs, acquisition records, hashes, retention, access controls and clock-quality notes.",
+ risk:"Evidence: root cause, treatment decision, cybersecurity goals, residual risk and vehicle-type applicability.",
+ supplier:"Evidence: affected component/version, supplier notification, response SLA, patch evidence and verification ownership.",
+ post:"Evidence: fleet monitoring, vulnerability intake, campaigns, end-of-support plan and post-production incident handling.",
+ effect:"Evidence: positive/negative regression tests, IDS test fixtures, counter evidence and monitored false-positive rate.",
+ trace:"Evidence: incident ID, vehicle/build/software versions, rule handles, changes, approvers and linked work products."
+};
+$$(".comp").forEach(x=>x.onclick=()=>{$$(".comp").forEach(y=>y.classList.remove("active"));x.classList.add("active");$("#compResult").textContent=compInfo[x.dataset.comp]});
+
+const timelineEvents=[
+ ["09:00:00.000","SYSTEM","SOC opens case IR-2026-0802-01"],
+ ["09:00:00.300","DLT IVI1/AUTH","Remote-command session opened"],
+ ["09:00:00.600","NFTABLES","Approved management flow accepted"],
+ ["09:00:01.100","DLT TCU1/AUTH","Authentication-failure threshold exceeded"],
+ ["09:00:01.200","NFTABLES","Untrusted source scan dropped"],
+ ["09:00:02.000","SOME/IP IDS","Unauthorized source targets service 0x1234"],
+ ["09:00:02.300","SOME/IP IDS","Unknown method scan detected"],
+ ["09:00:03.100","SOME/IP IDS","Repeated request ID classified as replay"],
+ ["09:00:03.400","SOME/IP IDS","Unexpected interface version"],
+ ["09:00:03.700","SOME/IP IDS","Declared length mismatch"],
+ ["09:00:04.400","SOME/IP IDS","Rate threshold exceeded"],
+ ["09:00:04.700","DLT IVI1/APP1","Vehicle-control client restarts"],
+ ["09:00:05.000","SYSTEM","Source blocked; remote campaign disabled"],
+ ["09:00:06.200","SYSTEM","Gateway policy reloaded; health checks pass"]
+];
+$("#timelineList").innerHTML=timelineEvents.map((x,i)=>`<div class="event" data-i="${i}"><strong>${x[0]} • ${x[1]}</strong><br>${x[2]}</div>`).join("");
+async function playTimeline(){
+ for(let i=0;i<timelineEvents.length;i++){
+  $$(".event").forEach((x,j)=>x.classList.toggle("active",i===j));
+  $("#timelineResult").innerHTML=`<strong>${timelineEvents[i][0]} • ${timelineEvents[i][1]}</strong><br>${timelineEvents[i][2]}`;
+  await delay(430)
+ }
+ $("#timelineResult").innerHTML="<strong class='ok'>Timeline complete:</strong> initial authentication anomaly precedes scan, SOME/IP abuse, client impact, containment and recovery."
+}
+$("#playTimeline").onclick=playTimeline;
+$("#resetTimeline").onclick=()=>{$$(".event").forEach(x=>x.classList.remove("active"));$("#timelineResult").textContent="Ready to reconstruct IR-2026-0802-01."};
+
+$$(".hard").forEach(x=>x.onclick=()=>x.classList.toggle("selected"));
+$("#scoreHardening").onclick=()=>{
+ let chosen=$$(".hard.selected"),score=chosen.reduce((s,x)=>s+(+x.dataset.weight),0),max=33;
+ let level=score>=25?"Strong layered plan":score>=15?"Partial plan":"Insufficient plan";
+ $("#hardResult").innerHTML=`<strong class="${score>=25?"ok":score>=15?"maybe":"no"}">${level}: ${score}/${max}</strong><br>${chosen.map(x=>x.textContent.trim()).join(" • ")||"No controls selected."}<br>Now assign owners, deadlines, evidence and regression tests.`
+};
+$("#clearHardening").onclick=()=>{$$(".hard").forEach(x=>x.classList.remove("selected"));$("#hardResult").textContent="Choose controls based on root cause and risk, not by selecting everything blindly."};
+
+$("#gradeQuiz").onclick=()=>{
+ let qs=$$(".quiz-q"),correct=0,answered=0;
+ qs.forEach(q=>{let n=q.querySelector("input"),p=$(`input[name="${n.name}"]:checked`);if(p){answered++;if(p.value===q.dataset.answer)correct++}});
+ let pct=Math.round(correct/qs.length*100);
+ $("#quizResult").innerHTML=`<strong>${correct}/${qs.length} correct (${pct}%)</strong><br>${answered<qs.length?"Some questions are unanswered.":pct>=80?"Pass — trainee threshold met.":"Review the modules and retry."}`
+};
+
+const checks=$$("#checks input");
+function updateChecks(){let n=checks.filter(c=>c.checked).length;$("#meter").style.width=n/checks.length*100+"%";$("#checkResult").innerHTML=`<strong>${n} of ${checks.length}</strong> acceptance items complete.${n===checks.length?" Ready for sign-off.":""}`}
+checks.forEach(c=>{c.checked=safeStore.get("ir-"+c.dataset.k)==="1";c.onchange=()=>{safeStore.set("ir-"+c.dataset.k,c.checked?"1":"0");updateChecks()}});updateChecks();
+
+function selfTests(){
+ previousSession=null;
+ const tests=[
+  ["Firewall approved management",firewallDecision("trusted","8080","new").allow===true],
+  ["Firewall prohibited port",firewallDecision("untrusted","4040","new").allow===false],
+  ["SOME/IP normal",someipAlerts({src:"10.55.0.10",method:1,session:1,replay:false,iface:1,length:"valid",rate:1}).length===0],
+  ["SOME/IP unauthorized",someipAlerts({src:"10.55.0.99",method:1,session:2,replay:false,iface:1,length:"valid",rate:1}).includes("UNAUTHORIZED_SOURCE")],
+  ["SOME/IP replay",someipAlerts({src:"10.55.0.10",method:1,session:2,replay:true,iface:1,length:"valid",rate:1}).includes("REPLAY")],
+  ["SOME/IP length",someipAlerts({src:"10.55.0.10",method:1,session:3,replay:false,iface:1,length:"invalid",rate:1}).includes("INVALID_LENGTH")],
+  ["SOME/IP rate",someipAlerts({src:"10.55.0.10",method:1,session:4,replay:false,iface:1,length:"valid",rate:8}).includes("RATE_EXCEEDED")],
+  ["DLT filter data",dltRows.filter(x=>levels[x.level]>=levels.ERROR).length===3],
+  ["Timeline order",timelineEvents.every((x,i)=>i===0||x[0]>=timelineEvents[i-1][0])],
+  ["Compliance themes",Object.keys(compInfo).length===8]
+ ];
+ let n=tests.filter(x=>x[1]).length;
+ $("#selfTest").className="callout "+(n===tests.length?"good":"bad");
+ $("#selfTest").innerHTML=`<strong>Simulator self-test: ${n}/${tests.length} passed.</strong><br>${tests.filter(x=>!x[1]).map(x=>x[0]).join(", ")||"Firewall, SOME/IP, DLT, timeline and evidence-mapping logic are internally consistent."}`;
+ window.__simulationTests={passed:n,total:tests.length,tests}
+}
+
+/* ===== Phantom Unlock mission layer ===== */
+document.body.classList.add("mode-learning");
+
+const missionEvidence=new Set(
+ (safeStore.get("ir-evidence")||"").split(",").filter(Boolean)
+);
+const missionBadges=new Set(
+ (safeStore.get("ir-badges")||"").split(",").filter(Boolean)
+);
+const missionFlags={
+ clue:safeStore.get("ir-flag-clue")==="1",
+ rules:safeStore.get("ir-flag-rules")==="1",
+ timeline:safeStore.get("ir-flag-timeline")==="1",
+ decision:safeStore.get("ir-flag-decision")==="1",
+ escape:safeStore.get("ir-flag-escape")==="1"
+};
+
+function saveSet(key,set){safeStore.set(key,[...set].join(","))}
+function awardBadge(key){
+ missionBadges.add(key);saveSet("ir-badges",missionBadges);
+ const el=$(`[data-badge="${key}"]`);if(el)el.classList.add("earned")
+}
+function collectEvidence(key){
+ missionEvidence.add(key);saveSet("ir-evidence",missionEvidence);
+ const el=$(`[data-evidence="${key}"]`);if(el)el.classList.add("collected");
+ if(missionEvidence.size>=4)awardBadge("collector");
+ if(missionEvidence.has("pcap"))awardBadge("packet");
+ if(missionEvidence.has("ids"))awardBadge("someip");
+ updateMission()
+}
+function missionScore(){
+ return Math.min(100,
+  missionEvidence.size*5+
+  (missionFlags.clue?10:0)+(missionFlags.rules?10:0)+
+  (missionFlags.timeline?10:0)+(missionFlags.decision?10:0)+
+  (missionFlags.escape?20:0)
+ )
+}
+function updateMission(){
+ $("#missionScore").textContent=missionScore();
+ $("#evidenceCount").textContent=`${missionEvidence.size}/8`;
+ $("#rootCauseState").textContent=missionFlags.escape?"FOUND":"UNKNOWN";
+ $("#containmentState").textContent=missionFlags.escape?"YES":"NO";
+ $$(".evidence-card").forEach(x=>x.classList.toggle("collected",missionEvidence.has(x.dataset.evidence)));
+ $$(".badge").forEach(x=>x.classList.toggle("earned",missionBadges.has(x.dataset.badge)));
+}
+$$(".evidence-card").forEach(x=>x.onclick=()=>collectEvidence(x.dataset.evidence));
+
+const roleHints={
+ soc:"SOC hint: correlate the first authentication warning with the first NFLOG and SOME/IP IDS records.",
+ network:"Network-engineer hint: prove the final verdict with counters/NFLOG; an interface PCAP alone cannot prove accept versus drop.",
+ commander:"Incident-commander hint: preserve enough evidence, but scope containment so safety and approved OTA services remain available.",
+ compliance:"Compliance hint: collect evidence of monitoring, response ownership, effectiveness testing and post-production follow-up.",
+ red:"Adversary-simulation hint: search for the weakest boundary—object authorization, source allowlist, freshness or rate enforcement."
+};
+$("#applyRole").onclick=()=>{
+ const r=$("#missionRole").value;$("#roleHint").textContent=roleHints[r];
+ safeStore.set("ir-role",r)
+};
+const savedRole=safeStore.get("ir-role");if(savedRole){$("#missionRole").value=savedRole;$("#roleHint").textContent=roleHints[savedRole]}
+
+$$(".mode-btn").forEach(btn=>btn.onclick=()=>{
+ const mode=btn.dataset.mode;
+ document.body.classList.remove("mode-quick","mode-learning","mode-trainer");
+ document.body.classList.add("mode-"+mode);
+ $$(".mode-btn").forEach(x=>x.classList.toggle("active",x===btn));
+ safeStore.set("ir-reading-mode",mode)
+});
+const savedMode=safeStore.get("ir-reading-mode");
+if(savedMode){
+ const btn=$(`.mode-btn[data-mode="${savedMode}"]`);
+ if(btn)btn.click()
+}
+
+/* Command explanation tabs */
+$$("[data-command-tab]").forEach(t=>t.onclick=()=>{
+ $$("[data-command-tab]").forEach(x=>x.classList.remove("active"));
+ $$(".command-panes .pane").forEach(x=>x.classList.remove("active"));
+ t.classList.add("active");
+ $("#commandPane-"+t.dataset.commandTab).classList.add("active")
+});
+
+/* Challenge 1: replay clue */
+const clueSelected=new Set();
+$$(".clue-option").forEach(x=>x.onclick=()=>{
+ const k=x.dataset.clue;
+ if(clueSelected.has(k))clueSelected.delete(k);else clueSelected.add(k);
+ x.classList.toggle("selected",clueSelected.has(k))
+});
+$("#checkClue").onclick=()=>{
+ const ok=clueSelected.size===2&&clueSelected.has("request")&&clueSelected.has("freshness");
+ $("#clueResult").innerHTML=ok?
+ "<strong class='ok'>CLUE CONFIRMED:</strong> repeated request identity inside the freshness window supports a replay conclusion.":
+ "<strong class='no'>NOT YET:</strong> service and port identify the conversation, but replay requires repeated request identity plus freshness context.";
+ if(ok){missionFlags.clue=true;safeStore.set("ir-flag-clue","1");awardBadge("someip");collectEvidence("ids");updateMission()}
+};
+
+/* Reusable sorting challenge */
+function shuffleArray(a){
+ const x=[...a];
+ for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}
+ return x
+}
+const ruleCorrect=[
+ ["loopback","Accept loopback"],
+ ["state","Accept established/related"],
+ ["mgmt","Accept trusted management TCP 8080"],
+ ["someip","Accept trusted SOME/IP UDP 30490"],
+ ["nflog","Rate-limited NFLOG group 100"],
+ ["drop","Default drop"]
+];
+let ruleItems=shuffleArray(ruleCorrect);
+function renderSort(container,items,type){
+ container.innerHTML=items.map((x,i)=>`
+ <div class="sort-item" data-sort-id="${x[0]}">
+  <span class="sort-num">${i+1}</span><span>${x[1]}</span>
+  <span class="sort-actions"><button data-move="${type}" data-dir="-1" data-index="${i}">↑</button><button data-move="${type}" data-dir="1" data-index="${i}">↓</button></span>
+ </div>`).join("")
+}
+function moveItem(items,index,dir){
+ const next=index+dir;if(next<0||next>=items.length)return;
+ [items[index],items[next]]=[items[next],items[index]]
+}
+$("#ruleOrderList").onclick=e=>{
+ const b=e.target.closest("[data-move='rules']");if(!b)return;
+ moveItem(ruleItems,+b.dataset.index,+b.dataset.dir);renderSort($("#ruleOrderList"),ruleItems,"rules")
+};
+$("#shuffleRules").onclick=()=>{ruleItems=shuffleArray(ruleCorrect);renderSort($("#ruleOrderList"),ruleItems,"rules")};
+$("#checkRules").onclick=()=>{
+ const ok=ruleItems.every((x,i)=>x[0]===ruleCorrect[i][0]);
+ $("#ruleOrderResult").innerHTML=ok?
+ "<strong class='ok'>SAFE ORDER:</strong> approved traffic is handled before bounded logging and default drop.":
+ "<strong class='no'>ORDER RISK:</strong> check stateful return traffic, approved services and the final NFLOG/drop sequence.";
+ if(ok){missionFlags.rules=true;safeStore.set("ir-flag-rules","1");awardBadge("firewall");collectEvidence("ruleset");collectEvidence("nflog");updateMission()}
+};
+renderSort($("#ruleOrderList"),ruleItems,"rules");
+
+const timelineCorrect=[
+ ["auth","Authentication failures exceed threshold"],
+ ["scan","nftables drops prohibited scan"],
+ ["source","IDS detects unauthorized SOME/IP source"],
+ ["replay","IDS detects repeated request ID"],
+ ["contain","SOC blocks source and pauses remote commands"],
+ ["recover","Gateway policy reload and health validation"]
+];
+let timelineItems=shuffleArray(timelineCorrect);
+$("#timelinePuzzle").onclick=e=>{
+ const b=e.target.closest("[data-move='timeline']");if(!b)return;
+ moveItem(timelineItems,+b.dataset.index,+b.dataset.dir);renderSort($("#timelinePuzzle"),timelineItems,"timeline")
+};
+$("#shuffleTimeline").onclick=()=>{timelineItems=shuffleArray(timelineCorrect);renderSort($("#timelinePuzzle"),timelineItems,"timeline")};
+$("#checkTimelinePuzzle").onclick=()=>{
+ const ok=timelineItems.every((x,i)=>x[0]===timelineCorrect[i][0]);
+ $("#timelinePuzzleResult").innerHTML=ok?
+ "<strong class='ok'>TIMELINE VERIFIED:</strong> authentication anomaly → scan → protocol attack → replay → containment → recovery.":
+ "<strong class='no'>SEQUENCE CONFLICT:</strong> distinguish initial indicators, attack evidence, containment and recovery.";
+ if(ok){missionFlags.timeline=true;safeStore.set("ir-flag-timeline","1");awardBadge("timeline");collectEvidence("clock");collectEvidence("gateway");updateMission()}
+};
+renderSort($("#timelinePuzzle"),timelineItems,"timeline");
+
+/* Challenge 4 */
+let decisionChoice=null;
+$$(".decision-option").forEach(x=>x.onclick=()=>{
+ decisionChoice=x.dataset.decision;
+ $$(".decision-option").forEach(y=>y.classList.toggle("selected",y===x))
+});
+$("#checkDecision").onclick=()=>{
+ const ok=decisionChoice==="preserve-contain";
+ $("#decisionResult").innerHTML=ok?
+ "<strong class='ok'>BALANCED RESPONSE:</strong> preserve evidence, contain the attack path and keep approved safety/OTA channels under monitoring.":
+ "<strong class='no'>WEAK RESPONSE:</strong> avoid both uncontrolled shutdown and indefinite observation. Use scoped, safety-aware containment.";
+ if(ok){missionFlags.decision=true;safeStore.set("ir-flag-decision","1");updateMission()}
+};
+
+/* Final escape challenge */
+$("#solveEscape").onclick=()=>{
+ const ok=$("#escapeAttack").value==="replay-flood"&&
+  $("#escapeRoot").value==="broad-rule"&&
+  $("#escapeContain").value==="scoped"&&
+  $("#escapeProof").value==="regression";
+ $("#escapeResult").innerHTML=ok?
+ "<span class='case-stamp'>INCIDENT CONTAINED</span><p><strong>Root cause:</strong> overly broad SOME/IP source rule<br><strong>Attack:</strong> replay plus request flooding<br><strong>Residual risk:</strong> reduced after scoped containment and regression evidence</p>":
+ "<strong class='no'>CASE STILL OPEN:</strong> the conclusion must identify the attack, enabling policy weakness, scoped containment and objective proof.";
+ if(ok){
+  missionFlags.escape=true;safeStore.set("ir-flag-escape","1");
+  awardBadge("contained");awardBadge("r155");
+  collectEvidence("pcap");collectEvidence("nflog");collectEvidence("dlt");collectEvidence("ids");
+  collectEvidence("ruleset");collectEvidence("clock");collectEvidence("logcat");collectEvidence("gateway");
+  updateMission()
+ }
+};
+
+/* Award evidence and badges as learners use the original simulators. */
+function wrapClick(id,after){
+ const el=$(id);if(!el)return;
+ const old=el.onclick;
+ el.onclick=async e=>{
+  const r=old?old(e):null;
+  if(r&&typeof r.then==="function")await r;
+  after()
+ }
+}
+wrapClick("#playPipeline",()=>{collectEvidence("pcap");collectEvidence("dlt");collectEvidence("ids")});
+wrapClick("#evalFirewall",()=>{collectEvidence("nflog");collectEvidence("ruleset");awardBadge("firewall")});
+wrapClick("#filterDlt",()=>collectEvidence("dlt"));
+wrapClick("#evalSomeip",()=>{collectEvidence("ids");awardBadge("someip")});
+wrapClick("#playTimeline",()=>{collectEvidence("clock");collectEvidence("gateway");awardBadge("timeline")});
+$$(".comp").forEach(x=>x.addEventListener("click",()=>awardBadge("r155")));
+
+updateMission();
+window.__funModuleTests={
+ ruleCount:ruleCorrect.length,
+ timelineCount:timelineCorrect.length,
+ evidenceCount:8,
+ roleCount:Object.keys(roleHints).length
+};
+
+selfTests();
+$("#runtimeStatus").className="callout good";
+$("#runtimeStatus").innerHTML="<strong>Interactive runtime:</strong> All controls initialized successfully.";
+window.__session4Ready=true;
+</script>
+</body>
+</html>

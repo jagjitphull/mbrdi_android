@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Mission-driven interactive Session 5 reference and production-like labs for Zero Trust in connected vehicle systems using Ubuntu 24.x, KVM and Cuttlefish.">
+<title>Session 5 · Zero Trust for Automotive Systems · Mission Edition</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1b2d;--panel2:#12243a;--text:#eaf2ff;--muted:#9db0c9;--line:#29415e;--brand:#61dafb;--accent:#8cffc1;--warn:#ffd166;--danger:#ff6b7a;--ok:#65e572;--shadow:0 18px 55px rgba(0,0,0,.32);--code:#050b13;--nav:rgba(7,17,31,.9)}
+html[data-theme="light"]{--bg:#f5f8fc;--panel:#fff;--panel2:#edf3fa;--text:#142033;--muted:#54677f;--line:#cbd8e6;--brand:#006fae;--accent:#087f5b;--warn:#a45f00;--danger:#b42336;--ok:#167a2f;--shadow:0 18px 45px rgba(28,57,89,.14);--code:#142033;--nav:rgba(245,248,252,.94)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 85% 0,rgba(97,218,251,.10),transparent 27rem),var(--bg);color:var(--text);font:16px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}a{color:var(--brand)}button,select,input{font:inherit}.wrap{max-width:1240px;margin:auto;padding:0 22px}.topbar{position:sticky;top:0;z-index:30;border-bottom:1px solid var(--line);background:var(--nav);backdrop-filter:blur(14px)}.topbar .wrap{display:flex;align-items:center;gap:16px;min-height:64px}.brand{font-weight:800;letter-spacing:.02em;white-space:nowrap}.navlinks{display:flex;gap:4px;overflow:auto;scrollbar-width:none}.navlinks a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:9px;white-space:nowrap;font-size:.9rem}.navlinks a:hover,.navlinks a.active{background:var(--panel2);color:var(--text)}.spacer{flex:1}.iconbtn,.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:9px 12px;cursor:pointer}.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700}.btn.primary{background:linear-gradient(135deg,var(--brand),var(--accent));color:#04111b;border:0}.btn.danger{border-color:color-mix(in srgb,var(--danger) 60%,var(--line));color:var(--danger)}.btn:hover,.iconbtn:hover{transform:translateY(-1px);filter:brightness(1.05)}
+.hero{padding:70px 0 38px;position:relative;overflow:hidden}.hero:before{content:"";position:absolute;inset:20px 0 auto 55%;height:280px;background:repeating-linear-gradient(90deg,transparent 0 40px,rgba(97,218,251,.09) 41px),repeating-linear-gradient(0deg,transparent 0 40px,rgba(97,218,251,.09) 41px);mask-image:linear-gradient(to bottom,black,transparent);transform:perspective(500px) rotateX(62deg) rotateZ(-10deg);pointer-events:none}.eyebrow{color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.14em;font-size:.78rem}.hero h1{font-size:clamp(2.4rem,6vw,5.7rem);line-height:.96;letter-spacing:-.055em;margin:14px 0 20px;max-width:990px}.hero h1 span{color:var(--brand)}.lead{max-width:840px;font-size:1.16rem;color:var(--muted)}.chips{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0}.chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 11px;color:var(--muted);font-size:.88rem}.hero-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:22px;align-items:stretch}.mission{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.metric{background:linear-gradient(155deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}.metric b{display:block;font-size:1.55rem;color:var(--brand)}.metric span{color:var(--muted);font-size:.88rem}
+main{padding-bottom:80px}.section{padding:58px 0 8px;scroll-margin-top:72px}.section h2{font-size:clamp(1.8rem,4vw,3.2rem);line-height:1.08;letter-spacing:-.035em;margin:0 0 10px}.sectionintro{max-width:850px;color:var(--muted);margin:0 0 24px}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.card{background:linear-gradient(160deg,var(--panel),color-mix(in srgb,var(--panel2) 75%,var(--panel)));border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow)}.card h3{margin:0 0 8px}.card p:last-child{margin-bottom:0}.muted{color:var(--muted)}.callout{border-left:4px solid var(--brand);background:color-mix(in srgb,var(--panel2) 84%,transparent);padding:15px 17px;border-radius:0 12px 12px 0}.callout.warn{border-color:var(--warn)}.callout.danger{border-color:var(--danger)}.callout.ok{border-color:var(--ok)}.tag{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:3px 8px;color:var(--muted)}
+.principle{position:relative;overflow:hidden}.principle .num{font-size:3rem;line-height:1;color:color-mix(in srgb,var(--brand) 60%,transparent);font-weight:900;position:absolute;right:16px;top:10px}.principle ul{padding-left:19px}.analogy{display:flex;gap:12px;align-items:flex-start}.emoji{font-size:2rem;line-height:1}.myth{border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden}.myth summary{cursor:pointer;padding:13px 15px;font-weight:750;background:var(--panel2)}.myth div{padding:14px 15px;color:var(--muted)}
+.arch{min-height:390px;position:relative;padding:20px;overflow:hidden}.arch svg{width:100%;height:auto;display:block}.flowline{stroke-dasharray:10 9;animation:dash 1.2s linear infinite}.pulse{animation:pulse 1.8s ease-in-out infinite;transform-origin:center}@keyframes dash{to{stroke-dashoffset:-38}}@keyframes pulse{50%{opacity:.45;transform:scale(.985)}}.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;color:var(--muted)}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}.dot.ok{background:var(--ok)}.dot.no{background:var(--danger)}.dot.eval{background:var(--warn)}
+.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:end}.field label{display:block;color:var(--muted);font-size:.78rem;margin-bottom:5px}.field select,.field input[type=range]{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:9px}.result{margin-top:14px;padding:15px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)}.result.allow{border-color:var(--ok)}.result.deny{border-color:var(--danger)}.result.evaluate{border-color:var(--warn)}
+.handshake{display:flex;justify-content:space-between;align-items:center;gap:10px;position:relative;min-height:210px}.ecu{z-index:2;width:150px;text-align:center;padding:18px 12px;border:1px solid var(--line);border-radius:16px;background:var(--panel2)}.road{position:absolute;left:155px;right:155px;top:50%;height:4px;background:var(--line)}.packet{position:absolute;top:calc(50% - 16px);left:160px;width:32px;height:32px;border-radius:50%;background:var(--brand);box-shadow:0 0 22px var(--brand);animation:travel 3.2s ease-in-out infinite}.packet:after{content:"🔐";display:grid;place-items:center;height:100%;font-size:.9rem}@keyframes travel{0%,8%{left:160px}45%,55%{left:calc(100% - 192px)}92%,100%{left:160px}}.steps{counter-reset:step}.step{counter-increment:step;display:grid;grid-template-columns:42px 1fr;gap:12px;margin:15px 0}.step:before{content:counter(step);display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--brand);color:#06121c;font-weight:900}.step h4{margin:2px 0}.step p{margin:0;color:var(--muted)}
+.scoreboard{display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:center}.gauge{width:200px;height:200px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--ok) calc(var(--score)*1%),var(--line) 0);position:relative}.gauge:before{content:"";position:absolute;inset:16px;border-radius:50%;background:var(--panel)}.gauge strong{position:relative;font-size:3.2rem}.evidence-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.toggle{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);padding:10px 12px;border-radius:10px;background:var(--panel2)}.toggle input{width:18px;height:18px}.decision{font-size:1.2rem;font-weight:900;margin-top:12px}.decision.normal{color:var(--ok)}.decision.restricted{color:var(--warn)}.decision.quarantine{color:var(--danger)}
+.lab{margin:20px 0;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel)}.labhead{display:flex;align-items:center;gap:14px;padding:18px 20px;background:linear-gradient(90deg,var(--panel2),var(--panel));cursor:pointer}.labnum{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:var(--brand);color:#06121c;font-weight:950}.labhead h3{margin:0}.labhead .meta{color:var(--muted);font-size:.85rem}.labbody{padding:20px;display:none}.lab.open .labbody{display:block}.labhead:after{content:"＋";margin-left:auto;font-size:1.4rem}.lab.open .labhead:after{content:"−"}.command{position:relative;margin:12px 0}.command pre{margin:0;background:var(--code);color:#e8f2ff;border-radius:12px;padding:16px 48px 16px 16px;overflow:auto;border:1px solid #26384c;font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap}.copy{position:absolute;right:8px;top:8px;border:1px solid #40536a;background:#172538;color:#dcecff;border-radius:8px;padding:5px 8px;cursor:pointer;font-size:.75rem}.expected{background:color-mix(in srgb,var(--ok) 8%,var(--panel2));border:1px dashed color-mix(in srgb,var(--ok) 55%,var(--line));border-radius:12px;padding:12px 14px;color:var(--muted)}.expected b{color:var(--ok)}.fail{background:color-mix(in srgb,var(--danger) 7%,var(--panel2));border-color:color-mix(in srgb,var(--danger) 55%,var(--line))}.fail b{color:var(--danger)}
+.progress{height:8px;background:var(--line);border-radius:999px;overflow:hidden}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--accent));transition:.3s}.checklist label{display:flex;gap:10px;align-items:flex-start;padding:9px;border-bottom:1px solid var(--line)}.checklist input{margin-top:5px}.small{font-size:.84rem}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:720px}th,td{text-align:left;vertical-align:top;padding:11px 12px;border-bottom:1px solid var(--line)}th{color:var(--brand);font-size:.8rem;text-transform:uppercase;letter-spacing:.06em}.status{font-weight:800}.status.pass{color:var(--ok)}.status.limit{color:var(--warn)}
+.quizq{padding:16px 0;border-bottom:1px solid var(--line)}.quizq h4{margin:0 0 10px}.quizq label{display:block;padding:7px 10px;border-radius:8px;cursor:pointer}.quizq label:hover{background:var(--panel2)}.quiz-feedback{margin-top:8px;font-weight:700}.source-list li{margin:10px 0}.footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted)}.toast{position:fixed;right:20px;bottom:20px;background:var(--text);color:var(--bg);padding:10px 14px;border-radius:10px;transform:translateY(90px);transition:.25s;z-index:99}.toast.show{transform:none}.printonly{display:none}
+@media(max-width:900px){.hero-grid,.grid2,.grid3,.scoreboard{grid-template-columns:1fr}.mission{grid-template-columns:repeat(2,1fr)}.controls{grid-template-columns:1fr 1fr}.navlinks{display:none}.gauge{margin:auto}.road{left:125px;right:125px}.packet{left:130px}@keyframes travel{0%,8%{left:130px}45%,55%{left:calc(100% - 162px)}92%,100%{left:130px}}}
+@media(max-width:580px){.wrap{padding:0 14px}.hero{padding-top:45px}.mission,.controls,.evidence-grid{grid-template-columns:1fr}.handshake{min-height:270px;align-items:flex-start}.ecu{width:120px}.road{left:115px;right:115px;top:35%}.packet{top:calc(35% - 16px);left:120px}@keyframes travel{0%,8%{left:120px}45%,55%{left:calc(100% - 152px)}92%,100%{left:120px}}}
+@media print{.topbar,.btn,.copy,.controls,.toast{display:none!important}.printonly{display:block}.section{break-inside:avoid;padding-top:25px}.labbody{display:block!important}body{background:white;color:black}.card,.lab{box-shadow:none}.wrap{max-width:none}}
+
+/* Mission Edition enhancements */
+body{--reading:72ch}p,li{max-width:var(--reading)}
+.learningbar{position:sticky;top:64px;z-index:25;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--nav) 92%,transparent);backdrop-filter:blur(12px)}
+.learningbar .wrap{min-height:48px;display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding-top:6px;padding-bottom:6px}.learningbar .label{font-size:.78rem;color:var(--muted);font-weight:800}.segmented{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}.segmented button{border:0;border-right:1px solid var(--line);border-radius:0;background:var(--panel);color:var(--muted);padding:7px 10px;cursor:pointer;font-size:.8rem}.segmented button:last-child{border-right:0}.segmented button.active{background:var(--brand);color:#06121c;font-weight:900}.xp-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:5px 10px;font-weight:850;font-size:.82rem}.toolbar-select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:6px 8px;font-size:.8rem}.mini-btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:9px;padding:6px 9px;cursor:pointer;font-size:.8rem}.mini-btn:hover{background:var(--panel2)}
+.section{scroll-margin-top:122px}.section-heading-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.speak-section{font-size:.78rem}.speaking{outline:2px solid color-mix(in srgb,var(--brand) 70%,transparent);outline-offset:8px;border-radius:12px}
+.level-copy{display:none}.level-copy.active{display:block}.level-card{min-height:250px}.level-card .level-copy p{margin-top:8px}.level-card code{font-size:.88em}
+.mission-strip{display:grid;grid-template-columns:repeat(7,minmax(120px,1fr));gap:10px;overflow:auto;padding:5px 2px 14px}.mission-step{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:14px;padding:12px;min-height:100px;text-align:left;cursor:pointer;position:relative}.mission-step:hover{transform:translateY(-2px);border-color:var(--brand)}.mission-step b{display:block;color:var(--brand);font-size:.72rem;letter-spacing:.08em}.mission-step span{display:block;font-weight:800;margin-top:5px}.mission-step small{display:block;color:var(--muted);margin-top:5px}.mission-step.done:after{content:'✓';position:absolute;right:9px;top:8px;color:var(--ok);font-weight:950}
+.dashboard-grid{display:grid;grid-template-columns:.78fr 1.22fr;gap:18px}.cockpit{background:linear-gradient(145deg,#07101c,var(--panel2));position:relative;overflow:hidden}.cockpit:after{content:'';position:absolute;inset:auto -40% -55% -40%;height:220px;border-radius:50%;border:1px solid rgba(97,218,251,.2);box-shadow:0 0 80px rgba(97,218,251,.08)}html[data-theme='light'] .cockpit{background:linear-gradient(145deg,#f5fbff,#e8f2fa)}.cockpit-title{display:flex;align-items:center;justify-content:space-between;gap:12px}.cockpit-health{font-size:3rem;font-weight:950;line-height:1;color:var(--brand)}.health-track{height:12px;background:var(--line);border-radius:999px;overflow:hidden;margin:10px 0 18px}.health-track span{display:block;height:100%;width:96%;background:linear-gradient(90deg,var(--danger),var(--warn),var(--ok));transition:width .5s}.cockpit-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.cockpit-metric{border:1px solid var(--line);border-radius:12px;padding:11px;background:color-mix(in srgb,var(--panel) 80%,transparent)}.cockpit-metric strong{font-size:1.6rem;display:block}.cockpit-message{margin-top:14px;min-height:70px}.scenario-row{display:flex;flex-wrap:wrap;gap:8px}.scenario-btn.active{border-color:var(--brand);box-shadow:0 0 0 2px color-mix(in srgb,var(--brand) 18%,transparent)}
+.vehicle-stage{position:relative;min-height:510px;border-radius:18px;overflow:hidden;background:radial-gradient(circle at center,rgba(97,218,251,.09),transparent 42%),repeating-linear-gradient(0deg,transparent 0 39px,color-mix(in srgb,var(--line) 24%,transparent) 40px),repeating-linear-gradient(90deg,transparent 0 39px,color-mix(in srgb,var(--line) 24%,transparent) 40px)}.vehicle-stage:before{content:'CONNECTED VEHICLE TRUST FABRIC';position:absolute;left:50%;top:20px;transform:translateX(-50%);font-size:.72rem;letter-spacing:.16em;color:var(--muted);font-weight:850;white-space:nowrap}.vehicle-links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.vehicle-links path{fill:none;stroke:var(--ok);stroke-width:4;stroke-dasharray:9 8;animation:dash 1.2s linear infinite;transition:.35s}.vehicle-links path.warn{stroke:var(--warn)}.vehicle-links path.block{stroke:var(--danger);stroke-dasharray:3 8}.ecu-node{position:absolute;width:145px;min-height:76px;border:2px solid var(--line);background:var(--panel);color:var(--text);border-radius:16px;padding:10px;text-align:left;cursor:pointer;box-shadow:var(--shadow);transition:.3s}.ecu-node:hover,.ecu-node.selected{transform:scale(1.04);border-color:var(--brand)}.ecu-node strong{display:block}.ecu-node small{color:var(--muted)}.ecu-node .state-dot{position:absolute;right:9px;top:9px;width:11px;height:11px;border-radius:50%;background:var(--ok);box-shadow:0 0 12px var(--ok)}.ecu-node.restricted .state-dot{background:var(--warn);box-shadow:0 0 12px var(--warn)}.ecu-node.quarantine{border-color:var(--danger);animation:alarm 1.1s ease-in-out infinite}.ecu-node.quarantine .state-dot{background:var(--danger);box-shadow:0 0 12px var(--danger)}@keyframes alarm{50%{box-shadow:0 0 0 8px rgba(255,107,122,.08),var(--shadow)}}.node-cloud{left:calc(50% - 72px);top:58px}.node-ivi{left:7%;top:145px}.node-diag{left:7%;bottom:70px}.node-gw{left:calc(50% - 72px);top:220px;border-color:var(--brand)}.node-adas{right:7%;top:145px}.node-pt{right:7%;bottom:70px}.ecu-detail{position:absolute;left:calc(50% - 150px);bottom:18px;width:300px;background:color-mix(in srgb,var(--panel) 93%,transparent);border:1px solid var(--line);border-radius:14px;padding:12px;backdrop-filter:blur(10px);font-size:.84rem}.ecu-detail b{color:var(--brand)}
+.policy-builder{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.policy-context{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:10px}.policy-check{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:9px 11px;color:var(--muted);font-size:.82rem}.policy-check input{width:18px;height:18px}.policy-reasons{margin:10px 0 0;padding-left:18px}.policy-reasons li{margin:3px 0}
+.xray-layout{display:grid;grid-template-columns:.8fr 1.2fr;gap:18px}.xray-flow{display:flex;flex-direction:column;gap:8px}.xray-step{border:1px solid var(--line);border-radius:11px;padding:10px 12px;background:var(--panel2);opacity:.45;transition:.3s}.xray-step.active{opacity:1;border-color:var(--brand);transform:translateX(6px)}.xray-step.pass{border-color:var(--ok)}.xray-step.fail{border-color:var(--danger)}.xray-checks{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.xray-check{border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:.82rem}.xray-check.pass{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 55%,var(--line))}.xray-check.fail{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 55%,var(--line))}.attack-row{display:flex;flex-wrap:wrap;gap:7px}.json-view{max-height:310px;overflow:auto;background:var(--code);border-radius:12px;padding:14px;border:1px solid #26384c;font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:#d9edff;white-space:pre-wrap}
+.timeline-shell{display:grid;grid-template-columns:.72fr 1.28fr;gap:18px}.timeline-console{border:1px solid var(--line);border-radius:16px;background:var(--code);padding:16px;color:#dff1ff}.timeline-clock{font:900 3rem/1 ui-monospace,monospace;color:var(--brand)}.timeline-controls{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.timeline-events{list-style:none;padding:0;margin:0;position:relative}.timeline-events:before{content:'';position:absolute;left:19px;top:5px;bottom:5px;width:2px;background:var(--line)}.timeline-event{position:relative;margin:0 0 9px;padding:10px 12px 10px 50px;border:1px solid var(--line);border-radius:12px;background:var(--panel);opacity:.45;transition:.25s}.timeline-event:before{content:'';position:absolute;left:13px;top:18px;width:13px;height:13px;border-radius:50%;background:var(--line);z-index:2}.timeline-event.active{opacity:1;border-color:var(--brand);transform:translateX(5px)}.timeline-event.done{opacity:.8}.timeline-event.done:before{background:var(--ok)}.timeline-event.alert:before{background:var(--danger)}.timeline-event time{display:block;color:var(--brand);font-size:.75rem;font-weight:900}.checkpoint{display:none;margin-top:12px}.checkpoint.show{display:block}
+.predict-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.predict-card{display:flex;flex-direction:column}.predict-card label{display:block;border:1px solid var(--line);border-radius:9px;padding:8px;margin:5px 0;cursor:pointer}.predict-card label:hover{background:var(--panel2)}.predict-feedback{margin-top:auto;min-height:70px}.badge-shelf{display:flex;gap:8px;flex-wrap:wrap}.badge{border:1px solid var(--line);filter:grayscale(1);opacity:.48;border-radius:999px;padding:6px 10px;font-size:.78rem}.badge.unlocked{filter:none;opacity:1;border-color:var(--brand);background:color-mix(in srgb,var(--brand) 10%,var(--panel))}
+.trainer-note{display:none;border:1px dashed var(--warn);background:color-mix(in srgb,var(--warn) 8%,var(--panel));padding:14px;border-radius:12px;margin-top:14px}.trainer-on .trainer-note{display:block}.trainer-note:before{content:'TRAINER MODE';display:block;color:var(--warn);font-size:.7rem;letter-spacing:.12em;font-weight:900;margin-bottom:5px}
+.labcoach{border:1px solid var(--line);border-radius:12px;padding:11px;background:var(--panel2);margin-bottom:14px}.labcoach-row{display:flex;flex-wrap:wrap;gap:7px}.labcoach-output{display:none;margin-top:9px;padding:10px;border-left:3px solid var(--brand);background:var(--panel)}.labcoach-output.show{display:block}.lab.completed{border-color:var(--ok)}.lab.completed .labnum{background:var(--ok)}
+.glossary-chips{display:flex;flex-wrap:wrap;gap:7px}.glossary-chip{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:999px;padding:6px 10px;cursor:pointer}.glossary-chip:hover{border-color:var(--brand)}dialog{color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);width:min(720px,92vw);max-height:82vh}dialog::backdrop{background:rgba(0,0,0,.65);backdrop-filter:blur(4px)}.dialog-head{display:flex;align-items:center;gap:12px}.dialog-head input{flex:1;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:9px}.glossary-list{display:grid;gap:9px;margin-top:14px}.glossary-entry{border:1px solid var(--line);border-radius:11px;padding:11px}.glossary-entry b{color:var(--brand)}
+.fun-toast{position:fixed;left:50%;top:145px;transform:translate(-50%,-40px);opacity:0;background:linear-gradient(135deg,var(--brand),var(--accent));color:#04111b;font-weight:900;padding:12px 18px;border-radius:999px;z-index:120;transition:.3s;pointer-events:none}.fun-toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:980px){.dashboard-grid,.xray-layout,.timeline-shell{grid-template-columns:1fr}.mission-strip{grid-template-columns:repeat(7,150px)}.policy-builder,.policy-context{grid-template-columns:repeat(2,1fr)}.predict-grid{grid-template-columns:1fr}.vehicle-stage{min-height:540px}}
+@media(max-width:620px){.learningbar{top:64px}.learningbar .label,.voice-label{display:none}.policy-builder,.policy-context,.xray-checks{grid-template-columns:1fr}.vehicle-stage{min-height:650px}.node-cloud{top:55px}.node-ivi{left:5%;top:155px}.node-adas{right:5%;top:155px}.node-gw{top:290px}.node-diag{left:5%;bottom:145px}.node-pt{right:5%;bottom:145px}.ecu-node{width:125px}.ecu-detail{left:5%;width:90%;bottom:20px}.cockpit-metrics{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+@media print{.learningbar,.mission-strip,.scenario-row,.timeline-controls,.labcoach,.speak-section,.fun-toast{display:none!important}.trainer-note{display:none!important}.vehicle-stage{min-height:420px}}
+
+
+/* Responsive containment regression fix */
+.grid2,.grid3,.hero-grid,.dashboard-grid,.scoreboard,.xray-layout,.timeline-shell,.policy-builder,.policy-context,.predict-grid{min-width:0}
+.grid2>*,.grid3>*,.hero-grid>*,.dashboard-grid>*,.scoreboard>*,.xray-layout>*,.timeline-shell>*,.policy-builder>*,.policy-context>*,.predict-grid>*{min-width:0}
+.card,.lab,.tablewrap,.mission-strip{min-width:0;max-width:100%}.tablewrap{width:100%}.mission-strip{width:100%}
+body{overflow-x:hidden}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="wrap"><div class="brand">🚘 ZT · Mission 5</div><nav class="navlinks" aria-label="Section navigation"><a href="#mission">Mission</a><a href="#mission-control">Cockpit</a><a href="#principles">Principles</a><a href="#segmentation">Policy</a><a href="#authentication">mTLS</a><a href="#attestation">Attestation</a><a href="#trust">Trust</a><a href="#incident">Incident</a><a href="#labs">Labs</a><a href="#validation">Validation</a></nav><div class="spacer"></div><span class="xp-pill" title="Mission experience"><span>⭐</span><span id="headerXP">0 XP</span></span><button class="iconbtn" id="glossaryBtn" title="Open glossary">📚</button><button class="iconbtn" id="themeBtn" title="Toggle theme">☀️</button></div></header>
+<div class="learningbar" aria-label="Learning controls"><div class="wrap"><span class="label">Explanation</span><div class="segmented" id="levelButtons"><button data-level="simple">Simple</button><button data-level="technical" class="active">Technical</button><button data-level="deep">Deep dive</button></div><span class="spacer"></span><button class="mini-btn" id="trainerToggle">🎓 Trainer: off</button><span class="label voice-label">Voice</span><button class="mini-btn" id="voicePlay" title="Read current section">▶</button><button class="mini-btn" id="voicePause" title="Pause or resume narration">⏸</button><button class="mini-btn" id="voiceStop" title="Stop narration">■</button><button class="mini-btn" id="voiceRestart" title="Restart narration">↺</button><select class="toolbar-select" id="voiceRate" aria-label="Narration speed"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select></div></div>
+
+<section class="hero"><div class="wrap"><div class="eyebrow">Automotive cybersecurity · Ubuntu 24.x · KVM · Cuttlefish</div><h1>Trust is not a location.<br><span>It is a continuously tested decision.</span></h1><p class="lead">A production-like, single-file learning environment for translating Zero Trust into vehicle zones, ECU identities, runtime evidence, communication policies and safe degradation.</p><div class="chips"><span class="chip">Mixed technical audience</span><span class="chip">7 labs + preflight</span><span class="chip">No external JavaScript</span><span class="chip">Embedded lab pack</span><span class="chip">Expected outputs + negative tests</span><span class="chip">Mission cockpit + incident replay</span><span class="chip">Voice controls + trainer mode</span></div><div class="hero-grid"><div class="card arch" aria-label="Animated Zero Trust vehicle architecture"><svg viewBox="0 0 920 430" role="img"><defs><filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect x="20" y="35" width="880" height="350" rx="42" fill="none" stroke="var(--line)" stroke-width="3"/><path d="M138 105 C250 75 325 110 395 195" fill="none" stroke="var(--brand)" stroke-width="5" class="flowline"/><path d="M138 320 C260 350 320 310 395 230" fill="none" stroke="var(--warn)" stroke-width="5" class="flowline"/><path d="M525 205 C640 120 700 110 795 112" fill="none" stroke="var(--accent)" stroke-width="5" class="flowline"/><path d="M525 230 C650 300 710 315 795 315" fill="none" stroke="var(--danger)" stroke-width="5" class="flowline"/><g class="pulse"><rect x="65" y="70" width="150" height="76" rx="16" fill="var(--panel2)" stroke="var(--brand)"/><text x="140" y="101" text-anchor="middle" fill="var(--text)" font-size="18" font-weight="700">IVI / Cuttlefish</text><text x="140" y="126" text-anchor="middle" fill="var(--muted)" font-size="13">identity + context</text></g><g class="pulse"><rect x="65" y="280" width="150" height="76" rx="16" fill="var(--panel2)" stroke="var(--warn)"/><text x="140" y="311" text-anchor="middle" fill="var(--text)" font-size="18" font-weight="700">Diagnostics</text><text x="140" y="336" text-anchor="middle" fill="var(--muted)" font-size="13">evidence collector</text></g><g filter="url(#glow)"><path d="M460 150 l70 40 v80 l-70 40 -70-40 v-80z" fill="var(--panel2)" stroke="var(--brand)" stroke-width="4"/><text x="460" y="213" text-anchor="middle" fill="var(--text)" font-size="19" font-weight="800">Policy</text><text x="460" y="238" text-anchor="middle" fill="var(--text)" font-size="19" font-weight="800">Decision</text><text x="460" y="263" text-anchor="middle" fill="var(--muted)" font-size="12">verify · score · enforce</text></g><g class="pulse"><rect x="720" y="72" width="150" height="76" rx="16" fill="var(--panel2)" stroke="var(--accent)"/><text x="795" y="103" text-anchor="middle" fill="var(--text)" font-size="18" font-weight="700">ADAS</text><text x="795" y="128" text-anchor="middle" fill="var(--muted)" font-size="13">authenticated service</text></g><g class="pulse"><rect x="720" y="278" width="150" height="76" rx="16" fill="var(--panel2)" stroke="var(--danger)"/><text x="795" y="309" text-anchor="middle" fill="var(--text)" font-size="18" font-weight="700">Powertrain</text><text x="795" y="334" text-anchor="middle" fill="var(--muted)" font-size="13">safety-critical resource</text></g></svg><div class="legend"><span><i class="dot ok"></i>approved flow</span><span><i class="dot eval"></i>evidence under evaluation</span><span><i class="dot no"></i>blocked/quarantined path</span></div></div><div class="mission"><div class="metric"><b>4</b><span>simulated vehicle zones</span></div><div class="metric"><b>3</b><span>dynamic trust states</span></div><div class="metric"><b>2-way</b><span>ECU authentication</span></div><div class="metric"><b>∞</b><span>re-evaluation cycles</span></div></div></div></div></section>
+
+<main>
+<section class="section" id="mission"><div class="wrap"><h2>Mission and learning outcomes</h2><p class="sectionintro">By the end, learners can explain the architecture, prove allowed and denied flows, demonstrate certificate-based peer authentication, detect tampering and replay, calculate an ECU trust state, and enforce that state dynamically.</p><div class="grid3"><article class="card"><span class="tag">Understand</span><h3>Translate principles</h3><p>Map “verify explicitly,” “least privilege,” and “assume breach” to concrete in-vehicle decisions.</p></article><article class="card"><span class="tag">Build</span><h3>Exercise policy</h3><p>Create routed zones and enforce a default-deny communication matrix with nftables.</p></article><article class="card"><span class="tag">Prove</span><h3>Validate trust</h3><p>Use positive and negative tests—not screenshots or assumptions—to prove controls work.</p></article></div><div class="callout warn" style="margin-top:18px"><b>Scope boundary:</b> the labs emulate automotive security behavior on Linux. They do not claim ECU hardware security module, TPM, AUTOSAR stack, ISO/SAE 21434, or UN R155 compliance certification.</div></div></section>
+
+
+<section class="section" id="mission-control"><div class="wrap"><h2>Mission control: contain the compromised ADAS ECU</h2><p class="sectionintro">A suspicious firmware change has appeared on <b>ADAS-01</b>. Your task is to map the vehicle, verify identities, inspect runtime evidence, restrict unsafe communication, quarantine the ECU if necessary, and restore service only after trust is rebuilt.</p>
+<div class="mission-strip" aria-label="Mission stages"><button class="mission-step" data-jump="#mission-control"><b>MISSION 01</b><span>Map the vehicle</span><small>Inspect zones and identities</small></button><button class="mission-step" data-jump="#segmentation"><b>MISSION 02</b><span>Apply least privilege</span><small>Design explicit flows</small></button><button class="mission-step" data-jump="#authentication"><b>MISSION 03</b><span>Verify identity</span><small>Observe mutual TLS</small></button><button class="mission-step" data-jump="#attestation"><b>MISSION 04</b><span>Inspect evidence</span><small>Find tamper and replay</small></button><button class="mission-step" data-jump="#trust"><b>MISSION 05</b><span>Calculate trust</span><small>Normal, restricted, quarantine</small></button><button class="mission-step" data-jump="#incident"><b>MISSION 06</b><span>Contain the threat</span><small>Play the incident timeline</small></button><button class="mission-step" data-jump="#labs"><b>MISSION 07</b><span>Prove and recover</span><small>Run host-side validation</small></button></div>
+<div class="dashboard-grid"><article class="card cockpit"><div class="cockpit-title"><div><span class="tag">Vehicle SOC cockpit</span><h3>Security health</h3></div><div class="cockpit-health"><span id="healthValue">96</span>%</div></div><div class="health-track"><span id="healthBar"></span></div><div class="cockpit-metrics"><div class="cockpit-metric"><strong id="trustedCount">5</strong><span class="muted">Trusted ECUs</span></div><div class="cockpit-metric"><strong id="restrictedCount">0</strong><span class="muted">Restricted</span></div><div class="cockpit-metric"><strong id="quarantineCount">0</strong><span class="muted">Quarantined</span></div><div class="cockpit-metric"><strong id="violationCount">0</strong><span class="muted">Policy violations</span></div></div><div class="cockpit-message callout ok" id="cockpitMessage">All monitored ECUs satisfy the current training policy.</div><h4>Inject a scenario</h4><div class="scenario-row"><button class="btn scenario-btn active" data-scenario="healthy">✅ Healthy</button><button class="btn scenario-btn" data-scenario="suspicious">⚠️ Suspicious</button><button class="btn scenario-btn" data-scenario="compromised">🚨 Compromised</button><button class="btn scenario-btn" data-scenario="recovered">🛠️ Recovered</button></div><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><div class="cockpit-title"><div><b>Mission progress</b><div class="muted small"><span id="missionXP">0</span> XP earned</div></div><button class="mini-btn" id="resetMission">Reset mission</button></div><div class="badge-shelf" id="badgeShelf"><span class="badge" data-badge="observer">🗺️ Vehicle Mapper</span><span class="badge" data-badge="policy">🧱 Policy Architect</span><span class="badge" data-badge="replay">🔁 Replay Hunter</span><span class="badge" data-badge="incident">🚨 Incident Commander</span><span class="badge" data-badge="labs">🧪 Lab Finisher</span></div></article>
+<article class="card"><h3>Live vehicle trust map</h3><p class="muted">Select an ECU to inspect its identity and current policy state. Scenario buttons change ADAS status and communication paths.</p><div class="vehicle-stage" id="vehicleStage"><svg class="vehicle-links" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true"><path data-path="cloud-gw" d="M500 130 L500 260"/><path data-path="ivi-gw" d="M205 210 L430 295"/><path data-path="diag-gw" d="M205 470 L430 335"/><path data-path="gw-adas" d="M570 295 L795 210"/><path data-path="gw-pt" d="M570 335 L795 470"/></svg><button class="ecu-node node-cloud" data-ecu="cloud"><span class="state-dot"></span>☁️ <strong>Vehicle Cloud</strong><small>policy + fleet context</small></button><button class="ecu-node node-ivi" data-ecu="ivi"><span class="state-dot"></span>🖥️ <strong>IVI / Cuttlefish</strong><small>Android identity</small></button><button class="ecu-node node-diag" data-ecu="diag"><span class="state-dot"></span>🧰 <strong>Diagnostics</strong><small>evidence collector</small></button><button class="ecu-node node-gw selected" data-ecu="gateway"><span class="state-dot"></span>🛡️ <strong>Security Gateway</strong><small>PDP + PEP</small></button><button class="ecu-node node-adas" data-ecu="adas"><span class="state-dot"></span>🧠 <strong>ADAS-01</strong><small id="adasNodeState">NORMAL · score 96</small></button><button class="ecu-node node-pt" data-ecu="powertrain"><span class="state-dot"></span>⚙️ <strong>Powertrain</strong><small>safety-critical API</small></button><div class="ecu-detail" id="ecuDetail"><b>Security Gateway</b><br>Identity: CN=zt-gw.vehicle.lab<br>Role: policy decision and enforcement<br>State: NORMAL<br>Policy: default deny</div></div></article></div>
+<div class="grid2" style="margin-top:18px"><article class="card level-card"><span class="tag">Adaptive explanation</span><h3>What does “never trust, always verify” actually mean?</h3><div class="level-copy" data-level="simple"><p>Think of the vehicle as a secure building. An ECU does not receive every key just because it is already inside. Each door checks its badge, its job, and whether anything suspicious has happened.</p><div class="analogy"><div class="emoji">🔑</div><div><b>Identity is the badge.</b><p class="muted">Attestation checks whether the person carrying it still looks and behaves as expected.</p></div></div></div><div class="level-copy active" data-level="technical"><p>Every service request is evaluated using ECU identity, certificate validity, runtime evidence, requested service, trust state, vehicle mode, and an explicit policy rule. Network location alone contributes no automatic authorization.</p><p class="muted">The lab separates the policy decision point from the nftables policy enforcement point.</p></div><div class="level-copy" data-level="deep"><p>A production design should bind workload identity to hardware-protected key material, freshness-protected evidence, signed software baselines, bounded authorization policies, and deterministic degraded behavior. The enforcement action must be constrained by safety analysis rather than copied from enterprise IT quarantine patterns.</p><p class="muted">Trust scoring is a policy abstraction, not a standardized automotive metric.</p></div></article><article class="card"><span class="tag">Glossary launchpad</span><h3>Terms learners can inspect anytime</h3><p class="muted">Open a definition without leaving the mission.</p><div class="glossary-chips"><button class="glossary-chip" data-term="attestation">Attestation</button><button class="glossary-chip" data-term="nonce">Nonce</button><button class="glossary-chip" data-term="pep">Policy enforcement point</button><button class="glossary-chip" data-term="pdp">Policy decision point</button><button class="glossary-chip" data-term="mtls">mTLS</button><button class="glossary-chip" data-term="secoc">SecOC</button><button class="glossary-chip" data-term="microsegmentation">Microsegmentation</button><button class="glossary-chip" data-term="quarantine">Quarantine</button></div><div class="trainer-note"><b>Discussion prompt:</b> Ask whether a valid certificate proves that the ECU is running approved software. Expected conclusion: identity authentication and runtime integrity answer different questions.</div></article></div>
+</div></section>
+
+<section class="section" id="principles"><div class="wrap"><h2>1. Zero Trust principles for connected vehicles</h2><p class="sectionintro">The central idea is simple: being “inside the car” is not sufficient evidence. Every requested communication is evaluated using identity, device integrity, requested service, operational context and policy.</p><div class="grid3">
+<article class="card principle"><span class="num">01</span><h3>Verify explicitly</h3><p>Authenticate the ECU and service, validate runtime evidence, and inspect context before granting access.</p><ul><li>Certificate identity</li><li>Fresh attestation nonce</li><li>Software measurement</li><li>Vehicle mode and risk</li></ul></article>
+<article class="card principle"><span class="num">02</span><h3>Least privilege</h3><p>Permit only the smallest required service flow, for the shortest useful time, between named identities.</p><ul><li>ADAS → powertrain API only</li><li>No broad “zone-to-zone allow”</li><li>Separate diagnostics policy</li><li>Expire temporary grants</li></ul></article>
+<article class="card principle"><span class="num">03</span><h3>Assume breach</h3><p>Design as though one ECU or app may already be compromised. Contain the blast radius and preserve safe vehicle behavior.</p><ul><li>Microsegments</li><li>Continuous telemetry</li><li>Dynamic restriction</li><li>Fail-safe, not blindly fail-open</li></ul></article>
+</div><div class="grid2" style="margin-top:18px"><div class="card"><h3>Simple analogy</h3><div class="analogy"><div class="emoji">🏢</div><div><b>A secure building, not a gated village</b><p class="muted">Passing the outer gate does not grant access to the control room. Each door checks identity, authorization and current risk. Automotive Zero Trust applies the same logic to ECUs and services.</p></div></div></div><div class="card"><h3>Automotive adaptation</h3><p>Enterprise Zero Trust often focuses on users and applications. A vehicle also needs deterministic timing, intermittent connectivity, safety priorities, hardware-rooted identity, service-oriented communication and carefully designed degraded modes.</p></div></div>
+<details class="myth"><summary>Myth: “Zero Trust means trusting nothing, so the vehicle cannot operate offline.”</summary><div>Reality: it means no <em>implicit</em> trust. Local policy decision and enforcement points can operate offline using cached, bounded policies and local evidence. Cloud reachability should not be a universal dependency for safety-critical operation.</div></details>
+<details class="myth"><summary>Myth: “A valid certificate automatically authorizes every service.”</summary><div>Reality: a certificate proves identity within a trust domain. Authorization is a separate policy decision. Lab 2 deliberately shows why a CA-signed but unapproved ECU identity still requires an allowlist or policy check.</div></details>
+</div></section>
+
+<section class="section" id="segmentation"><div class="wrap"><h2>2. Microsegmentation and least-privilege access</h2><p class="sectionintro">Microsegmentation turns a flat vehicle network into narrowly controlled communication paths. In the lab, a Linux network namespace represents each zone and the gateway namespace is the policy enforcement point.</p><div class="grid2"><div class="card"><h3>Lab topology</h3><div class="tablewrap"><table><thead><tr><th>Zone / namespace</th><th>Address</th><th>Role</th></tr></thead><tbody><tr><td>zt-ivi</td><td>10.77.10.2</td><td>Infotainment / Cuttlefish-adjacent client</td></tr><tr><td>zt-adas</td><td>10.77.20.2</td><td>ADAS authenticated service</td></tr><tr><td>zt-pt</td><td>10.77.30.2</td><td>Powertrain control endpoint</td></tr><tr><td>zt-diag</td><td>10.77.40.2</td><td>Diagnostic and policy evidence service</td></tr><tr><td>zt-gw</td><td>.1 in each subnet</td><td>Routing + nftables PEP</td></tr></tbody></table></div></div><div class="card"><h3>Default communication matrix</h3><div class="tablewrap"><table><thead><tr><th>Source</th><th>Destination</th><th>Service</th><th>Decision</th></tr></thead><tbody><tr><td>ADAS</td><td>Powertrain</td><td>TCP/30509</td><td class="status pass">ALLOW</td></tr><tr><td>IVI</td><td>ADAS</td><td>TCP/8443 mTLS</td><td class="status pass">ALLOW</td></tr><tr><td>Diagnostics</td><td>Any ECU</td><td>ICMP health check</td><td class="status pass">ALLOW</td></tr><tr><td>Any other</td><td>Any</td><td>Any</td><td style="color:var(--danger);font-weight:800">DENY</td></tr></tbody></table></div></div></div>
+<div class="card" style="margin-top:18px"><span class="tag">Policy design studio</span><h3>Build and explain an access decision</h3><p class="muted">A route is allowed only when an explicit communication rule and every required context check pass.</p><div class="policy-builder"><div class="field"><label for="src">Source</label><select id="src"><option>IVI</option><option>ADAS</option><option>Powertrain</option><option>Diagnostics</option></select></div><div class="field"><label for="dst">Destination</label><select id="dst"><option>ADAS</option><option>Powertrain</option><option>IVI</option><option>Diagnostics</option></select></div><div class="field"><label for="service">Service</label><select id="service"><option value="8443">mTLS / TCP 8443</option><option value="30509">Control API / TCP 30509</option><option value="icmp">ICMP health check</option><option value="30490">SOME/IP-SD / UDP 30490</option></select></div><div class="field"><label for="vehicleMode">Vehicle mode</label><select id="vehicleMode"><option value="parked">Parked</option><option value="moving">Moving</option><option value="service">Service bay</option></select></div></div><div class="policy-context"><label class="policy-check">Identity verified <input id="policyIdentity" type="checkbox" checked></label><label class="policy-check">Attestation fresh <input id="policyAttestation" type="checkbox" checked></label><div class="field"><label for="policyTrust">ECU trust: <span id="policyTrustVal">90</span></label><input id="policyTrust" type="range" min="0" max="100" value="90"></div><div class="field"><label for="policyMin">Required score</label><select id="policyMin"><option value="60">60 · restricted-capable</option><option value="80" selected>80 · normal</option><option value="90">90 · high assurance</option></select></div></div><button class="btn primary" id="testFlow" style="margin-top:12px">Evaluate policy</button><div id="flowResult" class="result evaluate">Choose a flow and evaluate it.</div><div class="trainer-note"><b>Teaching move:</b> first disable attestation while leaving the certificate valid. Ask why identity alone should not authorize a safety-critical API.</div></div>
+</div></section>
+
+<section class="section" id="authentication"><div class="wrap"><h2>3. Mutual ECU authentication</h2><p class="sectionintro">Server-only TLS is insufficient when both endpoints are machines. Mutual TLS makes the client ECU and server ECU prove possession of private keys tied to trusted certificates.</p><div class="grid2"><div class="card"><div class="handshake"><div class="ecu">🖥️<br><b>IVI ECU</b><br><span class="muted small">client certificate</span></div><div class="road"></div><div class="packet"></div><div class="ecu">🧠<br><b>ADAS ECU</b><br><span class="muted small">server certificate</span></div></div></div><div class="card steps"><div class="step"><div><h4>Server proves identity</h4><p>ADAS presents a certificate whose SAN matches 10.77.20.2 / adas.ecu.</p></div></div><div class="step"><div><h4>Client proves identity</h4><p>IVI signs handshake data using its private key and presents a client-auth certificate.</p></div></div><div class="step"><div><h4>Policy authorizes service</h4><p>Identity is checked against the allowed ECU-to-service relationship.</p></div></div><div class="step"><div><h4>Session keys protect traffic</h4><p>The negotiated session provides confidentiality and integrity in transit.</p></div></div></div></div><div class="callout" style="margin-top:18px"><b>Important separation:</b> mTLS authentication answers “who is this peer?” The policy engine still must answer “may this peer call this service now?”</div><div class="callout warn" style="margin-top:12px"><b>Protocol distinction:</b> this lab uses mTLS for an Automotive Ethernet-style service. On CAN or FlexRay, AUTOSAR SecOC protects PDU authenticity and freshness using authenticators and freshness values; it is not a mutual TLS session handshake and does not itself provide payload confidentiality.</div></div></section>
+
+<section class="section" id="attestation"><div class="wrap"><h2>4. Runtime attestation and continuous monitoring</h2><p class="sectionintro">Authentication identifies the ECU. Attestation adds evidence about the software and boot state that ECU is currently running. Continuous monitoring keeps re-evaluating that evidence after the session starts.</p><div class="grid3"><article class="card"><span class="tag">Challenge</span><h3>Fresh nonce</h3><p>The verifier sends a random one-time value. This prevents a previously valid attestation response from being replayed.</p></article><article class="card"><span class="tag">Measure</span><h3>Runtime evidence</h3><p>The ECU reports boot state, software measurements, configuration and relevant security events.</p></article><article class="card"><span class="tag">Prove</span><h3>Signed response</h3><p>A device-bound key signs the nonce and measurements. The verifier checks signature, freshness and baseline policy.</p></article></div><div class="grid2" style="margin-top:18px"><div class="card"><h3>Training simulation vs production</h3><div class="tablewrap"><table><thead><tr><th>Lab</th><th>Production target</th></tr></thead><tbody><tr><td>Ed25519 key in a file</td><td>TPM/HSM/secure element protected key</td></tr><tr><td>SHA-256 of demo firmware file</td><td>Measured boot / verified boot claims</td></tr><tr><td>Local baseline file</td><td>Signed policy and approved software inventory</td></tr><tr><td>Shell-generated nonce</td><td>Attestation protocol challenge with anti-replay state</td></tr></tbody></table></div></div><div class="card"><h3>Continuous signals</h3><ul><li>Certificate expiry or revocation</li><li>Verified boot / secure boot state</li><li>Software and calibration versions</li><li>SecOC MAC or freshness failures</li><li>Unexpected service discovery</li><li>Traffic-rate and destination anomalies</li><li>Debug state, root access or policy drift</li></ul></div></div>
+<div class="card" style="margin-top:18px"><h3>Attestation attack simulator</h3><p class="muted">Select what the verifier receives. The result models the negative tests in Lab 3.</p><div class="controls" style="grid-template-columns:repeat(3,1fr)"><button class="btn" data-attest="good">✅ Valid evidence</button><button class="btn" data-attest="tamper">🧬 Tampered image</button><button class="btn" data-attest="replay">🔁 Replayed response</button></div><div id="attestResult" class="result evaluate">No evidence evaluated yet.</div></div><div class="card" style="margin-top:18px"><span class="tag">Attestation X-ray</span><h3>Look inside the verifier’s decision</h3><div class="xray-layout"><div><div class="xray-flow" id="xrayFlow"><div class="xray-step" data-xray-step="0"><b>1. Issue fresh challenge</b><br><span class="muted">Verifier creates nonce N-7C21.</span></div><div class="xray-step" data-xray-step="1"><b>2. Measure runtime state</b><br><span class="muted">Boot state, firmware hash, debug state.</span></div><div class="xray-step" data-xray-step="2"><b>3. Sign evidence</b><br><span class="muted">Device-bound key signs claims + nonce.</span></div><div class="xray-step" data-xray-step="3"><b>4. Verify signature</b><br><span class="muted">Proves evidence was not edited in transit.</span></div><div class="xray-step" data-xray-step="4"><b>5. Verify freshness and baseline</b><br><span class="muted">Reject replay and unapproved measurements.</span></div><div class="xray-step" data-xray-step="5"><b>6. Feed policy engine</b><br><span class="muted">Update score and communication state.</span></div></div><div class="timeline-controls"><button class="mini-btn" id="xrayPlay">▶ Animate</button><button class="mini-btn" id="xrayReset">↺ Reset</button></div></div><div><pre class="json-view" id="evidenceJson"></pre><div class="xray-checks" id="xrayChecks"></div><h4>Inject evidence faults</h4><div class="attack-row"><button class="mini-btn" data-xray-attack="good">Valid</button><button class="mini-btn" data-xray-attack="tamper">Firmware tamper</button><button class="mini-btn" data-xray-attack="replay">Old nonce</button><button class="mini-btn" data-xray-attack="identity">Wrong ECU ID</button><button class="mini-btn" data-xray-attack="debug">Debug enabled</button><button class="mini-btn" data-xray-attack="signature">Broken signature</button></div><div id="xrayResult" class="result allow" style="margin-top:10px"><b>PASS</b> — evidence is fresh, signed, and matches policy.</div></div></div><div class="trainer-note"><b>Common misconception:</b> a cryptographically valid signature does not prove the measured firmware is approved. It only proves who signed the reported measurement and that the signed bytes were not altered.</div></div>
+</div></section>
+
+<section class="section" id="trust"><div class="wrap"><h2>5. Policy-based communication and ECU trust scoring</h2><p class="sectionintro">A trust score is not a universal automotive standard. It is one possible policy abstraction. The useful part is not the number itself—it is the transparent evidence, thresholds, decision and enforcement action.</p><div class="card"><div class="scoreboard"><div><div class="gauge" id="gauge" style="--score:100"><strong id="score">100</strong></div><div id="decision" class="decision normal" style="text-align:center">NORMAL</div></div><div><div class="evidence-grid"><label class="toggle">Attestation valid <input id="evAtt" type="checkbox" checked></label><label class="toggle">Certificate valid <input id="evCert" type="checkbox" checked></label><label class="toggle">Secure boot <input id="evBoot" type="checkbox" checked></label><div class="field"><label for="patch">Patch age: <span id="patchVal">10</span> days</label><input id="patch" type="range" min="0" max="180" value="10"></div><div class="field"><label for="anom">Anomalies: <span id="anomVal">0</span></label><input id="anom" type="range" min="0" max="5" value="0"></div><div class="field"><label for="replay">Replay events: <span id="replayVal">0</span></label><input id="replay" type="range" min="0" max="5" value="0"></div></div><div id="scoreWhy" class="callout ok" style="margin-top:14px">All evidence satisfies the training policy.</div></div></div></div><div class="grid3" style="margin-top:18px"><div class="card"><h3 style="color:var(--ok)">80–100 · Normal</h3><p>Approved least-privilege flows remain available.</p></div><div class="card"><h3 style="color:var(--warn)">60–79 · Restricted</h3><p>Only the policy/evidence service is reachable; normal egress is blocked.</p></div><div class="card"><h3 style="color:var(--danger)">0–59 · Quarantine</h3><p>Source and destination traffic is dropped, subject to separately engineered safety exceptions.</p></div></div><div class="callout danger" style="margin-top:18px"><b>Safety warning:</b> a real vehicle must not mechanically apply a generic IT quarantine rule to safety-critical ECUs. Enforcement requires hazard analysis, fail-operational/fail-safe design, bounded fallback behavior and coordination with functional-safety engineering.</div></div></section>
+
+<section class="section" id="cuttlefish"><div class="wrap"><h2>6. Cuttlefish as the Android/IVI evidence source</h2><p class="sectionintro">Cuttlefish is used here for Android framework and boot-state evidence. The Linux namespace topology simulates the other ECU zones because Cuttlefish networking varies by release and launch configuration.</p><div class="grid2"><div class="card"><h3>Evidence collected with ADB</h3><ul><li><code>ro.boot.verifiedbootstate</code></li><li><code>ro.boot.flash.locked</code></li><li><code>ro.build.type</code></li><li><code>ro.build.fingerprint</code></li><li>Kernel boot ID for session correlation</li></ul></div><div class="card"><h3>Userdebug nuance</h3><p>A Cuttlefish <code>userdebug</code> or <code>eng</code> image may intentionally be unlocked or report a non-green state. The lab profile records this as a development exception. The production profile requires green verified boot, locked flash and a <code>user</code> build.</p></div></div><div class="callout warn" style="margin-top:18px"><b>Do not teach the wrong lesson:</b> “orange on Cuttlefish” does not automatically mean the VM was compromised. It can reflect the expected development build posture. Policy must understand the declared environment.</div></div></section>
+
+
+<section class="section" id="incident"><div class="wrap"><h2>Incident replay: from anomaly to safe recovery</h2><p class="sectionintro">Play, pause, and inspect the event chain. The simulation deliberately separates evidence collection, policy decision, enforcement, and recovery.</p><div class="timeline-shell"><article class="timeline-console"><span class="tag">Incident clock</span><div class="timeline-clock" id="timelineClock">00:00</div><div class="timeline-controls"><button class="mini-btn" id="timelinePlay">▶ Play</button><button class="mini-btn" id="timelinePause">⏸ Pause</button><button class="mini-btn" id="timelineRestart">↺ Restart</button><select class="toolbar-select" id="timelineSpeed"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select></div><div class="callout ok" id="timelineStatus"><b>Vehicle normal.</b><br>No incident events have been processed.</div><div class="checkpoint" id="timelineCheckpoint"><h4>Decision checkpoint</h4><p>ADAS has a valid certificate, but the firmware measurement changed and the trust score is 68. What should happen?</p><div class="attack-row"><button class="mini-btn" data-checkpoint="allow">Allow everything</button><button class="mini-btn" data-checkpoint="restrict">Restrict approved traffic</button><button class="mini-btn" data-checkpoint="quarantine">Immediate generic shutdown</button></div><div id="checkpointFeedback" class="result evaluate">Choose an action.</div></div></article><article><ol class="timeline-events" id="timelineEvents"><li class="timeline-event" data-time="0"><time>00:00</time><b>Vehicle started</b><div class="muted">All ECU identities and baselines load.</div></li><li class="timeline-event" data-time="8"><time>00:08</time><b>ADAS mTLS succeeds</b><div class="muted">Identity is valid and the approved API opens.</div></li><li class="timeline-event alert" data-time="12"><time>00:12</time><b>Firmware measurement changes</b><div class="muted">Continuous monitoring detects baseline drift.</div></li><li class="timeline-event alert" data-time="14"><time>00:14</time><b>Unexpected diagnostic request</b><div class="muted">ADAS attempts a service outside its policy.</div></li><li class="timeline-event" data-time="16"><time>00:16</time><b>Trust score falls to 68</b><div class="muted">Policy engine selects RESTRICTED.</div></li><li class="timeline-event alert" data-time="23"><time>00:23</time><b>Repeated violation</b><div class="muted">New evidence lowers trust below 60.</div></li><li class="timeline-event alert" data-time="25"><time>00:25</time><b>ADAS quarantined</b><div class="muted">Gateway blocks traffic involving ADAS-01.</div></li><li class="timeline-event" data-time="31"><time>00:31</time><b>Recovery workflow begins</b><div class="muted">Approved image restored, re-attested, then policy reinstated.</div></li></ol></article></div><div class="trainer-note"><b>Pause at 00:16:</b> ask learners why restriction is safer than automatically shutting down every safety-critical function. The answer must include hazard analysis and bounded degraded behavior.</div></div></section>
+
+<section class="section" id="labs"><div class="wrap"><h2>7. Guided production-like labs</h2><p class="sectionintro">Run these on the Ubuntu 24.x KVM host that already runs Cuttlefish. The lab pack is embedded in this HTML; no internet download is required.</p><div class="card"><h3>Install the embedded lab pack</h3><p>Click to download the self-extracting installer, then run it from your Downloads directory.</p><button class="btn primary" data-download="installer">⬇ Download lab-pack installer</button><button class="btn" data-toggle-script="installer">View installer</button><div id="script-installer" hidden><div class="command"><pre>#!/usr/bin/env bash
+set -Eeuo pipefail
+
+DEST=&quot;${1:-$HOME/session5-zero-trust-labs}&quot;
+mkdir -p &quot;$DEST&quot;
+
+base64 -d &gt;&quot;$DEST/zt_lab_setup.sh&quot; &lt;&lt;&#x27;B64_zt_lab_setup_sh&#x27;
+IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLUVldW8gcGlwZWZhaWwKCldPUktfRElSPSIke1pUX1dPUktfRElSOi0vdG1wL3p0LXNlc3Npb241fSIKTlNfR1c9Inp0LWd3IgpOU19JVkk9Inp0LWl2aSIKTlNfQURBUz0ienQtYWRhcyIKTlNfUFQ9Inp0LXB0IgpOU19ESUFHPSJ6dC1kaWFnIgoKbmVlZF9jbWQoKSB7CiAgY29tbWFuZCAtdiAiJDEiID4vZGV2L251bGwgMj4mMSB8fCB7CiAgICBlY2hvICJbRkFJTF0gUmVxdWlyZWQgY29tbWFuZCBub3QgZm91bmQ6ICQxIiA+JjIKICAgIGV4aXQgMQogIH0KfQoKZm9yIGNtZCBpbiBpcCBuZnQgcHl0aG9uMyBvcGVuc3NsIGN1cmwgcGluZyB0aW1lb3V0OyBkbwogIG5lZWRfY21kICIkY21kIgpkb25lCgppZiBbWyAke0VVSUR9IC1uZSAwIF1dOyB0aGVuCiAgZWNobyAiW0ZBSUxdIFJ1biB0aGlzIHNjcmlwdCB3aXRoIHN1ZG8uIiA+JjIKICBleGl0IDEKZmkKCmNsZWFudXBfcGFydGlhbCgpIHsKICBmb3IgbnMgaW4gIiROU19JVkkiICIkTlNfQURBUyIgIiROU19QVCIgIiROU19ESUFHIiAiJE5TX0dXIjsgZG8KICAgIGlmIGlwIG5ldG5zIGxpc3QgfCBhd2sgJ3twcmludCAkMX0nIHwgZ3JlcCAtRnhxICIkbnMiOyB0aGVuCiAgICAgIHdoaWxlIHJlYWQgLXIgcGlkOyBkbwogICAgICAgIFtbIC1uICIkcGlkIiBdXSAmJiBraWxsICIkcGlkIiAyPi9kZXYvbnVsbCB8fCB0cnVlCiAgICAgIGRvbmUgPCA8KGlwIG5ldG5zIHBpZHMgIiRucyIgMj4vZGV2L251bGwgfHwgdHJ1ZSkKICAgICAgc2xlZXAgMC4xCiAgICAgIHdoaWxlIHJlYWQgLXIgcGlkOyBkbwogICAgICAgIFtbIC1uICIkcGlkIiBdXSAmJiBraWxsIC1LSUxMICIkcGlkIiAyPi9kZXYvbnVsbCB8fCB0cnVlCiAgICAgIGRvbmUgPCA8KGlwIG5ldG5zIHBpZHMgIiRucyIgMj4vZGV2L251bGwgfHwgdHJ1ZSkKICAgICAgaXAgbmV0bnMgZGVsICIkbnMiIDI+L2Rldi9udWxsIHx8IHRydWUKICAgIGZpCiAgZG9uZQp9CnRyYXAgJ2VjaG8gIltGQUlMXSBTZXR1cCBzdG9wcGVkOyByZW1vdmluZyBwYXJ0aWFsIHRvcG9sb2d5LiIgPiYyOyBjbGVhbnVwX3BhcnRpYWwnIEVSUgoKY2xlYW51cF9wYXJ0aWFsCnJtIC1yZiAiJFdPUktfRElSIgppbnN0YWxsIC1kIC1tIDA3MDAgIiRXT1JLX0RJUiIgIiRXT1JLX0RJUi9wa2kiCgpjcmVhdGVfbGluaygpIHsKICBsb2NhbCBlbmRwb2ludF9ucz0iJDEiIGVuZHBvaW50X2lmPSIkMiIgZW5kcG9pbnRfaXA9IiQzIgogIGxvY2FsIGdhdGV3YXlfaWY9IiQ0IiBnYXRld2F5X2lwPSIkNSIKCiAgaXAgbmV0bnMgYWRkICIkZW5kcG9pbnRfbnMiCiAgaXAgbGluayBhZGQgIiRlbmRwb2ludF9pZiIgdHlwZSB2ZXRoIHBlZXIgbmFtZSAiJGdhdGV3YXlfaWYiCiAgaXAgbGluayBzZXQgIiRlbmRwb2ludF9pZiIgbmV0bnMgIiRlbmRwb2ludF9ucyIKICBpcCBsaW5rIHNldCAiJGdhdGV3YXlfaWYiIG5ldG5zICIkTlNfR1ciCgogIGlwIC1uICIkZW5kcG9pbnRfbnMiIGxpbmsgc2V0IGxvIHVwCiAgaXAgLW4gIiRlbmRwb2ludF9ucyIgYWRkciBhZGQgIiRlbmRwb2ludF9pcCIgZGV2ICIkZW5kcG9pbnRfaWYiCiAgaXAgLW4gIiRlbmRwb2ludF9ucyIgbGluayBzZXQgIiRlbmRwb2ludF9pZiIgdXAKICBpcCAtbiAiJGVuZHBvaW50X25zIiByb3V0ZSBhZGQgZGVmYXVsdCB2aWEgIiRnYXRld2F5X2lwIgoKICBpcCAtbiAiJE5TX0dXIiBhZGRyIGFkZCAiJGdhdGV3YXlfaXAvMjQiIGRldiAiJGdhdGV3YXlfaWYiCiAgaXAgLW4gIiROU19HVyIgbGluayBzZXQgIiRnYXRld2F5X2lmIiB1cAp9CgppcCBuZXRucyBhZGQgIiROU19HVyIKaXAgLW4gIiROU19HVyIgbGluayBzZXQgbG8gdXAKCmNyZWF0ZV9saW5rICIkTlNfSVZJIiAgdi1pdmkgICIxMC43Ny4xMC4yLzI0IiBnLWl2aSAgIjEwLjc3LjEwLjEiCmNyZWF0ZV9saW5rICIkTlNfQURBUyIgdi1hZGFzICIxMC43Ny4yMC4yLzI0IiBnLWFkYXMgIjEwLjc3LjIwLjEiCmNyZWF0ZV9saW5rICIkTlNfUFQiICAgdi1wdCAgICIxMC43Ny4zMC4yLzI0IiBnLXB0ICAgIjEwLjc3LjMwLjEiCmNyZWF0ZV9saW5rICIkTlNfRElBRyIgdi1kaWFnICIxMC43Ny40MC4yLzI0IiBnLWRpYWcgIjEwLjc3LjQwLjEiCgppcCBuZXRucyBleGVjICIkTlNfR1ciIHN5c2N0bCAtcSAtdyBuZXQuaXB2NC5pcF9mb3J3YXJkPTEKCmlwIG5ldG5zIGV4ZWMgIiROU19HVyIgbmZ0IC1mIC0gPDwnTkZUJwp0YWJsZSBpbmV0IHp0X3ZlaGljbGUgewogIHNldCByZXN0cmljdGVkX3Y0IHsKICAgIHR5cGUgaXB2NF9hZGRyCiAgfQoKICBzZXQgcXVhcmFudGluZWRfdjQgewogICAgdHlwZSBpcHY0X2FkZHIKICB9CgogIGNoYWluIGlucHV0IHsKICAgIHR5cGUgZmlsdGVyIGhvb2sgaW5wdXQgcHJpb3JpdHkgZmlsdGVyOyBwb2xpY3kgZHJvcDsKICAgIGlpZm5hbWUgImxvIiBhY2NlcHQKICAgIGN0IHN0YXRlIGludmFsaWQgZHJvcAogICAgY3Qgc3RhdGUgZXN0YWJsaXNoZWQscmVsYXRlZCBhY2NlcHQKICAgIGlwIHByb3RvY29sIGljbXAgYWNjZXB0CiAgfQoKICBjaGFpbiBmb3J3YXJkIHsKICAgIHR5cGUgZmlsdGVyIGhvb2sgZm9yd2FyZCBwcmlvcml0eSBmaWx0ZXI7IHBvbGljeSBkcm9wOwogICAgY3Qgc3RhdGUgaW52YWxpZCBkcm9wCgogICAgIyBEeW5hbWljIHRydXN0IGRlY2lzaW9ucyBwcmVjZWRlIGNvbm50cmFjayBhY2NlcHRhbmNlIHNvIGEgbmV3bHkKICAgICMgcXVhcmFudGluZWQgRUNVIGNhbm5vdCBrZWVwIGFuIGFscmVhZHktZXN0YWJsaXNoZWQgc2Vzc2lvbiBhbGl2ZS4KICAgIGlwIHNhZGRyIEBxdWFyYW50aW5lZF92NCBjb3VudGVyIGRyb3AgY29tbWVudCAiZHluYW1pYyBzb3VyY2UgcXVhcmFudGluZSIKICAgIGlwIGRhZGRyIEBxdWFyYW50aW5lZF92NCBjb3VudGVyIGRyb3AgY29tbWVudCAiZHluYW1pYyBkZXN0aW5hdGlvbiBxdWFyYW50aW5lIgoKICAgIGlwIHNhZGRyIEByZXN0cmljdGVkX3Y0IGlwIGRhZGRyIDEwLjc3LjQwLjIgdGNwIGRwb3J0IDk0NDMgY291bnRlciBhY2NlcHQgY29tbWVudCAicmVzdHJpY3RlZCBFQ1UgdG8gcG9saWN5IHNlcnZpY2UiCiAgICBpcCBzYWRkciBAcmVzdHJpY3RlZF92NCBjb3VudGVyIGRyb3AgY29tbWVudCAicmVzdHJpY3RlZCBFQ1UgZGVueSBvdGhlciBlZ3Jlc3MiCiAgICBpcCBkYWRkciBAcmVzdHJpY3RlZF92NCBpcCBzYWRkciAxMC43Ny40MC4yIGNvdW50ZXIgYWNjZXB0IGNvbW1lbnQgInBvbGljeSBzZXJ2aWNlIHRvIHJlc3RyaWN0ZWQgRUNVIgogICAgaXAgZGFkZHIgQHJlc3RyaWN0ZWRfdjQgY291bnRlciBkcm9wIGNvbW1lbnQgImRlbnkgYWNjZXNzIHRvIHJlc3RyaWN0ZWQgRUNVIgoKICAgIGN0IHN0YXRlIGVzdGFibGlzaGVkLHJlbGF0ZWQgYWNjZXB0CiAgICBpcCBzYWRkciAxMC43Ny40MC4yIGlwIHByb3RvY29sIGljbXAgY291bnRlciBhY2NlcHQgY29tbWVudCAiZGlhZ25vc3RpYyBoZWFsdGggY2hlY2tzIgogICAgaXAgc2FkZHIgMTAuNzcuMjAuMiBpcCBkYWRkciAxMC43Ny4zMC4yIHRjcCBkcG9ydCAzMDUwOSBjdCBzdGF0ZSBuZXcgY291bnRlciBhY2NlcHQgY29tbWVudCAiQURBUyB0byBwb3dlcnRyYWluIGNvbnRyb2wgQVBJIgogICAgaXAgc2FkZHIgMTAuNzcuMTAuMiBpcCBkYWRkciAxMC43Ny4yMC4yIHRjcCBkcG9ydCA4NDQzIGN0IHN0YXRlIG5ldyBjb3VudGVyIGFjY2VwdCBjb21tZW50ICJJVkkgdG8gQURBUyBtVExTIGRlbW8iCgogICAgY291bnRlciBkcm9wIGNvbW1lbnQgImRlZmF1bHQgemVyby10cnVzdCBkZW55IgogIH0KfQpORlQKCiMgUHJvZHVjdGlvbi1saWtlIHNlcnZpY2Ugc2ltdWxhdGlvbjogcG93ZXJ0cmFpbiBjb250cm9sIGVuZHBvaW50LgppcCBuZXRucyBleGVjICIkTlNfUFQiIGJhc2ggLWMgXAogICJub2h1cCBweXRob24zIC1tIGh0dHAuc2VydmVyIDMwNTA5IC0tYmluZCAxMC43Ny4zMC4yID4nJFdPUktfRElSL3Bvd2VydHJhaW4taHR0cC5sb2cnIDI+JjEgJiBlY2hvIFwkISA+JyRXT1JLX0RJUi9wb3dlcnRyYWluLWh0dHAucGlkJyIKCnNsZWVwIDAuNQoKIyBDcmVhdGUgYSBzaG9ydC1saXZlZCBsYWIgQ0EgYW5kIG11dHVhbGx5IGF1dGhlbnRpY2F0ZWQgRUNVIGlkZW50aXRpZXMuClBLST0iJFdPUktfRElSL3BraSIKb3BlbnNzbCByZXEgLXg1MDkgLW5ld2tleSByc2E6MzA3MiAtbm9kZXMgLXNoYTI1NiAtZGF5cyAyIFwKICAta2V5b3V0ICIkUEtJL2NhLmtleSIgLW91dCAiJFBLSS9jYS5jcnQiIFwKICAtc3ViaiAiL0NOPVNlc3Npb24gNSBWZWhpY2xlIExhYiBSb290IENBIiBcCiAgLWFkZGV4dCAiYmFzaWNDb25zdHJhaW50cz1jcml0aWNhbCxDQTpUUlVFIiBcCiAgLWFkZGV4dCAia2V5VXNhZ2U9Y3JpdGljYWwsa2V5Q2VydFNpZ24sY1JMU2lnbiIgPi9kZXYvbnVsbCAyPiYxCgptYWtlX2NlcnQoKSB7CiAgbG9jYWwgbmFtZT0iJDEiIGVrdT0iJDIiIHNhbj0iJDMiCiAgb3BlbnNzbCByZXEgLW5ld2tleSByc2E6MjA0OCAtbm9kZXMgLXNoYTI1NiBcCiAgICAta2V5b3V0ICIkUEtJLyRuYW1lLmtleSIgLW91dCAiJFBLSS8kbmFtZS5jc3IiIFwKICAgIC1zdWJqICIvQ049JG5hbWUuZWN1IiA+L2Rldi9udWxsIDI+JjEKICBjYXQgPiIkUEtJLyRuYW1lLmV4dCIgPDxFWFQKYmFzaWNDb25zdHJhaW50cz1jcml0aWNhbCxDQTpGQUxTRQprZXlVc2FnZT1jcml0aWNhbCxkaWdpdGFsU2lnbmF0dXJlLGtleUVuY2lwaGVybWVudApleHRlbmRlZEtleVVzYWdlPSRla3UKc3ViamVjdEFsdE5hbWU9JHNhbgpFWFQKICBvcGVuc3NsIHg1MDkgLXJlcSAtc2hhMjU2IC1kYXlzIDIgXAogICAgLWluICIkUEtJLyRuYW1lLmNzciIgLUNBICIkUEtJL2NhLmNydCIgLUNBa2V5ICIkUEtJL2NhLmtleSIgXAogICAgLUNBY3JlYXRlc2VyaWFsIC1vdXQgIiRQS0kvJG5hbWUuY3J0IiAtZXh0ZmlsZSAiJFBLSS8kbmFtZS5leHQiID4vZGV2L251bGwgMj4mMQp9CgptYWtlX2NlcnQgYWRhcyBzZXJ2ZXJBdXRoICJJUDoxMC43Ny4yMC4yLEROUzphZGFzLmVjdSIKbWFrZV9jZXJ0IGl2aSBjbGllbnRBdXRoICJJUDoxMC43Ny4xMC4yLEROUzppdmkuZWN1IgptYWtlX2NlcnQgcm9ndWUgY2xpZW50QXV0aCAiRE5TOnJvZ3VlLmVjdSIKCiMgQSBjZXJ0aWZpY2F0ZSBmcm9tIGFuIHVucmVsYXRlZCBDQSBtdXN0IGZhaWwgY3J5cHRvZ3JhcGhpYyBhdXRoZW50aWNhdGlvbi4Kb3BlbnNzbCByZXEgLXg1MDkgLW5ld2tleSByc2E6MjA0OCAtbm9kZXMgLXNoYTI1NiAtZGF5cyAyIFwKICAta2V5b3V0ICIkUEtJL3VudHJ1c3RlZC5rZXkiIC1vdXQgIiRQS0kvdW50cnVzdGVkLmNydCIgXAogIC1zdWJqICIvQ049dW50cnVzdGVkLmVjdSIgPi9kZXYvbnVsbCAyPiYxCgppcCBuZXRucyBleGVjICIkTlNfQURBUyIgYmFzaCAtYyBcCiAgIm5vaHVwIG9wZW5zc2wgc19zZXJ2ZXIgLXF1aWV0IC1hY2NlcHQgODQ0MyAtY2VydCAnJFBLSS9hZGFzLmNydCcgLWtleSAnJFBLSS9hZGFzLmtleScgLUNBZmlsZSAnJFBLSS9jYS5jcnQnIC1WZXJpZnkgMSAtd3d3ID4nJFdPUktfRElSL210bHMtc2VydmVyLmxvZycgMj4mMSAmIGVjaG8gXCQhID4nJFdPUktfRElSL210bHMtc2VydmVyLnBpZCciCgpzbGVlcCAwLjcKdHJhcCAtIEVSUgoKZWNobyAiW1BBU1NdIFplcm8gVHJ1c3QgdmVoaWNsZSB0b3BvbG9neSBjcmVhdGVkLiIKZWNobyAiW0lORk9dIE5hbWVzcGFjZXM6ICROU19JVkksICROU19BREFTLCAkTlNfUFQsICROU19ESUFHLCAkTlNfR1ciCmVjaG8gIltJTkZPXSBQb2xpY3kgdGFibGU6IGlwIG5ldG5zIGV4ZWMgJE5TX0dXIG5mdCBsaXN0IHRhYmxlIGluZXQgenRfdmVoaWNsZSIKZWNobyAiW0lORk9dIFdvcmsgZGlyZWN0b3J5OiAkV09SS19ESVIiCg==
+B64_zt_lab_setup_sh
+
+base64 -d &gt;&quot;$DEST/zt_lab_cleanup.sh&quot; &lt;&lt;&#x27;B64_zt_lab_cleanup_sh&#x27;
+IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLUVldW8gcGlwZWZhaWwKCldPUktfRElSPSIke1pUX1dPUktfRElSOi0vdG1wL3p0LXNlc3Npb241fSIKZm9yIG5zIGluIHp0LWl2aSB6dC1hZGFzIHp0LXB0IHp0LWRpYWcgenQtZ3c7IGRvCiAgaWYgc3VkbyBpcCBuZXRucyBsaXN0IHwgYXdrICd7cHJpbnQgJDF9JyB8IGdyZXAgLUZ4cSAiJG5zIjsgdGhlbgogICAgd2hpbGUgcmVhZCAtciBwaWQ7IGRvCiAgICAgIFtbIC1uICIkcGlkIiBdXSAmJiBzdWRvIGtpbGwgIiRwaWQiIDI+L2Rldi9udWxsIHx8IHRydWUKICAgIGRvbmUgPCA8KHN1ZG8gaXAgbmV0bnMgcGlkcyAiJG5zIiAyPi9kZXYvbnVsbCB8fCB0cnVlKQogICAgc2xlZXAgMC4xCiAgICB3aGlsZSByZWFkIC1yIHBpZDsgZG8KICAgICAgW1sgLW4gIiRwaWQiIF1dICYmIHN1ZG8ga2lsbCAtS0lMTCAiJHBpZCIgMj4vZGV2L251bGwgfHwgdHJ1ZQogICAgZG9uZSA8IDwoc3VkbyBpcCBuZXRucyBwaWRzICIkbnMiIDI+L2Rldi9udWxsIHx8IHRydWUpCiAgICBzdWRvIGlwIG5ldG5zIGRlbCAiJG5zIiAyPi9kZXYvbnVsbCB8fCB0cnVlCiAgZmkKZG9uZQpzdWRvIHJtIC1yZiAiJFdPUktfRElSIgplY2hvICJbUEFTU10gU2Vzc2lvbiA1IGxhYiByZXNvdXJjZXMgcmVtb3ZlZC4iCg==
+B64_zt_lab_cleanup_sh
+
+base64 -d &gt;&quot;$DEST/zt_attestation_demo.sh&quot; &lt;&lt;&#x27;B64_zt_attestation_demo_sh&#x27;
+IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLUVldW8gcGlwZWZhaWwKCk1PREU9IiR7MTotZ29vZH0iCldPUktfRElSPSIke1pUX1dPUktfRElSOi0vdG1wL3p0LXNlc3Npb241fS9hdHRlc3RhdGlvbiIKbWtkaXIgLXAgIiRXT1JLX0RJUiIKY2QgIiRXT1JLX0RJUiIKCmZvciBjbWQgaW4gb3BlbnNzbCBzaGEyNTZzdW0gcHl0aG9uMzsgZG8KICBjb21tYW5kIC12ICIkY21kIiA+L2Rldi9udWxsIHx8IHsgZWNobyAiW0ZBSUxdIE1pc3NpbmcgY29tbWFuZDogJGNtZCIgPiYyOyBleGl0IDE7IH0KZG9uZQoKW1sgLWYgZWN1LmtleSBdXSB8fCBvcGVuc3NsIGdlbnBrZXkgLWFsZ29yaXRobSBFRDI1NTE5IC1vdXQgZWN1LmtleSA+L2Rldi9udWxsIDI+JjEKW1sgLWYgZWN1LnB1YiBdXSB8fCBvcGVuc3NsIHBrZXkgLWluIGVjdS5rZXkgLXB1Ym91dCAtb3V0IGVjdS5wdWIgPi9kZXYvbnVsbCAyPiYxCltbIC1mIGZpcm13YXJlLmJpbiBdXSB8fCBwcmludGYgJ2FkYXMtZmlybXdhcmUtdjFcbicgPiBmaXJtd2FyZS5iaW4KW1sgLWYgYmFzZWxpbmUuc2hhMjU2IF1dIHx8IHNoYTI1NnN1bSBmaXJtd2FyZS5iaW4gfCBhd2sgJ3twcmludCAkMX0nID4gYmFzZWxpbmUuc2hhMjU2CgpCQVNFTElORT0iJChjYXQgYmFzZWxpbmUuc2hhMjU2KSIKRVhQRUNURURfTk9OQ0U9IiQob3BlbnNzbCByYW5kIC1oZXggMTYpIgpOT05DRT0iJEVYUEVDVEVEX05PTkNFIgpNRUFTVVJFTUVOVD0iJChzaGEyNTZzdW0gZmlybXdhcmUuYmluIHwgYXdrICd7cHJpbnQgJDF9JykiClRJTUVTVEFNUD0iJChkYXRlIC11ICslWS0lbS0lZFQlSDolTTolU1opIgoKY2FzZSAiJE1PREUiIGluCiAgZ29vZCkgOzsKICB0YW1wZXIpCiAgICBwcmludGYgJ3VuYXV0aG9yaXplZC1wYXRjaFxuJyA+PiBmaXJtd2FyZS5iaW4KICAgIE1FQVNVUkVNRU5UPSIkKHNoYTI1NnN1bSBmaXJtd2FyZS5iaW4gfCBhd2sgJ3twcmludCAkMX0nKSIKICAgIDs7CiAgcmVwbGF5KQogICAgTk9OQ0U9IjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIgogICAgOzsKICAqKSBlY2hvICJVc2FnZTogJDAgW2dvb2R8dGFtcGVyfHJlcGxheV0iID4mMjsgZXhpdCAyIDs7CmVzYWMKCnB5dGhvbjMgLSAiJE5PTkNFIiAiJE1FQVNVUkVNRU5UIiAiJFRJTUVTVEFNUCIgPiBhdHRlc3RhdGlvbi5qc29uIDw8J1BZJwppbXBvcnQganNvbiwgc3lzCm5vbmNlLCBtZWFzdXJlbWVudCwgdGltZXN0YW1wID0gc3lzLmFyZ3ZbMTpdCnByaW50KGpzb24uZHVtcHMoewogICAgImVjdV9pZCI6ICJhZGFzLTAxIiwKICAgICJub25jZSI6IG5vbmNlLAogICAgIm1lYXN1cmVtZW50X3NoYTI1NiI6IG1lYXN1cmVtZW50LAogICAgInRpbWVzdGFtcF91dGMiOiB0aW1lc3RhbXAsCiAgICAic2VjdXJlX2Jvb3QiOiBUcnVlLAp9LCBzZXBhcmF0b3JzPSgiLCIsICI6IiksIHNvcnRfa2V5cz1UcnVlKSkKUFkKCm9wZW5zc2wgcGtleXV0bCAtc2lnbiAtcmF3aW4gLWlua2V5IGVjdS5rZXkgLWluIGF0dGVzdGF0aW9uLmpzb24gLW91dCBhdHRlc3RhdGlvbi5zaWcKCmlmICEgb3BlbnNzbCBwa2V5dXRsIC12ZXJpZnkgLXB1YmluIC1pbmtleSBlY3UucHViIC1yYXdpbiBcCiAgICAtaW4gYXR0ZXN0YXRpb24uanNvbiAtc2lnZmlsZSBhdHRlc3RhdGlvbi5zaWcgPi9kZXYvbnVsbCAyPiYxOyB0aGVuCiAgZWNobyAiW0ZBSUxdIFNpZ25hdHVyZSB2ZXJpZmljYXRpb24gZmFpbGVkLiIKICBleGl0IDEKZmkKCmVjaG8gIltQQVNTXSBEZXZpY2UgaWRlbnRpdHkgc2lnbmF0dXJlIGlzIHZhbGlkLiIKCk9CU0VSVkVEX05PTkNFPSIkKHB5dGhvbjMgLWMgJ2ltcG9ydCBqc29uOyBwcmludChqc29uLmxvYWQob3BlbigiYXR0ZXN0YXRpb24uanNvbiIpKVsibm9uY2UiXSknKSIKaWYgW1sgIiRPQlNFUlZFRF9OT05DRSIgIT0gIiRFWFBFQ1RFRF9OT05DRSIgXV07IHRoZW4KICBlY2hvICJbRkFJTF0gTm9uY2UgaXMgc3RhbGUgb3IgZG9lcyBub3QgbWF0Y2ggdGhlIHZlcmlmaWVyIGNoYWxsZW5nZS4iCiAgZXhpdCAzCmZpCgppZiBbWyAiJE1FQVNVUkVNRU5UIiAhPSAiJEJBU0VMSU5FIiBdXTsgdGhlbgogIGVjaG8gIltGQUlMXSBSdW50aW1lIG1lYXN1cmVtZW50IGRpZmZlcnMgZnJvbSB0aGUgYXBwcm92ZWQgYmFzZWxpbmUuIgogIGVjaG8gIiAgICAgICBleHBlY3RlZD0kQkFTRUxJTkUiCiAgZWNobyAiICAgICAgIG9ic2VydmVkPSRNRUFTVVJFTUVOVCIKICBleGl0IDQKZmkKCmVjaG8gIltQQVNTXSBOb25jZSBpcyBmcmVzaCBhbmQgZmlybXdhcmUgbWVhc3VyZW1lbnQgbWF0Y2hlcyB0aGUgYmFzZWxpbmUuIgo=
+B64_zt_attestation_demo_sh
+
+base64 -d &gt;&quot;$DEST/zt_trust_engine.py&quot; &lt;&lt;&#x27;B64_zt_trust_engine_py&#x27;
+IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoiIiJUcmFpbmluZy1ncmFkZSBFQ1UgdHJ1c3Qgc2NvcmVyIGFuZCBvcHRpb25hbCBuZnRhYmxlcyBwb2xpY3kgYWN0dWF0b3IuIiIiCmZyb20gX19mdXR1cmVfXyBpbXBvcnQgYW5ub3RhdGlvbnMKCmltcG9ydCBhcmdwYXJzZQppbXBvcnQganNvbgppbXBvcnQgc3VicHJvY2VzcwppbXBvcnQgc3lzCmZyb20gZGF0YWNsYXNzZXMgaW1wb3J0IGFzZGljdCwgZGF0YWNsYXNzCgoKQGRhdGFjbGFzcyhmcm96ZW49VHJ1ZSkKY2xhc3MgRXZpZGVuY2U6CiAgICBlY3VfaWQ6IHN0cgogICAgaXA6IHN0cgogICAgYXR0ZXN0YXRpb25fdmFsaWQ6IGJvb2wKICAgIGNlcnRpZmljYXRlX3ZhbGlkOiBib29sCiAgICBzZWN1cmVfYm9vdDogYm9vbAogICAgcGF0Y2hfYWdlX2RheXM6IGludAogICAgYW5vbWFseV9ldmVudHM6IGludAogICAgcmVwbGF5X2V2ZW50czogaW50CgoKZGVmIGNhbGN1bGF0ZV9zY29yZShlOiBFdmlkZW5jZSkgLT4gdHVwbGVbaW50LCBsaXN0W3N0cl1dOgogICAgc2NvcmUgPSAwCiAgICByZWFzb25zOiBsaXN0W3N0cl0gPSBbXQoKICAgIGlmIGUuYXR0ZXN0YXRpb25fdmFsaWQ6CiAgICAgICAgc2NvcmUgKz0gMzAKICAgIGVsc2U6CiAgICAgICAgcmVhc29ucy5hcHBlbmQoImF0dGVzdGF0aW9uIGZhaWxlZCIpCgogICAgaWYgZS5jZXJ0aWZpY2F0ZV92YWxpZDoKICAgICAgICBzY29yZSArPSAyMAogICAgZWxzZToKICAgICAgICByZWFzb25zLmFwcGVuZCgiY2VydGlmaWNhdGUgaW52YWxpZCBvciBleHBpcmVkIikKCiAgICBpZiBlLnNlY3VyZV9ib290OgogICAgICAgIHNjb3JlICs9IDE1CiAgICBlbHNlOgogICAgICAgIHJlYXNvbnMuYXBwZW5kKCJzZWN1cmUgYm9vdCBldmlkZW5jZSBhYnNlbnQiKQoKICAgIGlmIGUucGF0Y2hfYWdlX2RheXMgPD0gMzA6CiAgICAgICAgc2NvcmUgKz0gMTUKICAgIGVsaWYgZS5wYXRjaF9hZ2VfZGF5cyA8PSA5MDoKICAgICAgICBzY29yZSArPSA4CiAgICAgICAgcmVhc29ucy5hcHBlbmQoInBhdGNoIGxldmVsIGFnaW5nIikKICAgIGVsc2U6CiAgICAgICAgcmVhc29ucy5hcHBlbmQoInBhdGNoIGxldmVsIG91dHNpZGUgcG9saWN5IikKCiAgICBzY29yZSArPSBtYXgoMCwgMTUgLSBtaW4oZS5hbm9tYWx5X2V2ZW50cywgNSkgKiAzKQogICAgaWYgZS5hbm9tYWx5X2V2ZW50czoKICAgICAgICByZWFzb25zLmFwcGVuZChmIntlLmFub21hbHlfZXZlbnRzfSBhbm9tYWx5IGV2ZW50KHMpIikKCiAgICBzY29yZSArPSBtYXgoMCwgNSAtIG1pbihlLnJlcGxheV9ldmVudHMsIDUpKQogICAgaWYgZS5yZXBsYXlfZXZlbnRzOgogICAgICAgIHJlYXNvbnMuYXBwZW5kKGYie2UucmVwbGF5X2V2ZW50c30gcmVwbGF5IGV2ZW50KHMpIikKCiAgICByZXR1cm4gbWF4KDAsIG1pbihzY29yZSwgMTAwKSksIHJlYXNvbnMKCgpkZWYgZGVjaXNpb24oc2NvcmU6IGludCkgLT4gc3RyOgogICAgaWYgc2NvcmUgPj0gODA6CiAgICAgICAgcmV0dXJuICJOT1JNQUwiCiAgICBpZiBzY29yZSA+PSA2MDoKICAgICAgICByZXR1cm4gIlJFU1RSSUNURUQiCiAgICByZXR1cm4gIlFVQVJBTlRJTkUiCgoKZGVmIHJ1bl9uZnQoYXJnczogbGlzdFtzdHJdLCB0b2xlcmF0ZV9mYWlsdXJlOiBib29sID0gRmFsc2UpIC0+IE5vbmU6CiAgICBjbWQgPSBbImlwIiwgIm5ldG5zIiwgImV4ZWMiLCAienQtZ3ciLCAibmZ0IiwgKmFyZ3NdCiAgICByZXN1bHQgPSBzdWJwcm9jZXNzLnJ1bihjbWQsIHRleHQ9VHJ1ZSwgY2FwdHVyZV9vdXRwdXQ9VHJ1ZSkKICAgIGlmIHJlc3VsdC5yZXR1cm5jb2RlIGFuZCBub3QgdG9sZXJhdGVfZmFpbHVyZToKICAgICAgICByYWlzZSBSdW50aW1lRXJyb3IocmVzdWx0LnN0ZGVyci5zdHJpcCgpIG9yICJuZnQgY29tbWFuZCBmYWlsZWQiKQoKCmRlZiBhcHBseV9wb2xpY3koaXA6IHN0ciwgc3RhdGU6IHN0cikgLT4gTm9uZToKICAgICMgRGVsZXRlIGlzIGRlbGliZXJhdGVseSB0b2xlcmFudCBiZWNhdXNlIHRoZSBlbGVtZW50IG1pZ2h0IG5vdCBleGlzdC4KICAgIHJ1bl9uZnQoWyJkZWxldGUiLCAiZWxlbWVudCIsICJpbmV0IiwgInp0X3ZlaGljbGUiLCAicmVzdHJpY3RlZF92NCIsICJ7IiwgaXAsICJ9Il0sIFRydWUpCiAgICBydW5fbmZ0KFsiZGVsZXRlIiwgImVsZW1lbnQiLCAiaW5ldCIsICJ6dF92ZWhpY2xlIiwgInF1YXJhbnRpbmVkX3Y0IiwgInsiLCBpcCwgIn0iXSwgVHJ1ZSkKCiAgICBpZiBzdGF0ZSA9PSAiUkVTVFJJQ1RFRCI6CiAgICAgICAgcnVuX25mdChbImFkZCIsICJlbGVtZW50IiwgImluZXQiLCAienRfdmVoaWNsZSIsICJyZXN0cmljdGVkX3Y0IiwgInsiLCBpcCwgIn0iXSkKICAgIGVsaWYgc3RhdGUgPT0gIlFVQVJBTlRJTkUiOgogICAgICAgIHJ1bl9uZnQoWyJhZGQiLCAiZWxlbWVudCIsICJpbmV0IiwgInp0X3ZlaGljbGUiLCAicXVhcmFudGluZWRfdjQiLCAieyIsIGlwLCAifSJdKQoKClNDRU5BUklPUyA9IHsKICAgICJoZWFsdGh5IjogRXZpZGVuY2UoImFkYXMtMDEiLCAiMTAuNzcuMjAuMiIsIFRydWUsIFRydWUsIFRydWUsIDEwLCAwLCAwKSwKICAgICJkZWdyYWRlZCI6IEV2aWRlbmNlKCJhZGFzLTAxIiwgIjEwLjc3LjIwLjIiLCBUcnVlLCBUcnVlLCBUcnVlLCA3NSwgNSwgMCksCiAgICAiY29tcHJvbWlzZWQiOiBFdmlkZW5jZSgiYWRhcy0wMSIsICIxMC43Ny4yMC4yIiwgRmFsc2UsIFRydWUsIEZhbHNlLCAxMzAsIDUsIDMpLAp9CgoKZGVmIG1haW4oKSAtPiBpbnQ6CiAgICBwYXJzZXIgPSBhcmdwYXJzZS5Bcmd1bWVudFBhcnNlcigpCiAgICBwYXJzZXIuYWRkX2FyZ3VtZW50KCItLXNjZW5hcmlvIiwgY2hvaWNlcz1TQ0VOQVJJT1MsIGRlZmF1bHQ9ImhlYWx0aHkiKQogICAgcGFyc2VyLmFkZF9hcmd1bWVudCgiLS1ldmlkZW5jZS1qc29uIiwgaGVscD0iUmVhZCBldmlkZW5jZSBmcm9tIGEgSlNPTiBmaWxlIGluc3RlYWQgb2YgYSBidWlsdC1pbiBzY2VuYXJpbyIpCiAgICBwYXJzZXIuYWRkX2FyZ3VtZW50KCItLWFwcGx5IiwgYWN0aW9uPSJzdG9yZV90cnVlIiwgaGVscD0iQXBwbHkgdGhlIGRlY2lzaW9uIHRvIHRoZSB6dC1ndyBuZnRhYmxlcyBzZXRzIikKICAgIGFyZ3MgPSBwYXJzZXIucGFyc2VfYXJncygpCgogICAgaWYgYXJncy5ldmlkZW5jZV9qc29uOgogICAgICAgIHdpdGggb3BlbihhcmdzLmV2aWRlbmNlX2pzb24sIGVuY29kaW5nPSJ1dGYtOCIpIGFzIGhhbmRsZToKICAgICAgICAgICAgZXZpZGVuY2UgPSBFdmlkZW5jZSgqKmpzb24ubG9hZChoYW5kbGUpKQogICAgZWxzZToKICAgICAgICBldmlkZW5jZSA9IFNDRU5BUklPU1thcmdzLnNjZW5hcmlvXQoKICAgIHNjb3JlLCByZWFzb25zID0gY2FsY3VsYXRlX3Njb3JlKGV2aWRlbmNlKQogICAgc3RhdGUgPSBkZWNpc2lvbihzY29yZSkKICAgIHJlcG9ydCA9IHsiZXZpZGVuY2UiOiBhc2RpY3QoZXZpZGVuY2UpLCAic2NvcmUiOiBzY29yZSwgImRlY2lzaW9uIjogc3RhdGUsICJyZWFzb25zIjogcmVhc29uc30KICAgIHByaW50KGpzb24uZHVtcHMocmVwb3J0LCBpbmRlbnQ9MikpCgogICAgaWYgYXJncy5hcHBseToKICAgICAgICB0cnk6CiAgICAgICAgICAgIGFwcGx5X3BvbGljeShldmlkZW5jZS5pcCwgc3RhdGUpCiAgICAgICAgZXhjZXB0IChPU0Vycm9yLCBSdW50aW1lRXJyb3IpIGFzIGV4YzoKICAgICAgICAgICAgcHJpbnQoZiJbRkFJTF0gQ291bGQgbm90IGFwcGx5IG5mdGFibGVzIHBvbGljeToge2V4Y30iLCBmaWxlPXN5cy5zdGRlcnIpCiAgICAgICAgICAgIHJldHVybiAyCiAgICAgICAgcHJpbnQoZiJbUEFTU10gQXBwbGllZCB7c3RhdGV9IHBvbGljeSB0byB7ZXZpZGVuY2UuaXB9LiIpCiAgICByZXR1cm4gMAoKCmlmIF9fbmFtZV9fID09ICJfX21haW5fXyI6CiAgICByYWlzZSBTeXN0ZW1FeGl0KG1haW4oKSkK
+B64_zt_trust_engine_py
+
+base64 -d &gt;&quot;$DEST/zt_cuttlefish_probe.sh&quot; &lt;&lt;&#x27;B64_zt_cuttlefish_probe_sh&#x27;
+IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLUVldW8gcGlwZWZhaWwKClBST0ZJTEU9IiR7MTotbGFifSIKU0VSSUFMPSIke0FORFJPSURfU0VSSUFMOi19IgpPVVQ9IiR7MjotL3RtcC96dC1zZXNzaW9uNS9jdXR0bGVmaXNoLWV2aWRlbmNlLmpzb259IgoKY29tbWFuZCAtdiBhZGIgPi9kZXYvbnVsbCB8fCB7IGVjaG8gIltGQUlMXSBhZGIgaXMgbm90IGluc3RhbGxlZCBvciBub3QgaW4gUEFUSC4iID4mMjsgZXhpdCAxOyB9CgppZiBbWyAteiAiJFNFUklBTCIgXV07IHRoZW4KICBTRVJJQUw9IiQoYWRiIGRldmljZXMgfCBhd2sgJ05SPjEgJiYgJDI9PSJkZXZpY2UiIHtwcmludCAkMTsgZXhpdH0nKSIKZmkKW1sgLW4gIiRTRVJJQUwiIF1dIHx8IHsgZWNobyAiW0ZBSUxdIE5vIGF1dGhvcml6ZWQgQ3V0dGxlZmlzaC9BbmRyb2lkIGRldmljZSBmb3VuZCBieSBhZGIuIiA+JjI7IGV4aXQgMTsgfQoKcHJvcCgpIHsgYWRiIC1zICIkU0VSSUFMIiBzaGVsbCBnZXRwcm9wICIkMSIgMj4vZGV2L251bGwgfCB0ciAtZCAnXHInOyB9CgpWRVJJRklFRF9CT09UPSIkKHByb3Agcm8uYm9vdC52ZXJpZmllZGJvb3RzdGF0ZSkiCkZMQVNIX0xPQ0tFRD0iJChwcm9wIHJvLmJvb3QuZmxhc2gubG9ja2VkKSIKQlVJTERfVFlQRT0iJChwcm9wIHJvLmJ1aWxkLnR5cGUpIgpGSU5HRVJQUklOVD0iJChwcm9wIHJvLmJ1aWxkLmZpbmdlcnByaW50KSIKQk9PVF9JRD0iJChhZGIgLXMgIiRTRVJJQUwiIHNoZWxsIGNhdCAvcHJvYy9zeXMva2VybmVsL3JhbmRvbS9ib290X2lkIDI+L2Rldi9udWxsIHwgdHIgLWQgJ1xyJykiCgpjYXNlICIkUFJPRklMRSIgaW4KICBsYWIpCiAgICAjIHVzZXJkZWJ1ZyBDdXR0bGVmaXNoIGJ1aWxkcyBhcmUgZXhwZWN0ZWQgdG8gYmUgbGVzcyBzdHJpY3QgdGhhbiBwcm9kdWN0aW9uIGltYWdlcy4KICAgIGlmIFtbICIkVkVSSUZJRURfQk9PVCIgPT0gImdyZWVuIiB8fCAiJEJVSUxEX1RZUEUiID09ICJ1c2VyZGVidWciIHx8ICIkQlVJTERfVFlQRSIgPT0gImVuZyIgXV07IHRoZW4KICAgICAgQVRURVNUQVRJT05fVkFMSUQ9dHJ1ZQogICAgZWxzZQogICAgICBBVFRFU1RBVElPTl9WQUxJRD1mYWxzZQogICAgZmkKICAgIDs7CiAgcHJvZHVjdGlvbikKICAgIFtbICIkVkVSSUZJRURfQk9PVCIgPT0gImdyZWVuIiAmJiAiJEZMQVNIX0xPQ0tFRCIgPT0gIjEiICYmICIkQlVJTERfVFlQRSIgPT0gInVzZXIiIF1dIFwKICAgICAgJiYgQVRURVNUQVRJT05fVkFMSUQ9dHJ1ZSB8fCBBVFRFU1RBVElPTl9WQUxJRD1mYWxzZQogICAgOzsKICAqKSBlY2hvICJVc2FnZTogJDAgW2xhYnxwcm9kdWN0aW9uXSBbb3V0cHV0Lmpzb25dIiA+JjI7IGV4aXQgMiA7Owplc2FjCgpta2RpciAtcCAiJChkaXJuYW1lICIkT1VUIikiCnB5dGhvbjMgLSAiJFNFUklBTCIgIiRWRVJJRklFRF9CT09UIiAiJEZMQVNIX0xPQ0tFRCIgIiRCVUlMRF9UWVBFIiAiJEZJTkdFUlBSSU5UIiAiJEJPT1RfSUQiICIkQVRURVNUQVRJT05fVkFMSUQiID4iJE9VVCIgPDwnUFknCmltcG9ydCBqc29uLCBzeXMKc2VyaWFsLCB2YiwgbG9ja2VkLCBidWlsZF90eXBlLCBmaW5nZXJwcmludCwgYm9vdF9pZCwgdmFsaWQgPSBzeXMuYXJndlsxOl0KcHJpbnQoanNvbi5kdW1wcyh7CiAgInNlcmlhbCI6IHNlcmlhbCwKICAidmVyaWZpZWRfYm9vdF9zdGF0ZSI6IHZiIG9yICJ1bmtub3duIiwKICAiZmxhc2hfbG9ja2VkIjogbG9ja2VkIG9yICJ1bmtub3duIiwKICAiYnVpbGRfdHlwZSI6IGJ1aWxkX3R5cGUgb3IgInVua25vd24iLAogICJidWlsZF9maW5nZXJwcmludCI6IGZpbmdlcnByaW50IG9yICJ1bmtub3duIiwKICAiYm9vdF9pZCI6IGJvb3RfaWQgb3IgInVua25vd24iLAogICJwcm9maWxlX2F0dGVzdGF0aW9uX3ZhbGlkIjogdmFsaWQgPT0gInRydWUiLAp9LCBpbmRlbnQ9MikpClBZCgpjYXQgIiRPVVQiCmVjaG8gIltQQVNTXSBDdXR0bGVmaXNoIGV2aWRlbmNlIHdyaXR0ZW4gdG8gJE9VVCIK
+B64_zt_cuttlefish_probe_sh
+
+chmod +x &quot;$DEST&quot;/*.sh &quot;$DEST&quot;/*.py
+echo &quot;[PASS] Lab pack installed in $DEST&quot;
+echo &quot;Next: cd $DEST &amp;&amp; sudo ./zt_lab_setup.sh&quot;
+</pre><button class="copy">Copy</button></div></div></div>
+
+<div class="lab open"><div class="labhead"><div class="labnum">0</div><div><h3>Preflight and baseline</h3><div class="meta">5–10 min · Verify KVM, Cuttlefish and host tools</div></div></div><div class="labbody"><h4>Objective</h4><p>Confirm the host is suitable before changing network state.</p><div class="command"><pre>lsb_release -ds
+[[ -e /dev/kvm ]] && echo "[PASS] /dev/kvm exists" || echo "[FAIL] /dev/kvm missing"
+egrep -c '(vmx|svm)' /proc/cpuinfo
+for c in ip nft openssl curl python3 adb; do command -v "$c" || echo "MISSING: $c"; done
+adb devices</pre><button class="copy">Copy</button></div><div class="expected"><b>Expected:</b> Ubuntu 24.x, <code>/dev/kvm</code> present, CPU virtualization count greater than zero, every command resolves, and at least one authorized ADB device is listed.</div><div class="callout warn" style="margin-top:12px"><b>Stop condition:</b> do not proceed if this host carries production routing or if namespace names <code>zt-*</code> are already used by another lab.</div></div></div>
+
+<div class="lab"><div class="labhead"><div class="labnum">1</div><div><h3>Build microsegments and prove default deny</h3><div class="meta">20–30 min · Network namespaces + nftables</div></div></div><div class="labbody"><div class="command"><pre>bash ~/Downloads/session5_labpack_installer.sh
+cd ~/session5-zero-trust-labs
+sudo ./zt_lab_setup.sh
+sudo ip netns exec zt-gw nft list table inet zt_vehicle</pre><button class="copy">Copy</button></div><h4>Positive test: approved ADAS → powertrain service</h4><div class="command"><pre>sudo ip netns exec zt-adas \
+  curl -fsS --max-time 3 http://10.77.30.2:30509/ | head</pre><button class="copy">Copy</button></div><div class="expected"><b>Expected:</b> an HTML directory listing from Python's HTTP server and exit code 0.</div><h4>Negative test: IVI must not reach powertrain</h4><div class="command"><pre>set +e
+sudo ip netns exec zt-ivi \
+  curl -fsS --max-time 2 http://10.77.30.2:30509/
+echo "curl exit=$?"</pre><button class="copy">Copy</button></div><div class="expected fail"><b>Expected denial:</b> timeout or connection failure. With a silent drop and <code>--max-time 2</code>, curl commonly returns exit 28. A returned web page is a lab failure.</div><h4>Inspect policy counters</h4><div class="command"><pre>sudo ip netns exec zt-gw nft -a list chain inet zt_vehicle forward</pre><button class="copy">Copy</button></div><div class="expected"><b>Expected:</b> counters increase for the ADAS allow rule and the final default-deny rule.</div></div></div>
+
+<div class="lab"><div class="labhead"><div class="labnum">2</div><div><h3>Mutual ECU authentication</h3><div class="meta">20 min · CA, server certificate, client certificate and negative tests</div></div></div><div class="labbody"><p>The setup script already creates short-lived lab identities and starts an ADAS <code>openssl s_server</code> requiring a client certificate.</p><h4>Valid IVI certificate</h4><div class="command"><pre>PKI=/tmp/zt-session5/pki
+sudo ip netns exec zt-ivi timeout 5 openssl s_client \
+  -connect 10.77.20.2:8443 \
+  -CAfile "$PKI/ca.crt" \
+  -cert "$PKI/ivi.crt" -key "$PKI/ivi.key" \
+  -verify_return_error -verify_ip 10.77.20.2 -brief &lt;/dev/null</pre><button class="copy">Copy</button></div><div class="expected"><b>Expected:</b> <code>Verification: OK</code> and a negotiated TLS version/cipher.</div><h4>No client certificate</h4><div class="command"><pre>set +e
+PKI=/tmp/zt-session5/pki
+sudo ip netns exec zt-ivi timeout 5 openssl s_client \
+  -connect 10.77.20.2:8443 -CAfile "$PKI/ca.crt" \
+  -verify_return_error -verify_ip 10.77.20.2 -brief &lt;/dev/null
+echo "exit=$?"</pre><button class="copy">Copy</button></div><div class="expected fail"><b>Expected denial:</b> a TLS alert indicating that a client certificate is required.</div><h4>Certificate from an unrelated CA</h4><div class="command"><pre>set +e
+PKI=/tmp/zt-session5/pki
+sudo ip netns exec zt-ivi timeout 5 openssl s_client \
+  -connect 10.77.20.2:8443 -CAfile "$PKI/ca.crt" \
+  -cert "$PKI/untrusted.crt" -key "$PKI/untrusted.key" \
+  -verify_return_error -verify_ip 10.77.20.2 -brief &lt;/dev/null
+echo "exit=$?"</pre><button class="copy">Copy</button></div><div class="expected fail"><b>Expected denial:</b> certificate verification fails at the server.</div><div class="callout" style="margin-top:12px"><b>Advanced observation:</b> <code>rogue.crt</code> is signed by the lab CA, so the TLS layer accepts its trust-domain membership. An application/policy allowlist must still reject the identity <code>rogue.ecu</code> for an IVI-only service.</div></div></div>
+
+<div class="lab"><div class="labhead"><div class="labnum">3</div><div><h3>Attestation: valid, tampered and replayed</h3><div class="meta">15–20 min · Signed measurement simulation</div></div></div><div class="labbody"><div class="command"><pre>cd ~/session5-zero-trust-labs
+./zt_attestation_demo.sh good
+./zt_attestation_demo.sh tamper || echo "[EXPECTED] tamper rejected"
+./zt_attestation_demo.sh replay || echo "[EXPECTED] replay rejected"</pre><button class="copy">Copy</button></div><div class="expected"><b>Expected:</b> valid mode passes signature, nonce and measurement. Tamper exits 4 with a baseline mismatch. Replay exits 3 with a stale/mismatched nonce.</div><div class="callout warn" style="margin-top:12px"><b>Reset for repeatability:</b> the tamper mode modifies its own demo firmware. Remove <code>/tmp/zt-session5/attestation</code> before rerunning the whole sequence from a clean baseline.</div></div></div>
+
+<div class="lab"><div class="labhead"><div class="labnum">4</div><div><h3>Trust score and dynamic enforcement</h3><div class="meta">20–25 min · NORMAL → RESTRICTED → QUARANTINE</div></div></div><div class="labbody"><h4>Observe decisions without changing policy</h4><div class="command"><pre>cd ~/session5-zero-trust-labs
+./zt_trust_engine.py --scenario healthy
+./zt_trust_engine.py --scenario degraded
+./zt_trust_engine.py --scenario compromised</pre><button class="copy">Copy</button></div><div class="expected"><b>Expected:</b> scores 100/NORMAL, 78/RESTRICTED and 22/QUARANTINE.</div><h4>Apply RESTRICTED to ADAS and prove its normal flow stops</h4><div class="command"><pre>sudo ./zt_trust_engine.py --scenario degraded --apply
+set +e
+sudo ip netns exec zt-adas curl -fsS --max-time 2 \
+  http://10.77.30.2:30509/
+echo "curl exit=$?"
+sudo ip netns exec zt-gw nft list set inet zt_vehicle restricted_v4</pre><button class="copy">Copy</button></div><div class="expected fail"><b>Expected:</b> ADAS → powertrain now fails and <code>10.77.20.2</code> appears in <code>restricted_v4</code>.</div><h4>Recover after evidence returns to policy</h4><div class="command"><pre>sudo ./zt_trust_engine.py --scenario healthy --apply
+sudo ip netns exec zt-adas curl -fsS --max-time 3 \
+  http://10.77.30.2:30509/ | head</pre><button class="copy">Copy</button></div><div class="expected"><b>Expected:</b> the address is removed from dynamic sets and the approved flow succeeds again.</div></div></div>
+
+<div class="lab"><div class="labhead"><div class="labnum">5</div><div><h3>Collect Cuttlefish trust evidence</h3><div class="meta">10–15 min · ADB boot state and environment-aware policy</div></div></div><div class="labbody"><div class="command"><pre>cd ~/session5-zero-trust-labs
+./zt_cuttlefish_probe.sh lab
+./zt_cuttlefish_probe.sh production /tmp/zt-session5/cf-production.json || true</pre><button class="copy">Copy</button></div><div class="expected"><b>Expected:</b> JSON containing serial, verified boot state, flash lock state, build type, fingerprint and boot ID. A userdebug build can pass the lab profile while failing the stricter production profile.</div><h4>Optional multi-instance observation</h4><div class="command"><pre>adb devices
+# Select one instance explicitly when more than one is listed:
+ANDROID_SERIAL=&lt;serial&gt; ./zt_cuttlefish_probe.sh lab</pre><button class="copy">Copy</button></div><div class="callout warn"><b>Do not launch additional instances blindly:</b> use the launch method already established for your Cuttlefish environment. Multi-instance networking and wmediumd options are version/configuration dependent.</div></div></div>
+
+<div class="lab"><div class="labhead"><div class="labnum">6</div><div><h3>Incident drill: compromised ADAS containment</h3><div class="meta">20 min · Evidence → decision → enforcement → recovery</div></div></div><div class="labbody"><ol><li>Prove ADAS → powertrain works.</li><li>Run the tampered attestation scenario.</li><li>Apply the compromised trust scenario.</li><li>Prove both source and destination traffic involving ADAS is blocked.</li><li>Inspect nftables counters and record the timeline.</li><li>Restore the demo baseline, apply healthy evidence and retest.</li></ol><div class="command"><pre>sudo ./zt_trust_engine.py --scenario compromised --apply
+sudo ip netns exec zt-gw nft list set inet zt_vehicle quarantined_v4
+set +e
+sudo ip netns exec zt-adas curl -fsS --max-time 2 http://10.77.30.2:30509/
+sudo ip netns exec zt-ivi curl -kfsS --max-time 2 https://10.77.20.2:8443/
+sudo ip netns exec zt-gw nft -a list chain inet zt_vehicle forward</pre><button class="copy">Copy</button></div><div class="expected fail"><b>Expected containment:</b> <code>10.77.20.2</code> is quarantined; ADAS egress and IVI access to ADAS fail; quarantine counters increase.</div></div></div>
+
+<div class="lab"><div class="labhead"><div class="labnum">7</div><div><h3>Cleanup and verify no residue</h3><div class="meta">5 min · Safe teardown</div></div></div><div class="labbody"><div class="command"><pre>cd ~/session5-zero-trust-labs
+./zt_lab_cleanup.sh
+ip netns list | grep '^zt-' && echo "[FAIL] residue" || echo "[PASS] no zt namespaces"
+test ! -e /tmp/zt-session5 && echo "[PASS] work directory removed"</pre><button class="copy">Copy</button></div><div class="expected"><b>Expected:</b> no <code>zt-*</code> namespaces and no <code>/tmp/zt-session5</code> directory.</div></div></div>
+
+<div class="card"><h3>Embedded source files</h3><p class="muted">Review or download individual scripts for trainer inspection.</p><div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" data-download="setup">Setup</button><button class="btn" data-download="cleanup">Cleanup</button><button class="btn" data-download="attest">Attestation</button><button class="btn" data-download="trust">Trust engine</button><button class="btn" data-download="cf">Cuttlefish probe</button></div><details class="myth"><summary>View setup script</summary><div class="command"><pre>#!/usr/bin/env bash
+set -Eeuo pipefail
+
+WORK_DIR=&quot;${ZT_WORK_DIR:-/tmp/zt-session5}&quot;
+NS_GW=&quot;zt-gw&quot;
+NS_IVI=&quot;zt-ivi&quot;
+NS_ADAS=&quot;zt-adas&quot;
+NS_PT=&quot;zt-pt&quot;
+NS_DIAG=&quot;zt-diag&quot;
+
+need_cmd() {
+  command -v &quot;$1&quot; &gt;/dev/null 2&gt;&amp;1 || {
+    echo &quot;[FAIL] Required command not found: $1&quot; &gt;&amp;2
+    exit 1
+  }
+}
+
+for cmd in ip nft python3 openssl curl ping timeout; do
+  need_cmd &quot;$cmd&quot;
+done
+
+if [[ ${EUID} -ne 0 ]]; then
+  echo &quot;[FAIL] Run this script with sudo.&quot; &gt;&amp;2
+  exit 1
+fi
+
+cleanup_partial() {
+  for ns in &quot;$NS_IVI&quot; &quot;$NS_ADAS&quot; &quot;$NS_PT&quot; &quot;$NS_DIAG&quot; &quot;$NS_GW&quot;; do
+    if ip netns list | awk &#x27;{print $1}&#x27; | grep -Fxq &quot;$ns&quot;; then
+      while read -r pid; do
+        [[ -n &quot;$pid&quot; ]] &amp;&amp; kill &quot;$pid&quot; 2&gt;/dev/null || true
+      done &lt; &lt;(ip netns pids &quot;$ns&quot; 2&gt;/dev/null || true)
+      sleep 0.1
+      while read -r pid; do
+        [[ -n &quot;$pid&quot; ]] &amp;&amp; kill -KILL &quot;$pid&quot; 2&gt;/dev/null || true
+      done &lt; &lt;(ip netns pids &quot;$ns&quot; 2&gt;/dev/null || true)
+      ip netns del &quot;$ns&quot; 2&gt;/dev/null || true
+    fi
+  done
+}
+trap &#x27;echo &quot;[FAIL] Setup stopped; removing partial topology.&quot; &gt;&amp;2; cleanup_partial&#x27; ERR
+
+cleanup_partial
+rm -rf &quot;$WORK_DIR&quot;
+install -d -m 0700 &quot;$WORK_DIR&quot; &quot;$WORK_DIR/pki&quot;
+
+create_link() {
+  local endpoint_ns=&quot;$1&quot; endpoint_if=&quot;$2&quot; endpoint_ip=&quot;$3&quot;
+  local gateway_if=&quot;$4&quot; gateway_ip=&quot;$5&quot;
+
+  ip netns add &quot;$endpoint_ns&quot;
+  ip link add &quot;$endpoint_if&quot; type veth peer name &quot;$gateway_if&quot;
+  ip link set &quot;$endpoint_if&quot; netns &quot;$endpoint_ns&quot;
+  ip link set &quot;$gateway_if&quot; netns &quot;$NS_GW&quot;
+
+  ip -n &quot;$endpoint_ns&quot; link set lo up
+  ip -n &quot;$endpoint_ns&quot; addr add &quot;$endpoint_ip&quot; dev &quot;$endpoint_if&quot;
+  ip -n &quot;$endpoint_ns&quot; link set &quot;$endpoint_if&quot; up
+  ip -n &quot;$endpoint_ns&quot; route add default via &quot;$gateway_ip&quot;
+
+  ip -n &quot;$NS_GW&quot; addr add &quot;$gateway_ip/24&quot; dev &quot;$gateway_if&quot;
+  ip -n &quot;$NS_GW&quot; link set &quot;$gateway_if&quot; up
+}
+
+ip netns add &quot;$NS_GW&quot;
+ip -n &quot;$NS_GW&quot; link set lo up
+
+create_link &quot;$NS_IVI&quot;  v-ivi  &quot;10.77.10.2/24&quot; g-ivi  &quot;10.77.10.1&quot;
+create_link &quot;$NS_ADAS&quot; v-adas &quot;10.77.20.2/24&quot; g-adas &quot;10.77.20.1&quot;
+create_link &quot;$NS_PT&quot;   v-pt   &quot;10.77.30.2/24&quot; g-pt   &quot;10.77.30.1&quot;
+create_link &quot;$NS_DIAG&quot; v-diag &quot;10.77.40.2/24&quot; g-diag &quot;10.77.40.1&quot;
+
+ip netns exec &quot;$NS_GW&quot; sysctl -q -w net.ipv4.ip_forward=1
+
+ip netns exec &quot;$NS_GW&quot; nft -f - &lt;&lt;&#x27;NFT&#x27;
+table inet zt_vehicle {
+  set restricted_v4 {
+    type ipv4_addr
+  }
+
+  set quarantined_v4 {
+    type ipv4_addr
+  }
+
+  chain input {
+    type filter hook input priority filter; policy drop;
+    iifname &quot;lo&quot; accept
+    ct state invalid drop
+    ct state established,related accept
+    ip protocol icmp accept
+  }
+
+  chain forward {
+    type filter hook forward priority filter; policy drop;
+    ct state invalid drop
+
+    # Dynamic trust decisions precede conntrack acceptance so a newly
+    # quarantined ECU cannot keep an already-established session alive.
+    ip saddr @quarantined_v4 counter drop comment &quot;dynamic source quarantine&quot;
+    ip daddr @quarantined_v4 counter drop comment &quot;dynamic destination quarantine&quot;
+
+    ip saddr @restricted_v4 ip daddr 10.77.40.2 tcp dport 9443 counter accept comment &quot;restricted ECU to policy service&quot;
+    ip saddr @restricted_v4 counter drop comment &quot;restricted ECU deny other egress&quot;
+    ip daddr @restricted_v4 ip saddr 10.77.40.2 counter accept comment &quot;policy service to restricted ECU&quot;
+    ip daddr @restricted_v4 counter drop comment &quot;deny access to restricted ECU&quot;
+
+    ct state established,related accept
+    ip saddr 10.77.40.2 ip protocol icmp counter accept comment &quot;diagnostic health checks&quot;
+    ip saddr 10.77.20.2 ip daddr 10.77.30.2 tcp dport 30509 ct state new counter accept comment &quot;ADAS to powertrain control API&quot;
+    ip saddr 10.77.10.2 ip daddr 10.77.20.2 tcp dport 8443 ct state new counter accept comment &quot;IVI to ADAS mTLS demo&quot;
+
+    counter drop comment &quot;default zero-trust deny&quot;
+  }
+}
+NFT
+
+# Production-like service simulation: powertrain control endpoint.
+ip netns exec &quot;$NS_PT&quot; bash -c \
+  &quot;nohup python3 -m http.server 30509 --bind 10.77.30.2 &gt;&#x27;$WORK_DIR/powertrain-http.log&#x27; 2&gt;&amp;1 &amp; echo \$! &gt;&#x27;$WORK_DIR/powertrain-http.pid&#x27;&quot;
+
+sleep 0.5
+
+# Create a short-lived lab CA and mutually authenticated ECU identities.
+PKI=&quot;$WORK_DIR/pki&quot;
+openssl req -x509 -newkey rsa:3072 -nodes -sha256 -days 2 \
+  -keyout &quot;$PKI/ca.key&quot; -out &quot;$PKI/ca.crt&quot; \
+  -subj &quot;/CN=Session 5 Vehicle Lab Root CA&quot; \
+  -addext &quot;basicConstraints=critical,CA:TRUE&quot; \
+  -addext &quot;keyUsage=critical,keyCertSign,cRLSign&quot; &gt;/dev/null 2&gt;&amp;1
+
+make_cert() {
+  local name=&quot;$1&quot; eku=&quot;$2&quot; san=&quot;$3&quot;
+  openssl req -newkey rsa:2048 -nodes -sha256 \
+    -keyout &quot;$PKI/$name.key&quot; -out &quot;$PKI/$name.csr&quot; \
+    -subj &quot;/CN=$name.ecu&quot; &gt;/dev/null 2&gt;&amp;1
+  cat &gt;&quot;$PKI/$name.ext&quot; &lt;&lt;EXT
+basicConstraints=critical,CA:FALSE
+keyUsage=critical,digitalSignature,keyEncipherment
+extendedKeyUsage=$eku
+subjectAltName=$san
+EXT
+  openssl x509 -req -sha256 -days 2 \
+    -in &quot;$PKI/$name.csr&quot; -CA &quot;$PKI/ca.crt&quot; -CAkey &quot;$PKI/ca.key&quot; \
+    -CAcreateserial -out &quot;$PKI/$name.crt&quot; -extfile &quot;$PKI/$name.ext&quot; &gt;/dev/null 2&gt;&amp;1
+}
+
+make_cert adas serverAuth &quot;IP:10.77.20.2,DNS:adas.ecu&quot;
+make_cert ivi clientAuth &quot;IP:10.77.10.2,DNS:ivi.ecu&quot;
+make_cert rogue clientAuth &quot;DNS:rogue.ecu&quot;
+
+# A certificate from an unrelated CA must fail cryptographic authentication.
+openssl req -x509 -newkey rsa:2048 -nodes -sha256 -days 2 \
+  -keyout &quot;$PKI/untrusted.key&quot; -out &quot;$PKI/untrusted.crt&quot; \
+  -subj &quot;/CN=untrusted.ecu&quot; &gt;/dev/null 2&gt;&amp;1
+
+ip netns exec &quot;$NS_ADAS&quot; bash -c \
+  &quot;nohup openssl s_server -quiet -accept 8443 -cert &#x27;$PKI/adas.crt&#x27; -key &#x27;$PKI/adas.key&#x27; -CAfile &#x27;$PKI/ca.crt&#x27; -Verify 1 -www &gt;&#x27;$WORK_DIR/mtls-server.log&#x27; 2&gt;&amp;1 &amp; echo \$! &gt;&#x27;$WORK_DIR/mtls-server.pid&#x27;&quot;
+
+sleep 0.7
+trap - ERR
+
+echo &quot;[PASS] Zero Trust vehicle topology created.&quot;
+echo &quot;[INFO] Namespaces: $NS_IVI, $NS_ADAS, $NS_PT, $NS_DIAG, $NS_GW&quot;
+echo &quot;[INFO] Policy table: ip netns exec $NS_GW nft list table inet zt_vehicle&quot;
+echo &quot;[INFO] Work directory: $WORK_DIR&quot;
+</pre><button class="copy">Copy</button></div></details><details class="myth"><summary>View trust engine</summary><div class="command"><pre>#!/usr/bin/env python3
+&quot;&quot;&quot;Training-grade ECU trust scorer and optional nftables policy actuator.&quot;&quot;&quot;
+from __future__ import annotations
+
+import argparse
+import json
+import subprocess
+import sys
+from dataclasses import asdict, dataclass
+
+
+@dataclass(frozen=True)
+class Evidence:
+    ecu_id: str
+    ip: str
+    attestation_valid: bool
+    certificate_valid: bool
+    secure_boot: bool
+    patch_age_days: int
+    anomaly_events: int
+    replay_events: int
+
+
+def calculate_score(e: Evidence) -&gt; tuple[int, list[str]]:
+    score = 0
+    reasons: list[str] = []
+
+    if e.attestation_valid:
+        score += 30
+    else:
+        reasons.append(&quot;attestation failed&quot;)
+
+    if e.certificate_valid:
+        score += 20
+    else:
+        reasons.append(&quot;certificate invalid or expired&quot;)
+
+    if e.secure_boot:
+        score += 15
+    else:
+        reasons.append(&quot;secure boot evidence absent&quot;)
+
+    if e.patch_age_days &lt;= 30:
+        score += 15
+    elif e.patch_age_days &lt;= 90:
+        score += 8
+        reasons.append(&quot;patch level aging&quot;)
+    else:
+        reasons.append(&quot;patch level outside policy&quot;)
+
+    score += max(0, 15 - min(e.anomaly_events, 5) * 3)
+    if e.anomaly_events:
+        reasons.append(f&quot;{e.anomaly_events} anomaly event(s)&quot;)
+
+    score += max(0, 5 - min(e.replay_events, 5))
+    if e.replay_events:
+        reasons.append(f&quot;{e.replay_events} replay event(s)&quot;)
+
+    return max(0, min(score, 100)), reasons
+
+
+def decision(score: int) -&gt; str:
+    if score &gt;= 80:
+        return &quot;NORMAL&quot;
+    if score &gt;= 60:
+        return &quot;RESTRICTED&quot;
+    return &quot;QUARANTINE&quot;
+
+
+def run_nft(args: list[str], tolerate_failure: bool = False) -&gt; None:
+    cmd = [&quot;ip&quot;, &quot;netns&quot;, &quot;exec&quot;, &quot;zt-gw&quot;, &quot;nft&quot;, *args]
+    result = subprocess.run(cmd, text=True, capture_output=True)
+    if result.returncode and not tolerate_failure:
+        raise RuntimeError(result.stderr.strip() or &quot;nft command failed&quot;)
+
+
+def apply_policy(ip: str, state: str) -&gt; None:
+    # Delete is deliberately tolerant because the element might not exist.
+    run_nft([&quot;delete&quot;, &quot;element&quot;, &quot;inet&quot;, &quot;zt_vehicle&quot;, &quot;restricted_v4&quot;, &quot;{&quot;, ip, &quot;}&quot;], True)
+    run_nft([&quot;delete&quot;, &quot;element&quot;, &quot;inet&quot;, &quot;zt_vehicle&quot;, &quot;quarantined_v4&quot;, &quot;{&quot;, ip, &quot;}&quot;], True)
+
+    if state == &quot;RESTRICTED&quot;:
+        run_nft([&quot;add&quot;, &quot;element&quot;, &quot;inet&quot;, &quot;zt_vehicle&quot;, &quot;restricted_v4&quot;, &quot;{&quot;, ip, &quot;}&quot;])
+    elif state == &quot;QUARANTINE&quot;:
+        run_nft([&quot;add&quot;, &quot;element&quot;, &quot;inet&quot;, &quot;zt_vehicle&quot;, &quot;quarantined_v4&quot;, &quot;{&quot;, ip, &quot;}&quot;])
+
+
+SCENARIOS = {
+    &quot;healthy&quot;: Evidence(&quot;adas-01&quot;, &quot;10.77.20.2&quot;, True, True, True, 10, 0, 0),
+    &quot;degraded&quot;: Evidence(&quot;adas-01&quot;, &quot;10.77.20.2&quot;, True, True, True, 75, 5, 0),
+    &quot;compromised&quot;: Evidence(&quot;adas-01&quot;, &quot;10.77.20.2&quot;, False, True, False, 130, 5, 3),
+}
+
+
+def main() -&gt; int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(&quot;--scenario&quot;, choices=SCENARIOS, default=&quot;healthy&quot;)
+    parser.add_argument(&quot;--evidence-json&quot;, help=&quot;Read evidence from a JSON file instead of a built-in scenario&quot;)
+    parser.add_argument(&quot;--apply&quot;, action=&quot;store_true&quot;, help=&quot;Apply the decision to the zt-gw nftables sets&quot;)
+    args = parser.parse_args()
+
+    if args.evidence_json:
+        with open(args.evidence_json, encoding=&quot;utf-8&quot;) as handle:
+            evidence = Evidence(**json.load(handle))
+    else:
+        evidence = SCENARIOS[args.scenario]
+
+    score, reasons = calculate_score(evidence)
+    state = decision(score)
+    report = {&quot;evidence&quot;: asdict(evidence), &quot;score&quot;: score, &quot;decision&quot;: state, &quot;reasons&quot;: reasons}
+    print(json.dumps(report, indent=2))
+
+    if args.apply:
+        try:
+            apply_policy(evidence.ip, state)
+        except (OSError, RuntimeError) as exc:
+            print(f&quot;[FAIL] Could not apply nftables policy: {exc}&quot;, file=sys.stderr)
+            return 2
+        print(f&quot;[PASS] Applied {state} policy to {evidence.ip}.&quot;)
+    return 0
+
+
+if __name__ == &quot;__main__&quot;:
+    raise SystemExit(main())
+</pre><button class="copy">Copy</button></div></details></div>
+</div></section>
+
+<section class="section" id="validation"><div class="wrap"><h2>8. Validation and correctness record</h2><p class="sectionintro">Validation is split into what was executable in the document-build environment and what must be proven on the learner’s Ubuntu host because privileged network namespaces and Cuttlefish are environment-specific.</p><div class="grid2"><div class="card"><h3>Build-time validation</h3><div class="tablewrap"><table><thead><tr><th>Check</th><th>Result</th></tr></thead><tbody><tr><td>Bash syntax for all shell scripts</td><td class="status pass">PASS</td></tr><tr><td>Python bytecode compilation</td><td class="status pass">PASS</td></tr><tr><td>Ed25519 good attestation</td><td class="status pass">PASS</td></tr><tr><td>Tamper rejection and exit code 4</td><td class="status pass">PASS</td></tr><tr><td>Replay rejection and exit code 3</td><td class="status pass">PASS</td></tr><tr><td>Trust states: 100 / 78 / 22</td><td class="status pass">PASS</td></tr><tr><td>Installer extraction byte-for-byte</td><td class="status pass">PASS</td></tr><tr><td>Browser DOM and JavaScript self-test</td><td id="browserStatus" class="status limit">Run below</td></tr><tr><td>Privileged nftables/netns execution</td><td class="status limit">HOST VALIDATION REQUIRED</td></tr><tr><td>ADB/Cuttlefish evidence</td><td class="status limit">HOST VALIDATION REQUIRED</td></tr></tbody></table></div><button class="btn primary" id="selfTest">Run browser self-test</button><pre id="selfTestOut" class="expected" style="margin-top:12px">Not run.</pre></div><div class="card"><h3>Learner validation checklist</h3><div class="progress"><span id="progressBar"></span></div><p class="small muted"><span id="progressText">0</span>% complete · stored only in this browser</p><div class="checklist" id="checklist"><label><input type="checkbox">Preflight commands all pass</label><label><input type="checkbox">Approved ADAS → powertrain flow succeeds</label><label><input type="checkbox">IVI → powertrain flow is denied</label><label><input type="checkbox">Valid mTLS client succeeds</label><label><input type="checkbox">Missing/untrusted certificate fails</label><label><input type="checkbox">Tamper and replay evidence fail</label><label><input type="checkbox">Restricted state blocks ADAS normal egress</label><label><input type="checkbox">Quarantine blocks traffic involving ADAS</label><label><input type="checkbox">Healthy state restores approved flow</label><label><input type="checkbox">Cleanup leaves no namespaces</label></div></div></div>
+<div class="card" style="margin-top:18px"><h3>Troubleshooting matrix</h3><div class="tablewrap"><table><thead><tr><th>Symptom</th><th>Likely cause</th><th>Check / correction</th></tr></thead><tbody><tr><td><code>mount --make-shared /run/netns failed</code></td><td>Running inside an unprivileged container</td><td>Run directly on the KVM host or a VM with CAP_NET_ADMIN, not a restricted container.</td></tr><tr><td><code>nft: command not found</code></td><td>nftables package absent</td><td><code>sudo apt update &amp;&amp; sudo apt install -y nftables</code></td></tr><tr><td>Allowed curl times out</td><td>Service not listening or policy setup incomplete</td><td>Check <code>ss -lntp</code> in <code>zt-pt</code>, then list gateway policy counters.</td></tr><tr><td>Denied curl returns content</td><td>Policy bypass or wrong namespace</td><td>Confirm command uses <code>ip netns exec zt-ivi</code> and final forward policy is drop.</td></tr><tr><td>mTLS reports hostname mismatch</td><td>Certificate name verification differs from target</td><td>Use <code>-verify_ip 10.77.20.2</code>; the certificate SAN includes that IP.</td></tr><tr><td><code>adb devices</code> shows unauthorized</td><td>ADB authorization incomplete</td><td>Approve the debugging prompt or restart the established Cuttlefish/ADB session.</td></tr><tr><td>Cuttlefish production profile fails</td><td>Expected userdebug/eng posture</td><td>Compare build type and boot state; use the lab profile for training, not as a production waiver.</td></tr><tr><td>Attestation good fails after tamper test</td><td>Demo firmware remains modified</td><td>Remove <code>/tmp/zt-session5/attestation</code> and rerun good mode.</td></tr></tbody></table></div></div>
+</div></section>
+
+
+<section class="section" id="decisions"><div class="wrap"><h2>Decision arena: predict before revealing</h2><p class="sectionintro">Security reasoning improves when learners commit to a decision before seeing the explanation.</p><div class="predict-grid"><article class="card predict-card" data-predict="b"><span class="tag">Identity vs integrity</span><h3>A valid certificate, but stale attestation</h3><label><input type="radio" name="p1" value="a"> Allow all certificate-approved traffic</label><label><input type="radio" name="p1" value="b"> Restrict access and request fresh evidence</label><label><input type="radio" name="p1" value="c"> Permanently revoke the ECU immediately</label><button class="btn" data-predict-check>Reveal reasoning</button><div class="predict-feedback result evaluate">Choose first.</div></article><article class="card predict-card" data-predict="c"><span class="tag">Least privilege</span><h3>Diagnostics requests powertrain access while moving</h3><label><input type="radio" name="p2" value="a"> Allow because diagnostics is trusted</label><label><input type="radio" name="p2" value="b"> Allow the whole diagnostic subnet</label><label><input type="radio" name="p2" value="c"> Deny unless a specific safe operational policy permits it</label><button class="btn" data-predict-check>Reveal reasoning</button><div class="predict-feedback result evaluate">Choose first.</div></article><article class="card predict-card" data-predict="a"><span class="tag">Freshness</span><h3>A signed report contains yesterday’s nonce</h3><label><input type="radio" name="p3" value="a"> Reject it as a replay</label><label><input type="radio" name="p3" value="b"> Accept it because the signature is valid</label><label><input type="radio" name="p3" value="c"> Ignore the nonce and compare only the hash</label><button class="btn" data-predict-check>Reveal reasoning</button><div class="predict-feedback result evaluate">Choose first.</div></article></div></div></section>
+
+<section class="section" id="quiz"><div class="wrap"><h2>9. Knowledge check</h2><div class="card" id="quizBox">
+<div class="quizq" data-answer="b"><h4>1. What grants trust in Zero Trust?</h4><label><input type="radio" name="q1" value="a"> Being on the internal vehicle network</label><label><input type="radio" name="q1" value="b"> Explicit identity, evidence, context and policy</label><label><input type="radio" name="q1" value="c"> A one-time factory test</label></div>
+<div class="quizq" data-answer="c"><h4>2. Why is a nonce included in attestation?</h4><label><input type="radio" name="q2" value="a"> To compress the report</label><label><input type="radio" name="q2" value="b"> To identify the subnet</label><label><input type="radio" name="q2" value="c"> To prevent replay of an old valid report</label></div>
+<div class="quizq" data-answer="a"><h4>3. What does mTLS alone not prove?</h4><label><input type="radio" name="q3" value="a"> That the authenticated ECU is authorized for every service</label><label><input type="radio" name="q3" value="b"> That the peer holds a private key</label><label><input type="radio" name="q3" value="c"> That the TLS session can protect data in transit</label></div>
+<div class="quizq" data-answer="b"><h4>4. Which rule best represents least privilege?</h4><label><input type="radio" name="q4" value="a"> Allow every ECU inside the vehicle</label><label><input type="radio" name="q4" value="b"> Allow ADAS to powertrain TCP/30509 only</label><label><input type="radio" name="q4" value="c"> Allow the whole ADAS subnet to all destinations</label></div>
+<div class="quizq" data-answer="c"><h4>5. Why can an orange Cuttlefish boot state be non-malicious?</h4><label><input type="radio" name="q5" value="a"> Cuttlefish has no security model</label><label><input type="radio" name="q5" value="b"> Orange always means fully trusted</label><label><input type="radio" name="q5" value="c"> A development/userdebug image can intentionally be unlocked</label></div>
+<button class="btn primary" id="gradeQuiz">Grade quiz</button><div id="quizResult" class="result evaluate">Answer all questions, then grade.</div></div></div></section>
+
+<section class="section" id="references"><div class="wrap"><h2>10. Standards and authoritative references</h2><p class="sectionintro">These sources anchor the concepts. The implementation is intentionally a teaching simulation, not a conformance claim.</p><div class="grid2"><div class="card"><h3>Concept mapping</h3><div class="tablewrap"><table><thead><tr><th>Document</th><th>Used for</th></tr></thead><tbody><tr><td>NIST SP 800-207</td><td>No implicit trust based on location; resource-focused access; authentication and authorization before sessions.</td></tr><tr><td>AUTOSAR SecOC</td><td>Authenticity and freshness concepts for protected PDU communication.</td></tr><tr><td>UNECE UN R155</td><td>Cybersecurity management and vehicle lifecycle context.</td></tr><tr><td>AOSP Cuttlefish docs</td><td>Virtual Android device behavior, ADB interaction and multi-device connectivity context.</td></tr></tbody></table></div></div><div class="card"><h3>Official links</h3><ol class="source-list"><li><a href="https://csrc.nist.gov/pubs/sp/800/207/final" target="_blank" rel="noreferrer">NIST SP 800-207 — Zero Trust Architecture</a></li><li><a href="https://source.android.com/docs/devices/cuttlefish" target="_blank" rel="noreferrer">AOSP — Cuttlefish virtual Android devices</a></li><li><a href="https://source.android.com/docs/devices/cuttlefish/connectivity" target="_blank" rel="noreferrer">AOSP — Test connectivity of multiple devices</a></li><li><a href="https://www.autosar.org/fileadmin/standards/R24-11/FO/AUTOSAR_FO_PRS_SecOcProtocol.pdf" target="_blank" rel="noreferrer">AUTOSAR R24-11 — SecOC Protocol</a></li><li><a href="https://www.autosar.org/fileadmin/standards/R24-11/FO/AUTOSAR_FO_EXP_SecurityOverview.pdf" target="_blank" rel="noreferrer">AUTOSAR R24-11 — Security Overview</a></li><li><a href="https://unece.org/transport/documents/2021/03/standards/un-regulation-no-155-cyber-security-and-cyber-security" target="_blank" rel="noreferrer">UNECE — UN Regulation No. 155</a></li></ol></div></div></div></section>
+</main>
+<footer class="footer"><div class="wrap"><b>Session 5 · Zero Trust for Automotive Systems</b><br><span>Self-contained interactive reference · generated for Ubuntu 24.x KVM + Cuttlefish training</span><p class="printonly">Interactive controls are expanded or omitted in print. Use the HTML version for simulations and embedded downloads.</p></div></footer>
+<dialog id="glossaryDialog"><div class="dialog-head"><h3 style="margin:0">Zero Trust glossary</h3><input id="glossarySearch" placeholder="Search a term…" aria-label="Search glossary"><button class="mini-btn" id="glossaryClose">✕</button></div><div class="glossary-list" id="glossaryList"></div></dialog><div class="fun-toast" id="funToast">+10 XP</div>
+<div class="toast" id="toast">Copied</div>
+
+<script type="text/plain" id="payload-installer">#!/usr/bin/env bash
+set -Eeuo pipefail
+
+DEST="${1:-$HOME/session5-zero-trust-labs}"
+mkdir -p "$DEST"
+
+base64 -d >"$DEST/zt_lab_setup.sh" <<'B64_zt_lab_setup_sh'
+IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLUVldW8gcGlwZWZhaWwKCldPUktfRElSPSIke1pUX1dPUktfRElSOi0vdG1wL3p0LXNlc3Npb241fSIKTlNfR1c9Inp0LWd3IgpOU19JVkk9Inp0LWl2aSIKTlNfQURBUz0ienQtYWRhcyIKTlNfUFQ9Inp0LXB0IgpOU19ESUFHPSJ6dC1kaWFnIgoKbmVlZF9jbWQoKSB7CiAgY29tbWFuZCAtdiAiJDEiID4vZGV2L251bGwgMj4mMSB8fCB7CiAgICBlY2hvICJbRkFJTF0gUmVxdWlyZWQgY29tbWFuZCBub3QgZm91bmQ6ICQxIiA+JjIKICAgIGV4aXQgMQogIH0KfQoKZm9yIGNtZCBpbiBpcCBuZnQgcHl0aG9uMyBvcGVuc3NsIGN1cmwgcGluZyB0aW1lb3V0OyBkbwogIG5lZWRfY21kICIkY21kIgpkb25lCgppZiBbWyAke0VVSUR9IC1uZSAwIF1dOyB0aGVuCiAgZWNobyAiW0ZBSUxdIFJ1biB0aGlzIHNjcmlwdCB3aXRoIHN1ZG8uIiA+JjIKICBleGl0IDEKZmkKCmNsZWFudXBfcGFydGlhbCgpIHsKICBmb3IgbnMgaW4gIiROU19JVkkiICIkTlNfQURBUyIgIiROU19QVCIgIiROU19ESUFHIiAiJE5TX0dXIjsgZG8KICAgIGlmIGlwIG5ldG5zIGxpc3QgfCBhd2sgJ3twcmludCAkMX0nIHwgZ3JlcCAtRnhxICIkbnMiOyB0aGVuCiAgICAgIHdoaWxlIHJlYWQgLXIgcGlkOyBkbwogICAgICAgIFtbIC1uICIkcGlkIiBdXSAmJiBraWxsICIkcGlkIiAyPi9kZXYvbnVsbCB8fCB0cnVlCiAgICAgIGRvbmUgPCA8KGlwIG5ldG5zIHBpZHMgIiRucyIgMj4vZGV2L251bGwgfHwgdHJ1ZSkKICAgICAgc2xlZXAgMC4xCiAgICAgIHdoaWxlIHJlYWQgLXIgcGlkOyBkbwogICAgICAgIFtbIC1uICIkcGlkIiBdXSAmJiBraWxsIC1LSUxMICIkcGlkIiAyPi9kZXYvbnVsbCB8fCB0cnVlCiAgICAgIGRvbmUgPCA8KGlwIG5ldG5zIHBpZHMgIiRucyIgMj4vZGV2L251bGwgfHwgdHJ1ZSkKICAgICAgaXAgbmV0bnMgZGVsICIkbnMiIDI+L2Rldi9udWxsIHx8IHRydWUKICAgIGZpCiAgZG9uZQp9CnRyYXAgJ2VjaG8gIltGQUlMXSBTZXR1cCBzdG9wcGVkOyByZW1vdmluZyBwYXJ0aWFsIHRvcG9sb2d5LiIgPiYyOyBjbGVhbnVwX3BhcnRpYWwnIEVSUgoKY2xlYW51cF9wYXJ0aWFsCnJtIC1yZiAiJFdPUktfRElSIgppbnN0YWxsIC1kIC1tIDA3MDAgIiRXT1JLX0RJUiIgIiRXT1JLX0RJUi9wa2kiCgpjcmVhdGVfbGluaygpIHsKICBsb2NhbCBlbmRwb2ludF9ucz0iJDEiIGVuZHBvaW50X2lmPSIkMiIgZW5kcG9pbnRfaXA9IiQzIgogIGxvY2FsIGdhdGV3YXlfaWY9IiQ0IiBnYXRld2F5X2lwPSIkNSIKCiAgaXAgbmV0bnMgYWRkICIkZW5kcG9pbnRfbnMiCiAgaXAgbGluayBhZGQgIiRlbmRwb2ludF9pZiIgdHlwZSB2ZXRoIHBlZXIgbmFtZSAiJGdhdGV3YXlfaWYiCiAgaXAgbGluayBzZXQgIiRlbmRwb2ludF9pZiIgbmV0bnMgIiRlbmRwb2ludF9ucyIKICBpcCBsaW5rIHNldCAiJGdhdGV3YXlfaWYiIG5ldG5zICIkTlNfR1ciCgogIGlwIC1uICIkZW5kcG9pbnRfbnMiIGxpbmsgc2V0IGxvIHVwCiAgaXAgLW4gIiRlbmRwb2ludF9ucyIgYWRkciBhZGQgIiRlbmRwb2ludF9pcCIgZGV2ICIkZW5kcG9pbnRfaWYiCiAgaXAgLW4gIiRlbmRwb2ludF9ucyIgbGluayBzZXQgIiRlbmRwb2ludF9pZiIgdXAKICBpcCAtbiAiJGVuZHBvaW50X25zIiByb3V0ZSBhZGQgZGVmYXVsdCB2aWEgIiRnYXRld2F5X2lwIgoKICBpcCAtbiAiJE5TX0dXIiBhZGRyIGFkZCAiJGdhdGV3YXlfaXAvMjQiIGRldiAiJGdhdGV3YXlfaWYiCiAgaXAgLW4gIiROU19HVyIgbGluayBzZXQgIiRnYXRld2F5X2lmIiB1cAp9CgppcCBuZXRucyBhZGQgIiROU19HVyIKaXAgLW4gIiROU19HVyIgbGluayBzZXQgbG8gdXAKCmNyZWF0ZV9saW5rICIkTlNfSVZJIiAgdi1pdmkgICIxMC43Ny4xMC4yLzI0IiBnLWl2aSAgIjEwLjc3LjEwLjEiCmNyZWF0ZV9saW5rICIkTlNfQURBUyIgdi1hZGFzICIxMC43Ny4yMC4yLzI0IiBnLWFkYXMgIjEwLjc3LjIwLjEiCmNyZWF0ZV9saW5rICIkTlNfUFQiICAgdi1wdCAgICIxMC43Ny4zMC4yLzI0IiBnLXB0ICAgIjEwLjc3LjMwLjEiCmNyZWF0ZV9saW5rICIkTlNfRElBRyIgdi1kaWFnICIxMC43Ny40MC4yLzI0IiBnLWRpYWcgIjEwLjc3LjQwLjEiCgppcCBuZXRucyBleGVjICIkTlNfR1ciIHN5c2N0bCAtcSAtdyBuZXQuaXB2NC5pcF9mb3J3YXJkPTEKCmlwIG5ldG5zIGV4ZWMgIiROU19HVyIgbmZ0IC1mIC0gPDwnTkZUJwp0YWJsZSBpbmV0IHp0X3ZlaGljbGUgewogIHNldCByZXN0cmljdGVkX3Y0IHsKICAgIHR5cGUgaXB2NF9hZGRyCiAgfQoKICBzZXQgcXVhcmFudGluZWRfdjQgewogICAgdHlwZSBpcHY0X2FkZHIKICB9CgogIGNoYWluIGlucHV0IHsKICAgIHR5cGUgZmlsdGVyIGhvb2sgaW5wdXQgcHJpb3JpdHkgZmlsdGVyOyBwb2xpY3kgZHJvcDsKICAgIGlpZm5hbWUgImxvIiBhY2NlcHQKICAgIGN0IHN0YXRlIGludmFsaWQgZHJvcAogICAgY3Qgc3RhdGUgZXN0YWJsaXNoZWQscmVsYXRlZCBhY2NlcHQKICAgIGlwIHByb3RvY29sIGljbXAgYWNjZXB0CiAgfQoKICBjaGFpbiBmb3J3YXJkIHsKICAgIHR5cGUgZmlsdGVyIGhvb2sgZm9yd2FyZCBwcmlvcml0eSBmaWx0ZXI7IHBvbGljeSBkcm9wOwogICAgY3Qgc3RhdGUgaW52YWxpZCBkcm9wCgogICAgIyBEeW5hbWljIHRydXN0IGRlY2lzaW9ucyBwcmVjZWRlIGNvbm50cmFjayBhY2NlcHRhbmNlIHNvIGEgbmV3bHkKICAgICMgcXVhcmFudGluZWQgRUNVIGNhbm5vdCBrZWVwIGFuIGFscmVhZHktZXN0YWJsaXNoZWQgc2Vzc2lvbiBhbGl2ZS4KICAgIGlwIHNhZGRyIEBxdWFyYW50aW5lZF92NCBjb3VudGVyIGRyb3AgY29tbWVudCAiZHluYW1pYyBzb3VyY2UgcXVhcmFudGluZSIKICAgIGlwIGRhZGRyIEBxdWFyYW50aW5lZF92NCBjb3VudGVyIGRyb3AgY29tbWVudCAiZHluYW1pYyBkZXN0aW5hdGlvbiBxdWFyYW50aW5lIgoKICAgIGlwIHNhZGRyIEByZXN0cmljdGVkX3Y0IGlwIGRhZGRyIDEwLjc3LjQwLjIgdGNwIGRwb3J0IDk0NDMgY291bnRlciBhY2NlcHQgY29tbWVudCAicmVzdHJpY3RlZCBFQ1UgdG8gcG9saWN5IHNlcnZpY2UiCiAgICBpcCBzYWRkciBAcmVzdHJpY3RlZF92NCBjb3VudGVyIGRyb3AgY29tbWVudCAicmVzdHJpY3RlZCBFQ1UgZGVueSBvdGhlciBlZ3Jlc3MiCiAgICBpcCBkYWRkciBAcmVzdHJpY3RlZF92NCBpcCBzYWRkciAxMC43Ny40MC4yIGNvdW50ZXIgYWNjZXB0IGNvbW1lbnQgInBvbGljeSBzZXJ2aWNlIHRvIHJlc3RyaWN0ZWQgRUNVIgogICAgaXAgZGFkZHIgQHJlc3RyaWN0ZWRfdjQgY291bnRlciBkcm9wIGNvbW1lbnQgImRlbnkgYWNjZXNzIHRvIHJlc3RyaWN0ZWQgRUNVIgoKICAgIGN0IHN0YXRlIGVzdGFibGlzaGVkLHJlbGF0ZWQgYWNjZXB0CiAgICBpcCBzYWRkciAxMC43Ny40MC4yIGlwIHByb3RvY29sIGljbXAgY291bnRlciBhY2NlcHQgY29tbWVudCAiZGlhZ25vc3RpYyBoZWFsdGggY2hlY2tzIgogICAgaXAgc2FkZHIgMTAuNzcuMjAuMiBpcCBkYWRkciAxMC43Ny4zMC4yIHRjcCBkcG9ydCAzMDUwOSBjdCBzdGF0ZSBuZXcgY291bnRlciBhY2NlcHQgY29tbWVudCAiQURBUyB0byBwb3dlcnRyYWluIGNvbnRyb2wgQVBJIgogICAgaXAgc2FkZHIgMTAuNzcuMTAuMiBpcCBkYWRkciAxMC43Ny4yMC4yIHRjcCBkcG9ydCA4NDQzIGN0IHN0YXRlIG5ldyBjb3VudGVyIGFjY2VwdCBjb21tZW50ICJJVkkgdG8gQURBUyBtVExTIGRlbW8iCgogICAgY291bnRlciBkcm9wIGNvbW1lbnQgImRlZmF1bHQgemVyby10cnVzdCBkZW55IgogIH0KfQpORlQKCiMgUHJvZHVjdGlvbi1saWtlIHNlcnZpY2Ugc2ltdWxhdGlvbjogcG93ZXJ0cmFpbiBjb250cm9sIGVuZHBvaW50LgppcCBuZXRucyBleGVjICIkTlNfUFQiIGJhc2ggLWMgXAogICJub2h1cCBweXRob24zIC1tIGh0dHAuc2VydmVyIDMwNTA5IC0tYmluZCAxMC43Ny4zMC4yID4nJFdPUktfRElSL3Bvd2VydHJhaW4taHR0cC5sb2cnIDI+JjEgJiBlY2hvIFwkISA+JyRXT1JLX0RJUi9wb3dlcnRyYWluLWh0dHAucGlkJyIKCnNsZWVwIDAuNQoKIyBDcmVhdGUgYSBzaG9ydC1saXZlZCBsYWIgQ0EgYW5kIG11dHVhbGx5IGF1dGhlbnRpY2F0ZWQgRUNVIGlkZW50aXRpZXMuClBLST0iJFdPUktfRElSL3BraSIKb3BlbnNzbCByZXEgLXg1MDkgLW5ld2tleSByc2E6MzA3MiAtbm9kZXMgLXNoYTI1NiAtZGF5cyAyIFwKICAta2V5b3V0ICIkUEtJL2NhLmtleSIgLW91dCAiJFBLSS9jYS5jcnQiIFwKICAtc3ViaiAiL0NOPVNlc3Npb24gNSBWZWhpY2xlIExhYiBSb290IENBIiBcCiAgLWFkZGV4dCAiYmFzaWNDb25zdHJhaW50cz1jcml0aWNhbCxDQTpUUlVFIiBcCiAgLWFkZGV4dCAia2V5VXNhZ2U9Y3JpdGljYWwsa2V5Q2VydFNpZ24sY1JMU2lnbiIgPi9kZXYvbnVsbCAyPiYxCgptYWtlX2NlcnQoKSB7CiAgbG9jYWwgbmFtZT0iJDEiIGVrdT0iJDIiIHNhbj0iJDMiCiAgb3BlbnNzbCByZXEgLW5ld2tleSByc2E6MjA0OCAtbm9kZXMgLXNoYTI1NiBcCiAgICAta2V5b3V0ICIkUEtJLyRuYW1lLmtleSIgLW91dCAiJFBLSS8kbmFtZS5jc3IiIFwKICAgIC1zdWJqICIvQ049JG5hbWUuZWN1IiA+L2Rldi9udWxsIDI+JjEKICBjYXQgPiIkUEtJLyRuYW1lLmV4dCIgPDxFWFQKYmFzaWNDb25zdHJhaW50cz1jcml0aWNhbCxDQTpGQUxTRQprZXlVc2FnZT1jcml0aWNhbCxkaWdpdGFsU2lnbmF0dXJlLGtleUVuY2lwaGVybWVudApleHRlbmRlZEtleVVzYWdlPSRla3UKc3ViamVjdEFsdE5hbWU9JHNhbgpFWFQKICBvcGVuc3NsIHg1MDkgLXJlcSAtc2hhMjU2IC1kYXlzIDIgXAogICAgLWluICIkUEtJLyRuYW1lLmNzciIgLUNBICIkUEtJL2NhLmNydCIgLUNBa2V5ICIkUEtJL2NhLmtleSIgXAogICAgLUNBY3JlYXRlc2VyaWFsIC1vdXQgIiRQS0kvJG5hbWUuY3J0IiAtZXh0ZmlsZSAiJFBLSS8kbmFtZS5leHQiID4vZGV2L251bGwgMj4mMQp9CgptYWtlX2NlcnQgYWRhcyBzZXJ2ZXJBdXRoICJJUDoxMC43Ny4yMC4yLEROUzphZGFzLmVjdSIKbWFrZV9jZXJ0IGl2aSBjbGllbnRBdXRoICJJUDoxMC43Ny4xMC4yLEROUzppdmkuZWN1IgptYWtlX2NlcnQgcm9ndWUgY2xpZW50QXV0aCAiRE5TOnJvZ3VlLmVjdSIKCiMgQSBjZXJ0aWZpY2F0ZSBmcm9tIGFuIHVucmVsYXRlZCBDQSBtdXN0IGZhaWwgY3J5cHRvZ3JhcGhpYyBhdXRoZW50aWNhdGlvbi4Kb3BlbnNzbCByZXEgLXg1MDkgLW5ld2tleSByc2E6MjA0OCAtbm9kZXMgLXNoYTI1NiAtZGF5cyAyIFwKICAta2V5b3V0ICIkUEtJL3VudHJ1c3RlZC5rZXkiIC1vdXQgIiRQS0kvdW50cnVzdGVkLmNydCIgXAogIC1zdWJqICIvQ049dW50cnVzdGVkLmVjdSIgPi9kZXYvbnVsbCAyPiYxCgppcCBuZXRucyBleGVjICIkTlNfQURBUyIgYmFzaCAtYyBcCiAgIm5vaHVwIG9wZW5zc2wgc19zZXJ2ZXIgLXF1aWV0IC1hY2NlcHQgODQ0MyAtY2VydCAnJFBLSS9hZGFzLmNydCcgLWtleSAnJFBLSS9hZGFzLmtleScgLUNBZmlsZSAnJFBLSS9jYS5jcnQnIC1WZXJpZnkgMSAtd3d3ID4nJFdPUktfRElSL210bHMtc2VydmVyLmxvZycgMj4mMSAmIGVjaG8gXCQhID4nJFdPUktfRElSL210bHMtc2VydmVyLnBpZCciCgpzbGVlcCAwLjcKdHJhcCAtIEVSUgoKZWNobyAiW1BBU1NdIFplcm8gVHJ1c3QgdmVoaWNsZSB0b3BvbG9neSBjcmVhdGVkLiIKZWNobyAiW0lORk9dIE5hbWVzcGFjZXM6ICROU19JVkksICROU19BREFTLCAkTlNfUFQsICROU19ESUFHLCAkTlNfR1ciCmVjaG8gIltJTkZPXSBQb2xpY3kgdGFibGU6IGlwIG5ldG5zIGV4ZWMgJE5TX0dXIG5mdCBsaXN0IHRhYmxlIGluZXQgenRfdmVoaWNsZSIKZWNobyAiW0lORk9dIFdvcmsgZGlyZWN0b3J5OiAkV09SS19ESVIiCg==
+B64_zt_lab_setup_sh
+
+base64 -d >"$DEST/zt_lab_cleanup.sh" <<'B64_zt_lab_cleanup_sh'
+IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLUVldW8gcGlwZWZhaWwKCldPUktfRElSPSIke1pUX1dPUktfRElSOi0vdG1wL3p0LXNlc3Npb241fSIKZm9yIG5zIGluIHp0LWl2aSB6dC1hZGFzIHp0LXB0IHp0LWRpYWcgenQtZ3c7IGRvCiAgaWYgc3VkbyBpcCBuZXRucyBsaXN0IHwgYXdrICd7cHJpbnQgJDF9JyB8IGdyZXAgLUZ4cSAiJG5zIjsgdGhlbgogICAgd2hpbGUgcmVhZCAtciBwaWQ7IGRvCiAgICAgIFtbIC1uICIkcGlkIiBdXSAmJiBzdWRvIGtpbGwgIiRwaWQiIDI+L2Rldi9udWxsIHx8IHRydWUKICAgIGRvbmUgPCA8KHN1ZG8gaXAgbmV0bnMgcGlkcyAiJG5zIiAyPi9kZXYvbnVsbCB8fCB0cnVlKQogICAgc2xlZXAgMC4xCiAgICB3aGlsZSByZWFkIC1yIHBpZDsgZG8KICAgICAgW1sgLW4gIiRwaWQiIF1dICYmIHN1ZG8ga2lsbCAtS0lMTCAiJHBpZCIgMj4vZGV2L251bGwgfHwgdHJ1ZQogICAgZG9uZSA8IDwoc3VkbyBpcCBuZXRucyBwaWRzICIkbnMiIDI+L2Rldi9udWxsIHx8IHRydWUpCiAgICBzdWRvIGlwIG5ldG5zIGRlbCAiJG5zIiAyPi9kZXYvbnVsbCB8fCB0cnVlCiAgZmkKZG9uZQpzdWRvIHJtIC1yZiAiJFdPUktfRElSIgplY2hvICJbUEFTU10gU2Vzc2lvbiA1IGxhYiByZXNvdXJjZXMgcmVtb3ZlZC4iCg==
+B64_zt_lab_cleanup_sh
+
+base64 -d >"$DEST/zt_attestation_demo.sh" <<'B64_zt_attestation_demo_sh'
+IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLUVldW8gcGlwZWZhaWwKCk1PREU9IiR7MTotZ29vZH0iCldPUktfRElSPSIke1pUX1dPUktfRElSOi0vdG1wL3p0LXNlc3Npb241fS9hdHRlc3RhdGlvbiIKbWtkaXIgLXAgIiRXT1JLX0RJUiIKY2QgIiRXT1JLX0RJUiIKCmZvciBjbWQgaW4gb3BlbnNzbCBzaGEyNTZzdW0gcHl0aG9uMzsgZG8KICBjb21tYW5kIC12ICIkY21kIiA+L2Rldi9udWxsIHx8IHsgZWNobyAiW0ZBSUxdIE1pc3NpbmcgY29tbWFuZDogJGNtZCIgPiYyOyBleGl0IDE7IH0KZG9uZQoKW1sgLWYgZWN1LmtleSBdXSB8fCBvcGVuc3NsIGdlbnBrZXkgLWFsZ29yaXRobSBFRDI1NTE5IC1vdXQgZWN1LmtleSA+L2Rldi9udWxsIDI+JjEKW1sgLWYgZWN1LnB1YiBdXSB8fCBvcGVuc3NsIHBrZXkgLWluIGVjdS5rZXkgLXB1Ym91dCAtb3V0IGVjdS5wdWIgPi9kZXYvbnVsbCAyPiYxCltbIC1mIGZpcm13YXJlLmJpbiBdXSB8fCBwcmludGYgJ2FkYXMtZmlybXdhcmUtdjFcbicgPiBmaXJtd2FyZS5iaW4KW1sgLWYgYmFzZWxpbmUuc2hhMjU2IF1dIHx8IHNoYTI1NnN1bSBmaXJtd2FyZS5iaW4gfCBhd2sgJ3twcmludCAkMX0nID4gYmFzZWxpbmUuc2hhMjU2CgpCQVNFTElORT0iJChjYXQgYmFzZWxpbmUuc2hhMjU2KSIKRVhQRUNURURfTk9OQ0U9IiQob3BlbnNzbCByYW5kIC1oZXggMTYpIgpOT05DRT0iJEVYUEVDVEVEX05PTkNFIgpNRUFTVVJFTUVOVD0iJChzaGEyNTZzdW0gZmlybXdhcmUuYmluIHwgYXdrICd7cHJpbnQgJDF9JykiClRJTUVTVEFNUD0iJChkYXRlIC11ICslWS0lbS0lZFQlSDolTTolU1opIgoKY2FzZSAiJE1PREUiIGluCiAgZ29vZCkgOzsKICB0YW1wZXIpCiAgICBwcmludGYgJ3VuYXV0aG9yaXplZC1wYXRjaFxuJyA+PiBmaXJtd2FyZS5iaW4KICAgIE1FQVNVUkVNRU5UPSIkKHNoYTI1NnN1bSBmaXJtd2FyZS5iaW4gfCBhd2sgJ3twcmludCAkMX0nKSIKICAgIDs7CiAgcmVwbGF5KQogICAgTk9OQ0U9IjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIgogICAgOzsKICAqKSBlY2hvICJVc2FnZTogJDAgW2dvb2R8dGFtcGVyfHJlcGxheV0iID4mMjsgZXhpdCAyIDs7CmVzYWMKCnB5dGhvbjMgLSAiJE5PTkNFIiAiJE1FQVNVUkVNRU5UIiAiJFRJTUVTVEFNUCIgPiBhdHRlc3RhdGlvbi5qc29uIDw8J1BZJwppbXBvcnQganNvbiwgc3lzCm5vbmNlLCBtZWFzdXJlbWVudCwgdGltZXN0YW1wID0gc3lzLmFyZ3ZbMTpdCnByaW50KGpzb24uZHVtcHMoewogICAgImVjdV9pZCI6ICJhZGFzLTAxIiwKICAgICJub25jZSI6IG5vbmNlLAogICAgIm1lYXN1cmVtZW50X3NoYTI1NiI6IG1lYXN1cmVtZW50LAogICAgInRpbWVzdGFtcF91dGMiOiB0aW1lc3RhbXAsCiAgICAic2VjdXJlX2Jvb3QiOiBUcnVlLAp9LCBzZXBhcmF0b3JzPSgiLCIsICI6IiksIHNvcnRfa2V5cz1UcnVlKSkKUFkKCm9wZW5zc2wgcGtleXV0bCAtc2lnbiAtcmF3aW4gLWlua2V5IGVjdS5rZXkgLWluIGF0dGVzdGF0aW9uLmpzb24gLW91dCBhdHRlc3RhdGlvbi5zaWcKCmlmICEgb3BlbnNzbCBwa2V5dXRsIC12ZXJpZnkgLXB1YmluIC1pbmtleSBlY3UucHViIC1yYXdpbiBcCiAgICAtaW4gYXR0ZXN0YXRpb24uanNvbiAtc2lnZmlsZSBhdHRlc3RhdGlvbi5zaWcgPi9kZXYvbnVsbCAyPiYxOyB0aGVuCiAgZWNobyAiW0ZBSUxdIFNpZ25hdHVyZSB2ZXJpZmljYXRpb24gZmFpbGVkLiIKICBleGl0IDEKZmkKCmVjaG8gIltQQVNTXSBEZXZpY2UgaWRlbnRpdHkgc2lnbmF0dXJlIGlzIHZhbGlkLiIKCk9CU0VSVkVEX05PTkNFPSIkKHB5dGhvbjMgLWMgJ2ltcG9ydCBqc29uOyBwcmludChqc29uLmxvYWQob3BlbigiYXR0ZXN0YXRpb24uanNvbiIpKVsibm9uY2UiXSknKSIKaWYgW1sgIiRPQlNFUlZFRF9OT05DRSIgIT0gIiRFWFBFQ1RFRF9OT05DRSIgXV07IHRoZW4KICBlY2hvICJbRkFJTF0gTm9uY2UgaXMgc3RhbGUgb3IgZG9lcyBub3QgbWF0Y2ggdGhlIHZlcmlmaWVyIGNoYWxsZW5nZS4iCiAgZXhpdCAzCmZpCgppZiBbWyAiJE1FQVNVUkVNRU5UIiAhPSAiJEJBU0VMSU5FIiBdXTsgdGhlbgogIGVjaG8gIltGQUlMXSBSdW50aW1lIG1lYXN1cmVtZW50IGRpZmZlcnMgZnJvbSB0aGUgYXBwcm92ZWQgYmFzZWxpbmUuIgogIGVjaG8gIiAgICAgICBleHBlY3RlZD0kQkFTRUxJTkUiCiAgZWNobyAiICAgICAgIG9ic2VydmVkPSRNRUFTVVJFTUVOVCIKICBleGl0IDQKZmkKCmVjaG8gIltQQVNTXSBOb25jZSBpcyBmcmVzaCBhbmQgZmlybXdhcmUgbWVhc3VyZW1lbnQgbWF0Y2hlcyB0aGUgYmFzZWxpbmUuIgo=
+B64_zt_attestation_demo_sh
+
+base64 -d >"$DEST/zt_trust_engine.py" <<'B64_zt_trust_engine_py'
+IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoiIiJUcmFpbmluZy1ncmFkZSBFQ1UgdHJ1c3Qgc2NvcmVyIGFuZCBvcHRpb25hbCBuZnRhYmxlcyBwb2xpY3kgYWN0dWF0b3IuIiIiCmZyb20gX19mdXR1cmVfXyBpbXBvcnQgYW5ub3RhdGlvbnMKCmltcG9ydCBhcmdwYXJzZQppbXBvcnQganNvbgppbXBvcnQgc3VicHJvY2VzcwppbXBvcnQgc3lzCmZyb20gZGF0YWNsYXNzZXMgaW1wb3J0IGFzZGljdCwgZGF0YWNsYXNzCgoKQGRhdGFjbGFzcyhmcm96ZW49VHJ1ZSkKY2xhc3MgRXZpZGVuY2U6CiAgICBlY3VfaWQ6IHN0cgogICAgaXA6IHN0cgogICAgYXR0ZXN0YXRpb25fdmFsaWQ6IGJvb2wKICAgIGNlcnRpZmljYXRlX3ZhbGlkOiBib29sCiAgICBzZWN1cmVfYm9vdDogYm9vbAogICAgcGF0Y2hfYWdlX2RheXM6IGludAogICAgYW5vbWFseV9ldmVudHM6IGludAogICAgcmVwbGF5X2V2ZW50czogaW50CgoKZGVmIGNhbGN1bGF0ZV9zY29yZShlOiBFdmlkZW5jZSkgLT4gdHVwbGVbaW50LCBsaXN0W3N0cl1dOgogICAgc2NvcmUgPSAwCiAgICByZWFzb25zOiBsaXN0W3N0cl0gPSBbXQoKICAgIGlmIGUuYXR0ZXN0YXRpb25fdmFsaWQ6CiAgICAgICAgc2NvcmUgKz0gMzAKICAgIGVsc2U6CiAgICAgICAgcmVhc29ucy5hcHBlbmQoImF0dGVzdGF0aW9uIGZhaWxlZCIpCgogICAgaWYgZS5jZXJ0aWZpY2F0ZV92YWxpZDoKICAgICAgICBzY29yZSArPSAyMAogICAgZWxzZToKICAgICAgICByZWFzb25zLmFwcGVuZCgiY2VydGlmaWNhdGUgaW52YWxpZCBvciBleHBpcmVkIikKCiAgICBpZiBlLnNlY3VyZV9ib290OgogICAgICAgIHNjb3JlICs9IDE1CiAgICBlbHNlOgogICAgICAgIHJlYXNvbnMuYXBwZW5kKCJzZWN1cmUgYm9vdCBldmlkZW5jZSBhYnNlbnQiKQoKICAgIGlmIGUucGF0Y2hfYWdlX2RheXMgPD0gMzA6CiAgICAgICAgc2NvcmUgKz0gMTUKICAgIGVsaWYgZS5wYXRjaF9hZ2VfZGF5cyA8PSA5MDoKICAgICAgICBzY29yZSArPSA4CiAgICAgICAgcmVhc29ucy5hcHBlbmQoInBhdGNoIGxldmVsIGFnaW5nIikKICAgIGVsc2U6CiAgICAgICAgcmVhc29ucy5hcHBlbmQoInBhdGNoIGxldmVsIG91dHNpZGUgcG9saWN5IikKCiAgICBzY29yZSArPSBtYXgoMCwgMTUgLSBtaW4oZS5hbm9tYWx5X2V2ZW50cywgNSkgKiAzKQogICAgaWYgZS5hbm9tYWx5X2V2ZW50czoKICAgICAgICByZWFzb25zLmFwcGVuZChmIntlLmFub21hbHlfZXZlbnRzfSBhbm9tYWx5IGV2ZW50KHMpIikKCiAgICBzY29yZSArPSBtYXgoMCwgNSAtIG1pbihlLnJlcGxheV9ldmVudHMsIDUpKQogICAgaWYgZS5yZXBsYXlfZXZlbnRzOgogICAgICAgIHJlYXNvbnMuYXBwZW5kKGYie2UucmVwbGF5X2V2ZW50c30gcmVwbGF5IGV2ZW50KHMpIikKCiAgICByZXR1cm4gbWF4KDAsIG1pbihzY29yZSwgMTAwKSksIHJlYXNvbnMKCgpkZWYgZGVjaXNpb24oc2NvcmU6IGludCkgLT4gc3RyOgogICAgaWYgc2NvcmUgPj0gODA6CiAgICAgICAgcmV0dXJuICJOT1JNQUwiCiAgICBpZiBzY29yZSA+PSA2MDoKICAgICAgICByZXR1cm4gIlJFU1RSSUNURUQiCiAgICByZXR1cm4gIlFVQVJBTlRJTkUiCgoKZGVmIHJ1bl9uZnQoYXJnczogbGlzdFtzdHJdLCB0b2xlcmF0ZV9mYWlsdXJlOiBib29sID0gRmFsc2UpIC0+IE5vbmU6CiAgICBjbWQgPSBbImlwIiwgIm5ldG5zIiwgImV4ZWMiLCAienQtZ3ciLCAibmZ0IiwgKmFyZ3NdCiAgICByZXN1bHQgPSBzdWJwcm9jZXNzLnJ1bihjbWQsIHRleHQ9VHJ1ZSwgY2FwdHVyZV9vdXRwdXQ9VHJ1ZSkKICAgIGlmIHJlc3VsdC5yZXR1cm5jb2RlIGFuZCBub3QgdG9sZXJhdGVfZmFpbHVyZToKICAgICAgICByYWlzZSBSdW50aW1lRXJyb3IocmVzdWx0LnN0ZGVyci5zdHJpcCgpIG9yICJuZnQgY29tbWFuZCBmYWlsZWQiKQoKCmRlZiBhcHBseV9wb2xpY3koaXA6IHN0ciwgc3RhdGU6IHN0cikgLT4gTm9uZToKICAgICMgRGVsZXRlIGlzIGRlbGliZXJhdGVseSB0b2xlcmFudCBiZWNhdXNlIHRoZSBlbGVtZW50IG1pZ2h0IG5vdCBleGlzdC4KICAgIHJ1bl9uZnQoWyJkZWxldGUiLCAiZWxlbWVudCIsICJpbmV0IiwgInp0X3ZlaGljbGUiLCAicmVzdHJpY3RlZF92NCIsICJ7IiwgaXAsICJ9Il0sIFRydWUpCiAgICBydW5fbmZ0KFsiZGVsZXRlIiwgImVsZW1lbnQiLCAiaW5ldCIsICJ6dF92ZWhpY2xlIiwgInF1YXJhbnRpbmVkX3Y0IiwgInsiLCBpcCwgIn0iXSwgVHJ1ZSkKCiAgICBpZiBzdGF0ZSA9PSAiUkVTVFJJQ1RFRCI6CiAgICAgICAgcnVuX25mdChbImFkZCIsICJlbGVtZW50IiwgImluZXQiLCAienRfdmVoaWNsZSIsICJyZXN0cmljdGVkX3Y0IiwgInsiLCBpcCwgIn0iXSkKICAgIGVsaWYgc3RhdGUgPT0gIlFVQVJBTlRJTkUiOgogICAgICAgIHJ1bl9uZnQoWyJhZGQiLCAiZWxlbWVudCIsICJpbmV0IiwgInp0X3ZlaGljbGUiLCAicXVhcmFudGluZWRfdjQiLCAieyIsIGlwLCAifSJdKQoKClNDRU5BUklPUyA9IHsKICAgICJoZWFsdGh5IjogRXZpZGVuY2UoImFkYXMtMDEiLCAiMTAuNzcuMjAuMiIsIFRydWUsIFRydWUsIFRydWUsIDEwLCAwLCAwKSwKICAgICJkZWdyYWRlZCI6IEV2aWRlbmNlKCJhZGFzLTAxIiwgIjEwLjc3LjIwLjIiLCBUcnVlLCBUcnVlLCBUcnVlLCA3NSwgNSwgMCksCiAgICAiY29tcHJvbWlzZWQiOiBFdmlkZW5jZSgiYWRhcy0wMSIsICIxMC43Ny4yMC4yIiwgRmFsc2UsIFRydWUsIEZhbHNlLCAxMzAsIDUsIDMpLAp9CgoKZGVmIG1haW4oKSAtPiBpbnQ6CiAgICBwYXJzZXIgPSBhcmdwYXJzZS5Bcmd1bWVudFBhcnNlcigpCiAgICBwYXJzZXIuYWRkX2FyZ3VtZW50KCItLXNjZW5hcmlvIiwgY2hvaWNlcz1TQ0VOQVJJT1MsIGRlZmF1bHQ9ImhlYWx0aHkiKQogICAgcGFyc2VyLmFkZF9hcmd1bWVudCgiLS1ldmlkZW5jZS1qc29uIiwgaGVscD0iUmVhZCBldmlkZW5jZSBmcm9tIGEgSlNPTiBmaWxlIGluc3RlYWQgb2YgYSBidWlsdC1pbiBzY2VuYXJpbyIpCiAgICBwYXJzZXIuYWRkX2FyZ3VtZW50KCItLWFwcGx5IiwgYWN0aW9uPSJzdG9yZV90cnVlIiwgaGVscD0iQXBwbHkgdGhlIGRlY2lzaW9uIHRvIHRoZSB6dC1ndyBuZnRhYmxlcyBzZXRzIikKICAgIGFyZ3MgPSBwYXJzZXIucGFyc2VfYXJncygpCgogICAgaWYgYXJncy5ldmlkZW5jZV9qc29uOgogICAgICAgIHdpdGggb3BlbihhcmdzLmV2aWRlbmNlX2pzb24sIGVuY29kaW5nPSJ1dGYtOCIpIGFzIGhhbmRsZToKICAgICAgICAgICAgZXZpZGVuY2UgPSBFdmlkZW5jZSgqKmpzb24ubG9hZChoYW5kbGUpKQogICAgZWxzZToKICAgICAgICBldmlkZW5jZSA9IFNDRU5BUklPU1thcmdzLnNjZW5hcmlvXQoKICAgIHNjb3JlLCByZWFzb25zID0gY2FsY3VsYXRlX3Njb3JlKGV2aWRlbmNlKQogICAgc3RhdGUgPSBkZWNpc2lvbihzY29yZSkKICAgIHJlcG9ydCA9IHsiZXZpZGVuY2UiOiBhc2RpY3QoZXZpZGVuY2UpLCAic2NvcmUiOiBzY29yZSwgImRlY2lzaW9uIjogc3RhdGUsICJyZWFzb25zIjogcmVhc29uc30KICAgIHByaW50KGpzb24uZHVtcHMocmVwb3J0LCBpbmRlbnQ9MikpCgogICAgaWYgYXJncy5hcHBseToKICAgICAgICB0cnk6CiAgICAgICAgICAgIGFwcGx5X3BvbGljeShldmlkZW5jZS5pcCwgc3RhdGUpCiAgICAgICAgZXhjZXB0IChPU0Vycm9yLCBSdW50aW1lRXJyb3IpIGFzIGV4YzoKICAgICAgICAgICAgcHJpbnQoZiJbRkFJTF0gQ291bGQgbm90IGFwcGx5IG5mdGFibGVzIHBvbGljeToge2V4Y30iLCBmaWxlPXN5cy5zdGRlcnIpCiAgICAgICAgICAgIHJldHVybiAyCiAgICAgICAgcHJpbnQoZiJbUEFTU10gQXBwbGllZCB7c3RhdGV9IHBvbGljeSB0byB7ZXZpZGVuY2UuaXB9LiIpCiAgICByZXR1cm4gMAoKCmlmIF9fbmFtZV9fID09ICJfX21haW5fXyI6CiAgICByYWlzZSBTeXN0ZW1FeGl0KG1haW4oKSkK
+B64_zt_trust_engine_py
+
+base64 -d >"$DEST/zt_cuttlefish_probe.sh" <<'B64_zt_cuttlefish_probe_sh'
+IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLUVldW8gcGlwZWZhaWwKClBST0ZJTEU9IiR7MTotbGFifSIKU0VSSUFMPSIke0FORFJPSURfU0VSSUFMOi19IgpPVVQ9IiR7MjotL3RtcC96dC1zZXNzaW9uNS9jdXR0bGVmaXNoLWV2aWRlbmNlLmpzb259IgoKY29tbWFuZCAtdiBhZGIgPi9kZXYvbnVsbCB8fCB7IGVjaG8gIltGQUlMXSBhZGIgaXMgbm90IGluc3RhbGxlZCBvciBub3QgaW4gUEFUSC4iID4mMjsgZXhpdCAxOyB9CgppZiBbWyAteiAiJFNFUklBTCIgXV07IHRoZW4KICBTRVJJQUw9IiQoYWRiIGRldmljZXMgfCBhd2sgJ05SPjEgJiYgJDI9PSJkZXZpY2UiIHtwcmludCAkMTsgZXhpdH0nKSIKZmkKW1sgLW4gIiRTRVJJQUwiIF1dIHx8IHsgZWNobyAiW0ZBSUxdIE5vIGF1dGhvcml6ZWQgQ3V0dGxlZmlzaC9BbmRyb2lkIGRldmljZSBmb3VuZCBieSBhZGIuIiA+JjI7IGV4aXQgMTsgfQoKcHJvcCgpIHsgYWRiIC1zICIkU0VSSUFMIiBzaGVsbCBnZXRwcm9wICIkMSIgMj4vZGV2L251bGwgfCB0ciAtZCAnXHInOyB9CgpWRVJJRklFRF9CT09UPSIkKHByb3Agcm8uYm9vdC52ZXJpZmllZGJvb3RzdGF0ZSkiCkZMQVNIX0xPQ0tFRD0iJChwcm9wIHJvLmJvb3QuZmxhc2gubG9ja2VkKSIKQlVJTERfVFlQRT0iJChwcm9wIHJvLmJ1aWxkLnR5cGUpIgpGSU5HRVJQUklOVD0iJChwcm9wIHJvLmJ1aWxkLmZpbmdlcnByaW50KSIKQk9PVF9JRD0iJChhZGIgLXMgIiRTRVJJQUwiIHNoZWxsIGNhdCAvcHJvYy9zeXMva2VybmVsL3JhbmRvbS9ib290X2lkIDI+L2Rldi9udWxsIHwgdHIgLWQgJ1xyJykiCgpjYXNlICIkUFJPRklMRSIgaW4KICBsYWIpCiAgICAjIHVzZXJkZWJ1ZyBDdXR0bGVmaXNoIGJ1aWxkcyBhcmUgZXhwZWN0ZWQgdG8gYmUgbGVzcyBzdHJpY3QgdGhhbiBwcm9kdWN0aW9uIGltYWdlcy4KICAgIGlmIFtbICIkVkVSSUZJRURfQk9PVCIgPT0gImdyZWVuIiB8fCAiJEJVSUxEX1RZUEUiID09ICJ1c2VyZGVidWciIHx8ICIkQlVJTERfVFlQRSIgPT0gImVuZyIgXV07IHRoZW4KICAgICAgQVRURVNUQVRJT05fVkFMSUQ9dHJ1ZQogICAgZWxzZQogICAgICBBVFRFU1RBVElPTl9WQUxJRD1mYWxzZQogICAgZmkKICAgIDs7CiAgcHJvZHVjdGlvbikKICAgIFtbICIkVkVSSUZJRURfQk9PVCIgPT0gImdyZWVuIiAmJiAiJEZMQVNIX0xPQ0tFRCIgPT0gIjEiICYmICIkQlVJTERfVFlQRSIgPT0gInVzZXIiIF1dIFwKICAgICAgJiYgQVRURVNUQVRJT05fVkFMSUQ9dHJ1ZSB8fCBBVFRFU1RBVElPTl9WQUxJRD1mYWxzZQogICAgOzsKICAqKSBlY2hvICJVc2FnZTogJDAgW2xhYnxwcm9kdWN0aW9uXSBbb3V0cHV0Lmpzb25dIiA+JjI7IGV4aXQgMiA7Owplc2FjCgpta2RpciAtcCAiJChkaXJuYW1lICIkT1VUIikiCnB5dGhvbjMgLSAiJFNFUklBTCIgIiRWRVJJRklFRF9CT09UIiAiJEZMQVNIX0xPQ0tFRCIgIiRCVUlMRF9UWVBFIiAiJEZJTkdFUlBSSU5UIiAiJEJPT1RfSUQiICIkQVRURVNUQVRJT05fVkFMSUQiID4iJE9VVCIgPDwnUFknCmltcG9ydCBqc29uLCBzeXMKc2VyaWFsLCB2YiwgbG9ja2VkLCBidWlsZF90eXBlLCBmaW5nZXJwcmludCwgYm9vdF9pZCwgdmFsaWQgPSBzeXMuYXJndlsxOl0KcHJpbnQoanNvbi5kdW1wcyh7CiAgInNlcmlhbCI6IHNlcmlhbCwKICAidmVyaWZpZWRfYm9vdF9zdGF0ZSI6IHZiIG9yICJ1bmtub3duIiwKICAiZmxhc2hfbG9ja2VkIjogbG9ja2VkIG9yICJ1bmtub3duIiwKICAiYnVpbGRfdHlwZSI6IGJ1aWxkX3R5cGUgb3IgInVua25vd24iLAogICJidWlsZF9maW5nZXJwcmludCI6IGZpbmdlcnByaW50IG9yICJ1bmtub3duIiwKICAiYm9vdF9pZCI6IGJvb3RfaWQgb3IgInVua25vd24iLAogICJwcm9maWxlX2F0dGVzdGF0aW9uX3ZhbGlkIjogdmFsaWQgPT0gInRydWUiLAp9LCBpbmRlbnQ9MikpClBZCgpjYXQgIiRPVVQiCmVjaG8gIltQQVNTXSBDdXR0bGVmaXNoIGV2aWRlbmNlIHdyaXR0ZW4gdG8gJE9VVCIK
+B64_zt_cuttlefish_probe_sh
+
+chmod +x "$DEST"/*.sh "$DEST"/*.py
+echo "[PASS] Lab pack installed in $DEST"
+echo "Next: cd $DEST && sudo ./zt_lab_setup.sh"
+</script>
+<script type="text/plain" id="payload-setup">#!/usr/bin/env bash
+set -Eeuo pipefail
+
+WORK_DIR="${ZT_WORK_DIR:-/tmp/zt-session5}"
+NS_GW="zt-gw"
+NS_IVI="zt-ivi"
+NS_ADAS="zt-adas"
+NS_PT="zt-pt"
+NS_DIAG="zt-diag"
+
+need_cmd() {
+  command -v "$1" >/dev/null 2>&1 || {
+    echo "[FAIL] Required command not found: $1" >&2
+    exit 1
+  }
+}
+
+for cmd in ip nft python3 openssl curl ping timeout; do
+  need_cmd "$cmd"
+done
+
+if [[ ${EUID} -ne 0 ]]; then
+  echo "[FAIL] Run this script with sudo." >&2
+  exit 1
+fi
+
+cleanup_partial() {
+  for ns in "$NS_IVI" "$NS_ADAS" "$NS_PT" "$NS_DIAG" "$NS_GW"; do
+    if ip netns list | awk '{print $1}' | grep -Fxq "$ns"; then
+      while read -r pid; do
+        [[ -n "$pid" ]] && kill "$pid" 2>/dev/null || true
+      done < <(ip netns pids "$ns" 2>/dev/null || true)
+      sleep 0.1
+      while read -r pid; do
+        [[ -n "$pid" ]] && kill -KILL "$pid" 2>/dev/null || true
+      done < <(ip netns pids "$ns" 2>/dev/null || true)
+      ip netns del "$ns" 2>/dev/null || true
+    fi
+  done
+}
+trap 'echo "[FAIL] Setup stopped; removing partial topology." >&2; cleanup_partial' ERR
+
+cleanup_partial
+rm -rf "$WORK_DIR"
+install -d -m 0700 "$WORK_DIR" "$WORK_DIR/pki"
+
+create_link() {
+  local endpoint_ns="$1" endpoint_if="$2" endpoint_ip="$3"
+  local gateway_if="$4" gateway_ip="$5"
+
+  ip netns add "$endpoint_ns"
+  ip link add "$endpoint_if" type veth peer name "$gateway_if"
+  ip link set "$endpoint_if" netns "$endpoint_ns"
+  ip link set "$gateway_if" netns "$NS_GW"
+
+  ip -n "$endpoint_ns" link set lo up
+  ip -n "$endpoint_ns" addr add "$endpoint_ip" dev "$endpoint_if"
+  ip -n "$endpoint_ns" link set "$endpoint_if" up
+  ip -n "$endpoint_ns" route add default via "$gateway_ip"
+
+  ip -n "$NS_GW" addr add "$gateway_ip/24" dev "$gateway_if"
+  ip -n "$NS_GW" link set "$gateway_if" up
+}
+
+ip netns add "$NS_GW"
+ip -n "$NS_GW" link set lo up
+
+create_link "$NS_IVI"  v-ivi  "10.77.10.2/24" g-ivi  "10.77.10.1"
+create_link "$NS_ADAS" v-adas "10.77.20.2/24" g-adas "10.77.20.1"
+create_link "$NS_PT"   v-pt   "10.77.30.2/24" g-pt   "10.77.30.1"
+create_link "$NS_DIAG" v-diag "10.77.40.2/24" g-diag "10.77.40.1"
+
+ip netns exec "$NS_GW" sysctl -q -w net.ipv4.ip_forward=1
+
+ip netns exec "$NS_GW" nft -f - <<'NFT'
+table inet zt_vehicle {
+  set restricted_v4 {
+    type ipv4_addr
+  }
+
+  set quarantined_v4 {
+    type ipv4_addr
+  }
+
+  chain input {
+    type filter hook input priority filter; policy drop;
+    iifname "lo" accept
+    ct state invalid drop
+    ct state established,related accept
+    ip protocol icmp accept
+  }
+
+  chain forward {
+    type filter hook forward priority filter; policy drop;
+    ct state invalid drop
+
+    # Dynamic trust decisions precede conntrack acceptance so a newly
+    # quarantined ECU cannot keep an already-established session alive.
+    ip saddr @quarantined_v4 counter drop comment "dynamic source quarantine"
+    ip daddr @quarantined_v4 counter drop comment "dynamic destination quarantine"
+
+    ip saddr @restricted_v4 ip daddr 10.77.40.2 tcp dport 9443 counter accept comment "restricted ECU to policy service"
+    ip saddr @restricted_v4 counter drop comment "restricted ECU deny other egress"
+    ip daddr @restricted_v4 ip saddr 10.77.40.2 counter accept comment "policy service to restricted ECU"
+    ip daddr @restricted_v4 counter drop comment "deny access to restricted ECU"
+
+    ct state established,related accept
+    ip saddr 10.77.40.2 ip protocol icmp counter accept comment "diagnostic health checks"
+    ip saddr 10.77.20.2 ip daddr 10.77.30.2 tcp dport 30509 ct state new counter accept comment "ADAS to powertrain control API"
+    ip saddr 10.77.10.2 ip daddr 10.77.20.2 tcp dport 8443 ct state new counter accept comment "IVI to ADAS mTLS demo"
+
+    counter drop comment "default zero-trust deny"
+  }
+}
+NFT
+
+# Production-like service simulation: powertrain control endpoint.
+ip netns exec "$NS_PT" bash -c \
+  "nohup python3 -m http.server 30509 --bind 10.77.30.2 >'$WORK_DIR/powertrain-http.log' 2>&1 & echo \$! >'$WORK_DIR/powertrain-http.pid'"
+
+sleep 0.5
+
+# Create a short-lived lab CA and mutually authenticated ECU identities.
+PKI="$WORK_DIR/pki"
+openssl req -x509 -newkey rsa:3072 -nodes -sha256 -days 2 \
+  -keyout "$PKI/ca.key" -out "$PKI/ca.crt" \
+  -subj "/CN=Session 5 Vehicle Lab Root CA" \
+  -addext "basicConstraints=critical,CA:TRUE" \
+  -addext "keyUsage=critical,keyCertSign,cRLSign" >/dev/null 2>&1
+
+make_cert() {
+  local name="$1" eku="$2" san="$3"
+  openssl req -newkey rsa:2048 -nodes -sha256 \
+    -keyout "$PKI/$name.key" -out "$PKI/$name.csr" \
+    -subj "/CN=$name.ecu" >/dev/null 2>&1
+  cat >"$PKI/$name.ext" <<EXT
+basicConstraints=critical,CA:FALSE
+keyUsage=critical,digitalSignature,keyEncipherment
+extendedKeyUsage=$eku
+subjectAltName=$san
+EXT
+  openssl x509 -req -sha256 -days 2 \
+    -in "$PKI/$name.csr" -CA "$PKI/ca.crt" -CAkey "$PKI/ca.key" \
+    -CAcreateserial -out "$PKI/$name.crt" -extfile "$PKI/$name.ext" >/dev/null 2>&1
+}
+
+make_cert adas serverAuth "IP:10.77.20.2,DNS:adas.ecu"
+make_cert ivi clientAuth "IP:10.77.10.2,DNS:ivi.ecu"
+make_cert rogue clientAuth "DNS:rogue.ecu"
+
+# A certificate from an unrelated CA must fail cryptographic authentication.
+openssl req -x509 -newkey rsa:2048 -nodes -sha256 -days 2 \
+  -keyout "$PKI/untrusted.key" -out "$PKI/untrusted.crt" \
+  -subj "/CN=untrusted.ecu" >/dev/null 2>&1
+
+ip netns exec "$NS_ADAS" bash -c \
+  "nohup openssl s_server -quiet -accept 8443 -cert '$PKI/adas.crt' -key '$PKI/adas.key' -CAfile '$PKI/ca.crt' -Verify 1 -www >'$WORK_DIR/mtls-server.log' 2>&1 & echo \$! >'$WORK_DIR/mtls-server.pid'"
+
+sleep 0.7
+trap - ERR
+
+echo "[PASS] Zero Trust vehicle topology created."
+echo "[INFO] Namespaces: $NS_IVI, $NS_ADAS, $NS_PT, $NS_DIAG, $NS_GW"
+echo "[INFO] Policy table: ip netns exec $NS_GW nft list table inet zt_vehicle"
+echo "[INFO] Work directory: $WORK_DIR"
+</script>
+<script type="text/plain" id="payload-cleanup">#!/usr/bin/env bash
+set -Eeuo pipefail
+
+WORK_DIR="${ZT_WORK_DIR:-/tmp/zt-session5}"
+for ns in zt-ivi zt-adas zt-pt zt-diag zt-gw; do
+  if sudo ip netns list | awk '{print $1}' | grep -Fxq "$ns"; then
+    while read -r pid; do
+      [[ -n "$pid" ]] && sudo kill "$pid" 2>/dev/null || true
+    done < <(sudo ip netns pids "$ns" 2>/dev/null || true)
+    sleep 0.1
+    while read -r pid; do
+      [[ -n "$pid" ]] && sudo kill -KILL "$pid" 2>/dev/null || true
+    done < <(sudo ip netns pids "$ns" 2>/dev/null || true)
+    sudo ip netns del "$ns" 2>/dev/null || true
+  fi
+done
+sudo rm -rf "$WORK_DIR"
+echo "[PASS] Session 5 lab resources removed."
+</script>
+<script type="text/plain" id="payload-attest">#!/usr/bin/env bash
+set -Eeuo pipefail
+
+MODE="${1:-good}"
+WORK_DIR="${ZT_WORK_DIR:-/tmp/zt-session5}/attestation"
+mkdir -p "$WORK_DIR"
+cd "$WORK_DIR"
+
+for cmd in openssl sha256sum python3; do
+  command -v "$cmd" >/dev/null || { echo "[FAIL] Missing command: $cmd" >&2; exit 1; }
+done
+
+[[ -f ecu.key ]] || openssl genpkey -algorithm ED25519 -out ecu.key >/dev/null 2>&1
+[[ -f ecu.pub ]] || openssl pkey -in ecu.key -pubout -out ecu.pub >/dev/null 2>&1
+[[ -f firmware.bin ]] || printf 'adas-firmware-v1\n' > firmware.bin
+[[ -f baseline.sha256 ]] || sha256sum firmware.bin | awk '{print $1}' > baseline.sha256
+
+BASELINE="$(cat baseline.sha256)"
+EXPECTED_NONCE="$(openssl rand -hex 16)"
+NONCE="$EXPECTED_NONCE"
+MEASUREMENT="$(sha256sum firmware.bin | awk '{print $1}')"
+TIMESTAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+case "$MODE" in
+  good) ;;
+  tamper)
+    printf 'unauthorized-patch\n' >> firmware.bin
+    MEASUREMENT="$(sha256sum firmware.bin | awk '{print $1}')"
+    ;;
+  replay)
+    NONCE="00000000000000000000000000000000"
+    ;;
+  *) echo "Usage: $0 [good|tamper|replay]" >&2; exit 2 ;;
+esac
+
+python3 - "$NONCE" "$MEASUREMENT" "$TIMESTAMP" > attestation.json <<'PY'
+import json, sys
+nonce, measurement, timestamp = sys.argv[1:]
+print(json.dumps({
+    "ecu_id": "adas-01",
+    "nonce": nonce,
+    "measurement_sha256": measurement,
+    "timestamp_utc": timestamp,
+    "secure_boot": True,
+}, separators=(",", ":"), sort_keys=True))
+PY
+
+openssl pkeyutl -sign -rawin -inkey ecu.key -in attestation.json -out attestation.sig
+
+if ! openssl pkeyutl -verify -pubin -inkey ecu.pub -rawin \
+    -in attestation.json -sigfile attestation.sig >/dev/null 2>&1; then
+  echo "[FAIL] Signature verification failed."
+  exit 1
+fi
+
+echo "[PASS] Device identity signature is valid."
+
+OBSERVED_NONCE="$(python3 -c 'import json; print(json.load(open("attestation.json"))["nonce"])')"
+if [[ "$OBSERVED_NONCE" != "$EXPECTED_NONCE" ]]; then
+  echo "[FAIL] Nonce is stale or does not match the verifier challenge."
+  exit 3
+fi
+
+if [[ "$MEASUREMENT" != "$BASELINE" ]]; then
+  echo "[FAIL] Runtime measurement differs from the approved baseline."
+  echo "       expected=$BASELINE"
+  echo "       observed=$MEASUREMENT"
+  exit 4
+fi
+
+echo "[PASS] Nonce is fresh and firmware measurement matches the baseline."
+</script>
+<script type="text/plain" id="payload-trust">#!/usr/bin/env python3
+"""Training-grade ECU trust scorer and optional nftables policy actuator."""
+from __future__ import annotations
+
+import argparse
+import json
+import subprocess
+import sys
+from dataclasses import asdict, dataclass
+
+
+@dataclass(frozen=True)
+class Evidence:
+    ecu_id: str
+    ip: str
+    attestation_valid: bool
+    certificate_valid: bool
+    secure_boot: bool
+    patch_age_days: int
+    anomaly_events: int
+    replay_events: int
+
+
+def calculate_score(e: Evidence) -> tuple[int, list[str]]:
+    score = 0
+    reasons: list[str] = []
+
+    if e.attestation_valid:
+        score += 30
+    else:
+        reasons.append("attestation failed")
+
+    if e.certificate_valid:
+        score += 20
+    else:
+        reasons.append("certificate invalid or expired")
+
+    if e.secure_boot:
+        score += 15
+    else:
+        reasons.append("secure boot evidence absent")
+
+    if e.patch_age_days <= 30:
+        score += 15
+    elif e.patch_age_days <= 90:
+        score += 8
+        reasons.append("patch level aging")
+    else:
+        reasons.append("patch level outside policy")
+
+    score += max(0, 15 - min(e.anomaly_events, 5) * 3)
+    if e.anomaly_events:
+        reasons.append(f"{e.anomaly_events} anomaly event(s)")
+
+    score += max(0, 5 - min(e.replay_events, 5))
+    if e.replay_events:
+        reasons.append(f"{e.replay_events} replay event(s)")
+
+    return max(0, min(score, 100)), reasons
+
+
+def decision(score: int) -> str:
+    if score >= 80:
+        return "NORMAL"
+    if score >= 60:
+        return "RESTRICTED"
+    return "QUARANTINE"
+
+
+def run_nft(args: list[str], tolerate_failure: bool = False) -> None:
+    cmd = ["ip", "netns", "exec", "zt-gw", "nft", *args]
+    result = subprocess.run(cmd, text=True, capture_output=True)
+    if result.returncode and not tolerate_failure:
+        raise RuntimeError(result.stderr.strip() or "nft command failed")
+
+
+def apply_policy(ip: str, state: str) -> None:
+    # Delete is deliberately tolerant because the element might not exist.
+    run_nft(["delete", "element", "inet", "zt_vehicle", "restricted_v4", "{", ip, "}"], True)
+    run_nft(["delete", "element", "inet", "zt_vehicle", "quarantined_v4", "{", ip, "}"], True)
+
+    if state == "RESTRICTED":
+        run_nft(["add", "element", "inet", "zt_vehicle", "restricted_v4", "{", ip, "}"])
+    elif state == "QUARANTINE":
+        run_nft(["add", "element", "inet", "zt_vehicle", "quarantined_v4", "{", ip, "}"])
+
+
+SCENARIOS = {
+    "healthy": Evidence("adas-01", "10.77.20.2", True, True, True, 10, 0, 0),
+    "degraded": Evidence("adas-01", "10.77.20.2", True, True, True, 75, 5, 0),
+    "compromised": Evidence("adas-01", "10.77.20.2", False, True, False, 130, 5, 3),
+}
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--scenario", choices=SCENARIOS, default="healthy")
+    parser.add_argument("--evidence-json", help="Read evidence from a JSON file instead of a built-in scenario")
+    parser.add_argument("--apply", action="store_true", help="Apply the decision to the zt-gw nftables sets")
+    args = parser.parse_args()
+
+    if args.evidence_json:
+        with open(args.evidence_json, encoding="utf-8") as handle:
+            evidence = Evidence(**json.load(handle))
+    else:
+        evidence = SCENARIOS[args.scenario]
+
+    score, reasons = calculate_score(evidence)
+    state = decision(score)
+    report = {"evidence": asdict(evidence), "score": score, "decision": state, "reasons": reasons}
+    print(json.dumps(report, indent=2))
+
+    if args.apply:
+        try:
+            apply_policy(evidence.ip, state)
+        except (OSError, RuntimeError) as exc:
+            print(f"[FAIL] Could not apply nftables policy: {exc}", file=sys.stderr)
+            return 2
+        print(f"[PASS] Applied {state} policy to {evidence.ip}.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+</script>
+<script type="text/plain" id="payload-cf">#!/usr/bin/env bash
+set -Eeuo pipefail
+
+PROFILE="${1:-lab}"
+SERIAL="${ANDROID_SERIAL:-}"
+OUT="${2:-/tmp/zt-session5/cuttlefish-evidence.json}"
+
+command -v adb >/dev/null || { echo "[FAIL] adb is not installed or not in PATH." >&2; exit 1; }
+
+if [[ -z "$SERIAL" ]]; then
+  SERIAL="$(adb devices | awk 'NR>1 && $2=="device" {print $1; exit}')"
+fi
+[[ -n "$SERIAL" ]] || { echo "[FAIL] No authorized Cuttlefish/Android device found by adb." >&2; exit 1; }
+
+prop() { adb -s "$SERIAL" shell getprop "$1" 2>/dev/null | tr -d '\r'; }
+
+VERIFIED_BOOT="$(prop ro.boot.verifiedbootstate)"
+FLASH_LOCKED="$(prop ro.boot.flash.locked)"
+BUILD_TYPE="$(prop ro.build.type)"
+FINGERPRINT="$(prop ro.build.fingerprint)"
+BOOT_ID="$(adb -s "$SERIAL" shell cat /proc/sys/kernel/random/boot_id 2>/dev/null | tr -d '\r')"
+
+case "$PROFILE" in
+  lab)
+    # userdebug Cuttlefish builds are expected to be less strict than production images.
+    if [[ "$VERIFIED_BOOT" == "green" || "$BUILD_TYPE" == "userdebug" || "$BUILD_TYPE" == "eng" ]]; then
+      ATTESTATION_VALID=true
+    else
+      ATTESTATION_VALID=false
+    fi
+    ;;
+  production)
+    [[ "$VERIFIED_BOOT" == "green" && "$FLASH_LOCKED" == "1" && "$BUILD_TYPE" == "user" ]] \
+      && ATTESTATION_VALID=true || ATTESTATION_VALID=false
+    ;;
+  *) echo "Usage: $0 [lab|production] [output.json]" >&2; exit 2 ;;
+esac
+
+mkdir -p "$(dirname "$OUT")"
+python3 - "$SERIAL" "$VERIFIED_BOOT" "$FLASH_LOCKED" "$BUILD_TYPE" "$FINGERPRINT" "$BOOT_ID" "$ATTESTATION_VALID" >"$OUT" <<'PY'
+import json, sys
+serial, vb, locked, build_type, fingerprint, boot_id, valid = sys.argv[1:]
+print(json.dumps({
+  "serial": serial,
+  "verified_boot_state": vb or "unknown",
+  "flash_locked": locked or "unknown",
+  "build_type": build_type or "unknown",
+  "build_fingerprint": fingerprint or "unknown",
+  "boot_id": boot_id or "unknown",
+  "profile_attestation_valid": valid == "true",
+}, indent=2))
+PY
+
+cat "$OUT"
+echo "[PASS] Cuttlefish evidence written to $OUT"
+</script>
+<script>
+(()=>{'use strict';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1400)};
+const store={get:k=>{try{return window.localStorage.getItem(k)}catch{return null}},set:(k,v)=>{try{window.localStorage.setItem(k,v)}catch{}}};
+const themeBtn=$('#themeBtn');
+const savedTheme=store.get('zt-theme'); if(savedTheme) document.documentElement.dataset.theme=savedTheme;
+function setThemeIcon(){themeBtn.textContent=document.documentElement.dataset.theme==='dark'?'☀️':'🌙'} setThemeIcon();
+themeBtn.addEventListener('click',()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';store.set('zt-theme',document.documentElement.dataset.theme);setThemeIcon()});
+
+$$('.copy').forEach(btn=>btn.addEventListener('click',async()=>{const txt=btn.parentElement.querySelector('pre').innerText;try{await navigator.clipboard.writeText(txt);toast('Copied to clipboard')}catch{toast('Clipboard blocked—select manually')}}));
+$$('.labhead').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
+$$('[data-toggle-script]').forEach(b=>b.addEventListener('click',()=>{const el=$('#script-'+b.dataset.toggleScript);el.hidden=!el.hidden}));
+
+const names={installer:'session5_labpack_installer.sh',setup:'zt_lab_setup.sh',cleanup:'zt_lab_cleanup.sh',attest:'zt_attestation_demo.sh',trust:'zt_trust_engine.py',cf:'zt_cuttlefish_probe.sh'};
+$$('[data-download]').forEach(btn=>btn.addEventListener('click',()=>{const key=btn.dataset.download;const text=$('#payload-'+key).textContent.replace(/^\n/,'');const blob=new Blob([text],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=names[key];document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Downloaded '+names[key])}));
+
+const policy=[['ADAS','Powertrain','30509'],['IVI','ADAS','8443']];
+$('#policyTrust').addEventListener('input',()=>$('#policyTrustVal').textContent=$('#policyTrust').value);
+$('#testFlow').addEventListener('click',()=>{const s=$('#src').value,d=$('#dst').value,v=$('#service').value,mode=$('#vehicleMode').value,r=$('#flowResult');const identity=$('#policyIdentity').checked,att=$('#policyAttestation').checked,trust=+$('#policyTrust').value,min=+$('#policyMin').value;let route=policy.some(x=>x[0]===s&&x[1]===d&&x[2]===v)||(s==='Diagnostics'&&v==='icmp');const reasons=[];reasons.push(route?'✓ Explicit source/destination/service rule matches':'✗ No explicit communication rule matches');reasons.push(identity?'✓ ECU identity verified':'✗ ECU identity not verified');reasons.push(att?'✓ Runtime evidence is fresh':'✗ Attestation missing or stale');reasons.push(trust>=min?`✓ Trust score ${trust} meets threshold ${min}`:`✗ Trust score ${trust} is below threshold ${min}`);if(s==='Diagnostics'&&v==='icmp'){const safe=mode!=='moving';reasons.push(safe?'✓ Diagnostic health check allowed in this vehicle mode':'✗ Diagnostic access is restricted while moving');route=route&&safe}const allow=route&&identity&&att&&trust>=min;r.className='result '+(allow?'allow':'deny');r.innerHTML=`<b style="color:var(--${allow?'ok':'danger'})">${allow?'ALLOW':'DENY'}</b> — ${allow?'all required policy conditions passed':'one or more required conditions failed'}.<ul class="policy-reasons">${reasons.map(x=>`<li>${x}</li>`).join('')}</ul><small class="muted">Matched policy: ${route?'ZT-EXPLICIT-SERVICE':'ZT-DEFAULT-DENY'} · Vehicle mode: ${mode}</small>`;award('policy-evaluated',15,'policy')});
+
+$$('[data-attest]').forEach(b=>b.addEventListener('click',()=>{const v=b.dataset.attest,r=$('#attestResult');const data={good:['allow','PASS','Signature valid; nonce fresh; measurement matches baseline.'],tamper:['deny','REJECT','Signature can still be valid, but the measured image differs from policy.'],replay:['deny','REJECT','The nonce is stale or mismatched, so an old report cannot be reused.']}[v];r.className='result '+data[0];r.innerHTML=`<b>${data[1]}</b> — ${data[2]}`}));
+
+const ev=['evAtt','evCert','evBoot','patch','anom','replay']; ev.forEach(id=>$('#'+id).addEventListener('input',score));
+function score(){let n=0,why=[];if($('#evAtt').checked)n+=30;else why.push('attestation failed');if($('#evCert').checked)n+=20;else why.push('certificate invalid');if($('#evBoot').checked)n+=15;else why.push('secure boot absent');const p=+$('#patch').value,a=+$('#anom').value,r=+$('#replay').value;$('#patchVal').textContent=p;$('#anomVal').textContent=a;$('#replayVal').textContent=r;if(p<=30)n+=15;else if(p<=90){n+=8;why.push('patch level aging')}else why.push('patch level outside policy');n+=Math.max(0,15-Math.min(a,5)*3);if(a)why.push(a+' anomaly event(s)');n+=Math.max(0,5-Math.min(r,5));if(r)why.push(r+' replay event(s)');n=Math.max(0,Math.min(100,n));$('#score').textContent=n;$('#gauge').style.setProperty('--score',n);const state=n>=80?'NORMAL':n>=60?'RESTRICTED':'QUARANTINE';const d=$('#decision');d.textContent=state;d.className='decision '+state.toLowerCase();const w=$('#scoreWhy');w.className='callout '+(state==='NORMAL'?'ok':state==='RESTRICTED'?'warn':'danger');w.textContent=why.length?why.join(' · '):'All evidence satisfies the training policy.'}score();
+
+const checks=$$('#checklist input');const key='zt-session5-checks';try{const saved=JSON.parse(store.get(key)||'[]');checks.forEach((c,i)=>c.checked=!!saved[i])}catch{}function updateProgress(){const done=checks.filter(c=>c.checked).length,p=Math.round(done/checks.length*100);$('#progressBar').style.width=p+'%';$('#progressText').textContent=p;store.set(key,JSON.stringify(checks.map(c=>c.checked)))}checks.forEach(c=>c.addEventListener('change',updateProgress));updateProgress();
+
+$('#gradeQuiz').addEventListener('click',()=>{let correct=0,answered=0;$$('.quizq').forEach(q=>{const x=$('input:checked',q);if(x){answered++;if(x.value===q.dataset.answer)correct++}});const r=$('#quizResult');r.className='result '+(correct===5?'allow':answered<5?'evaluate':'deny');r.innerHTML=answered<5?`Answered ${answered}/5. Complete every question.`:`Score: <b>${correct}/5</b>. ${correct===5?'All concepts correctly distinguished.':'Review the principle and lab sections above.'}`});
+
+$('#selfTest').addEventListener('click',()=>{const out=[];try{out.push(typeof Blob==='function'?'PASS Blob download API':'FAIL Blob API');out.push($$('.lab').length===8?'PASS 8 lab panels':'FAIL lab count');out.push($$('#quizBox .quizq').length===5?'PASS 5 quiz questions':'FAIL quiz count');out.push($$('.ecu-node').length===6?'PASS interactive vehicle map':'FAIL vehicle map');out.push($$('[data-xray-attack]').length===6?'PASS attestation X-ray attacks':'FAIL X-ray controls');out.push($$('#timelineEvents .timeline-event').length===8?'PASS incident timeline':'FAIL incident timeline');out.push($$('.labcoach').length===8?'PASS lab coaching controls':'FAIL lab coaching controls');const was=$('#evAtt').checked,before=+$('#score').textContent;$('#evAtt').checked=!was;score();const changed=+$('#score').textContent!==before;$('#evAtt').checked=was;score();out.push(changed?'PASS score reacts to evidence':'FAIL scoring');out.push($('#payload-installer').textContent.includes('base64 -d')?'PASS installer payload present':'FAIL installer payload');$('#selfTestOut').textContent=out.join('\n');const pass=out.every(x=>x.startsWith('PASS'));$('#browserStatus').textContent=pass?'PASS':'FAIL';$('#browserStatus').className='status '+(pass?'pass':'limit')}catch(e){$('#selfTestOut').textContent='FAIL '+e.message;$('#browserStatus').textContent='FAIL'}});
+
+
+// Mission Edition state, adaptive explanations and gamification.
+let currentSection=$('#mission');
+const actionKey='zt-session5-actions';let actions=new Set();try{actions=new Set(JSON.parse(store.get(actionKey)||'[]'))}catch{}
+let xp=+store.get('zt-session5-xp')||0;
+const badgeRules={observer:()=>actions.has('ecu-inspected'),policy:()=>actions.has('policy-evaluated'),replay:()=>actions.has('xray-replay'),incident:()=>actions.has('timeline-complete'),labs:()=>$$('.lab.completed').length>=4};
+function renderRewards(){const value=xp+' XP';$('#headerXP').textContent=value;$('#missionXP').textContent=xp;Object.entries(badgeRules).forEach(([k,test])=>{const el=$(`[data-badge="${k}"]`);if(el)el.classList.toggle('unlocked',test())})}
+function award(key,points,badge){if(actions.has(key))return;actions.add(key);xp+=points;store.set(actionKey,JSON.stringify([...actions]));store.set('zt-session5-xp',xp);renderRewards();const f=$('#funToast');f.textContent=`+${points} XP${badge?' · Badge progress':''}`;f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1300)}
+renderRewards();
+
+const savedLevel=store.get('zt-explain-level')||'technical';
+function setLevel(level){document.documentElement.dataset.explain=level;$$('#levelButtons button').forEach(b=>b.classList.toggle('active',b.dataset.level===level));$$('.level-copy').forEach(x=>x.classList.toggle('active',x.dataset.level===level));store.set('zt-explain-level',level)}
+$$('#levelButtons button').forEach(b=>b.addEventListener('click',()=>setLevel(b.dataset.level)));setLevel(savedLevel);
+let trainer=store.get('zt-trainer')==='true';function renderTrainer(){document.body.classList.toggle('trainer-on',trainer);$('#trainerToggle').textContent=`🎓 Trainer: ${trainer?'on':'off'}`}renderTrainer();$('#trainerToggle').addEventListener('click',()=>{trainer=!trainer;store.set('zt-trainer',trainer);renderTrainer()});
+
+$$('[data-jump]').forEach((b,i)=>b.addEventListener('click',()=>{document.querySelector(b.dataset.jump)?.scrollIntoView({behavior:'smooth'});b.classList.add('done');award('mission-step-'+i,5)}));
+
+const ecuInfo={cloud:['Vehicle Cloud','Identity: fleet-policy.service','Role: policy distribution + fleet context','State: NORMAL','Trust: bounded external dependency'],ivi:['IVI / Cuttlefish','Identity: CN=ivi.vehicle.lab','Zone: infotainment','State: NORMAL','Policy: IVI → ADAS mTLS only'],diag:['Diagnostics','Identity: CN=diag.vehicle.lab','Zone: service and evidence','State: NORMAL','Policy: contextual health checks'],gateway:['Security Gateway','Identity: CN=zt-gw.vehicle.lab','Role: policy decision and enforcement','State: NORMAL','Policy: default deny'],adas:['ADAS-01','Identity: CN=adas.vehicle.lab','Zone: safety critical','State: NORMAL','Policy: ADAS → powertrain TCP/30509'],powertrain:['Powertrain','Identity: CN=powertrain.vehicle.lab','Zone: safety critical','State: NORMAL','Policy: accept approved ADAS API only']};
+$$('[data-ecu]').forEach(n=>n.addEventListener('click',()=>{$$('[data-ecu]').forEach(x=>x.classList.remove('selected'));n.classList.add('selected');$('#ecuDetail').innerHTML=ecuInfo[n.dataset.ecu].map((x,i)=>i?x:`<b>${x}</b>`).join('<br>');award('ecu-inspected',10,'observer')}));
+const scenarios={healthy:{health:96,trusted:5,restricted:0,quarantine:0,violations:0,state:'normal',score:96,msg:'All monitored ECUs satisfy the current training policy.'},suspicious:{health:74,trusted:4,restricted:1,quarantine:0,violations:3,state:'restricted',score:68,msg:'ADAS-01 evidence drift detected. Normal egress is restricted while fresh evidence is requested.'},compromised:{health:48,trusted:4,restricted:0,quarantine:1,violations:7,state:'quarantine',score:32,msg:'ADAS-01 is quarantined after measurement mismatch and repeated unauthorized service attempts.'},recovered:{health:91,trusted:5,restricted:0,quarantine:0,violations:0,state:'normal',score:91,msg:'Approved image restored and fresh attestation verified. Least-privilege service is reinstated.'}};
+function applyScenario(name){const s=scenarios[name];$('#healthValue').textContent=s.health;$('#healthBar').style.width=s.health+'%';$('#trustedCount').textContent=s.trusted;$('#restrictedCount').textContent=s.restricted;$('#quarantineCount').textContent=s.quarantine;$('#violationCount').textContent=s.violations;const m=$('#cockpitMessage');m.className='cockpit-message callout '+(s.state==='normal'?'ok':s.state==='restricted'?'warn':'danger');m.textContent=s.msg;const adas=$('[data-ecu="adas"]');adas.classList.remove('restricted','quarantine');if(s.state!=='normal')adas.classList.add(s.state);$('#adasNodeState').textContent=`${s.state.toUpperCase()} · score ${s.score}`;$$('[data-path="gw-adas"],[data-path="gw-pt"]').forEach(p=>{p.classList.remove('warn','block');if(s.state==='restricted')p.classList.add('warn');if(s.state==='quarantine')p.classList.add('block')});$$('.scenario-btn').forEach(b=>b.classList.toggle('active',b.dataset.scenario===name));if(name==='compromised')award('scenario-compromised',20)}
+$$('.scenario-btn').forEach(b=>b.addEventListener('click',()=>applyScenario(b.dataset.scenario)));applyScenario('healthy');
+$('#resetMission').addEventListener('click',()=>{['zt-session5-actions','zt-session5-xp','zt-session5-labdone'].forEach(k=>{try{localStorage.removeItem(k)}catch{}});actions=new Set();xp=0;$$('.lab').forEach(l=>l.classList.remove('completed'));$$('.mission-step').forEach(l=>l.classList.remove('done'));renderRewards();applyScenario('healthy');toast('Mission progress reset')});
+
+// Glossary.
+const glossary={attestation:['Attestation','Evidence that an ECU is running a particular measured state, usually bound to a device key and a fresh challenge.'],nonce:['Nonce','A value intended for one use. A verifier includes it so an old signed report cannot be replayed as fresh evidence.'],pep:['Policy enforcement point','The component that applies an allow, restrict, or deny decision. In the lab, nftables on zt-gw is the PEP.'],pdp:['Policy decision point','The component that evaluates identity, evidence, context, and policy to decide what should be allowed.'],mtls:['Mutual TLS','TLS where both client and server present and prove possession of certificate-bound private keys.'],secoc:['AUTOSAR SecOC','A mechanism for authenticity and freshness protection of automotive PDUs. It is not a mutual TLS tunnel and does not inherently encrypt the payload.'],microsegmentation:['Microsegmentation','Dividing communication into narrowly permitted identity-to-service paths rather than trusting a broad network zone.'],quarantine:['Quarantine','A constrained policy state that blocks selected communication. In safety-critical systems it must be designed with hazard analysis and safe fallback behavior.'],trustscore:['Trust score','A transparent policy abstraction combining evidence signals. It is not a universal automotive standard.'],rootoftrust:['Root of trust','A protected foundation used to establish confidence in keys, measurements, or boot state.']};
+function renderGlossary(filter=''){const list=$('#glossaryList');list.innerHTML=Object.values(glossary).filter(([t,d])=>(t+' '+d).toLowerCase().includes(filter.toLowerCase())).map(([t,d])=>`<div class="glossary-entry"><b>${t}</b><div class="muted">${d}</div></div>`).join('')||'<p class="muted">No matching term.</p>'}
+function openGlossary(term=''){renderGlossary(term);$('#glossarySearch').value=term;$('#glossaryDialog').showModal()}
+$('#glossaryBtn').addEventListener('click',()=>openGlossary());$('#glossaryClose').addEventListener('click',()=>$('#glossaryDialog').close());$('#glossarySearch').addEventListener('input',e=>renderGlossary(e.target.value));$$('[data-term]').forEach(b=>b.addEventListener('click',()=>openGlossary(b.dataset.term)));
+
+// Voice controls: narrate only the current section, never auto-advance.
+let utterance=null,voicePaused=false;const synth=window.speechSynthesis;
+function narrationText(section){const c=section.cloneNode(true);$$('pre,code,button,input,select,table,details,.trainer-note,.labbody',c).forEach(x=>x.remove());return (c.innerText||'').replace(/\s+/g,' ').trim().slice(0,2600)}
+function stopVoice(){if(synth)synth.cancel();voicePaused=false;$$('.speaking').forEach(x=>x.classList.remove('speaking'))}
+function playVoice(restart=false){if(!('speechSynthesis'in window)){toast('Voice synthesis is not supported in this browser');return}if(voicePaused&&!restart){synth.resume();voicePaused=false;return}stopVoice();const target=currentSection||$('#mission');utterance=new SpeechSynthesisUtterance(narrationText(target));utterance.rate=+$('#voiceRate').value;utterance.onend=()=>target.classList.remove('speaking');utterance.onerror=()=>target.classList.remove('speaking');target.classList.add('speaking');synth.speak(utterance)}
+$('#voicePlay').addEventListener('click',()=>playVoice());$('#voicePause').addEventListener('click',()=>{if(!synth)return;if(synth.paused){synth.resume();voicePaused=false}else if(synth.speaking){synth.pause();voicePaused=true}});$('#voiceStop').addEventListener('click',stopVoice);$('#voiceRestart').addEventListener('click',()=>playVoice(true));$('#voiceRate').value=store.get('zt-voice-rate')||'1';$('#voiceRate').addEventListener('change',()=>{store.set('zt-voice-rate',$('#voiceRate').value);if(synth?.speaking)playVoice(true)});
+$$('main .section').forEach(section=>{const h=section.querySelector('.wrap>h2');if(h){const row=document.createElement('div');row.className='section-heading-row';h.parentNode.insertBefore(row,h);row.appendChild(h);const b=document.createElement('button');b.className='mini-btn speak-section';b.textContent='🔊 Explain section';b.addEventListener('click',()=>{currentSection=section;playVoice(true)});row.appendChild(b)}});
+
+// Attestation X-ray.
+const evidenceBase={ecu_id:'adas-01',nonce:'N-7C21',boot_state:'verified',firmware_hash:'a73f8c91…',debug_enabled:false,timestamp:'2026-08-03T16:21:44Z',signature:'ed25519:valid'};
+const checkNames=['Signature','Fresh nonce','Approved measurement','Expected ECU identity','Secure posture'];
+function showXray(type='good'){const e={...evidenceBase};const checks=[true,true,true,true,true];let reason='Evidence is fresh, signed, and matches policy.';if(type==='tamper'){e.firmware_hash='e901bad0…';checks[2]=false;reason='Firmware measurement does not match the approved baseline.'}if(type==='replay'){e.nonce='N-OLD1';e.timestamp='2026-08-02T09:02:11Z';checks[1]=false;reason='Nonce and timestamp do not prove freshness.'}if(type==='identity'){e.ecu_id='ivi-rogue';checks[3]=false;reason='Signed evidence belongs to a different ECU identity.'}if(type==='debug'){e.debug_enabled=true;checks[4]=false;reason='Debug posture violates the selected production policy.'}if(type==='signature'){e.signature='invalid';checks[0]=false;reason='Evidence signature cannot be verified.'}$('#evidenceJson').textContent=JSON.stringify(e,null,2);$('#xrayChecks').innerHTML=checkNames.map((n,i)=>`<div class="xray-check ${checks[i]?'pass':'fail'}">${checks[i]?'✓':'✗'} ${n}</div>`).join('');const ok=checks.every(Boolean),r=$('#xrayResult');r.className='result '+(ok?'allow':'deny');r.innerHTML=`<b>${ok?'PASS':'REJECT'}</b> — ${reason}`;if(type==='replay')award('xray-replay',20,'replay');else if(type!=='good')award('xray-attack-'+type,8)}showXray();
+$$('[data-xray-attack]').forEach(b=>b.addEventListener('click',()=>showXray(b.dataset.xrayAttack)));let xrayTimer=null,xrayIndex=-1;function resetXray(){clearInterval(xrayTimer);xrayIndex=-1;$$('[data-xray-step]').forEach(x=>x.classList.remove('active','pass'))}$('#xrayReset').addEventListener('click',resetXray);$('#xrayPlay').addEventListener('click',()=>{resetXray();xrayTimer=setInterval(()=>{if(xrayIndex>=0)$(`[data-xray-step="${xrayIndex}"]`)?.classList.add('pass');xrayIndex++;if(xrayIndex>=6){clearInterval(xrayTimer);award('xray-complete',10);return}$(`[data-xray-step="${xrayIndex}"]`)?.classList.add('active')},650)});
+
+// Incident timeline.
+const events=$$('#timelineEvents .timeline-event');let timelineTimer=null,timelineTime=0,timelineRunning=false;
+function renderTimeline(){const speed=+$('#timelineSpeed').value;$('#timelineClock').textContent='00:'+String(timelineTime).padStart(2,'0');events.forEach(e=>{const t=+e.dataset.time;e.classList.toggle('active',t===timelineTime);e.classList.toggle('done',t<timelineTime)});if(timelineTime<12){$('#timelineStatus').className='callout ok';$('#timelineStatus').innerHTML='<b>Vehicle normal.</b><br>Identity and baseline checks are passing.';applyScenario('healthy')}else if(timelineTime<23){$('#timelineStatus').className='callout warn';$('#timelineStatus').innerHTML='<b>ADAS restricted.</b><br>Evidence drift is under investigation; normal egress is constrained.';applyScenario('suspicious')}else if(timelineTime<31){$('#timelineStatus').className='callout danger';$('#timelineStatus').innerHTML='<b>ADAS quarantined.</b><br>Repeated violations pushed trust below the quarantine threshold.';applyScenario('compromised')}else{$('#timelineStatus').className='callout ok';$('#timelineStatus').innerHTML='<b>Controlled recovery.</b><br>Restore, re-attest, re-authorize, then monitor.';applyScenario('recovered');award('timeline-complete',35,'incident')}$('#timelineCheckpoint').classList.toggle('show',timelineTime>=16&&timelineTime<23);if(timelineTime>=31){clearInterval(timelineTimer);timelineRunning=false}}
+function startTimeline(){if(timelineRunning)return;timelineRunning=true;timelineTimer=setInterval(()=>{timelineTime=Math.min(31,timelineTime+1);renderTimeline()},1000/(+$('#timelineSpeed').value))}$('#timelinePlay').addEventListener('click',startTimeline);$('#timelinePause').addEventListener('click',()=>{clearInterval(timelineTimer);timelineRunning=false});$('#timelineRestart').addEventListener('click',()=>{clearInterval(timelineTimer);timelineRunning=false;timelineTime=0;renderTimeline()});$('#timelineSpeed').addEventListener('change',()=>{if(timelineRunning){clearInterval(timelineTimer);timelineRunning=false;startTimeline()}});renderTimeline();
+$$('[data-checkpoint]').forEach(b=>b.addEventListener('click',()=>{const correct=b.dataset.checkpoint==='restrict',r=$('#checkpointFeedback');r.className='result '+(correct?'allow':'deny');r.innerHTML=correct?'<b>Correct.</b> Restrict unsafe communication, request fresh evidence, and preserve engineered safe behavior.':'<b>Not the best policy.</b> A valid certificate does not override failed integrity evidence, while a generic shutdown can create safety hazards.';if(correct)award('checkpoint-correct',15)}));
+
+// Predict-before-reveal.
+$$('[data-predict-check]').forEach((b,i)=>b.addEventListener('click',()=>{const card=b.closest('.predict-card'),chosen=$('input:checked',card),r=$('.predict-feedback',card);if(!chosen){r.className='predict-feedback result evaluate';r.textContent='Choose a decision before revealing.';return}const ok=chosen.value===card.dataset.predict;r.className='predict-feedback result '+(ok?'allow':'deny');const explanations=['A certificate proves identity, while stale attestation cannot establish current runtime state. Restrict and request fresh evidence.','A trusted diagnostic identity still needs an explicit, context-safe authorization. Vehicle motion can be a decisive condition.','A valid signature on an old challenge is still replayed evidence. Freshness must fail.'];r.innerHTML=`<b>${ok?'Correct':'Reconsider'}.</b> ${explanations[i]}`;if(ok)award('predict-'+i,15)}));
+
+// Add coaching controls and completion state to every lab.
+const labHints=[['Check that the host—not a restricted container—provides CAP_NET_ADMIN and /run/netns.','Run each preflight command separately to locate the first missing dependency.'],['First prove the allowed flow before testing the denied path.','Inspect nftables counters in zt-gw; a returned page on the IVI negative test means policy failure.'],['Server verification and client verification are separate checks.','Use -verify_ip 10.77.20.2 and compare the valid, absent, and unrelated-CA client cases.'],['Freshness and baseline approval are independent of signature validity.','Reset /tmp/zt-session5/attestation after tamper mode before repeating the good case.'],['Run scenarios without --apply first, then inspect the dynamic nftables sets after applying.','RESTRICTED should block normal ADAS egress; healthy should remove the address and restore only approved flow.'],['Select the intended ADB serial explicitly when several devices appear.','A userdebug build can pass the lab profile but should fail the stricter production profile.'],['Record evidence, decision, enforcement, and recovery as separate timeline events.','Prove quarantine in both directions and inspect counters before restoring the healthy state.'],['Terminate namespace processes before deleting namespaces.','The final grep should find no zt-* namespace and /tmp/zt-session5 should be absent.']];
+let labDone=[];try{labDone=JSON.parse(store.get('zt-session5-labdone')||'[]')}catch{}
+$$('.lab').forEach((lab,i)=>{if(labDone[i])lab.classList.add('completed');const body=$('.labbody',lab);const c=document.createElement('div');c.className='labcoach';c.innerHTML=`<div class="labcoach-row"><button class="mini-btn" data-coach="hint1">💡 First hint</button><button class="mini-btn" data-coach="hint2">🧭 Stronger hint</button><button class="mini-btn" data-coach="expected">👀 Expected result</button><button class="mini-btn" data-coach="complete">${labDone[i]?'✓ Completed':'Mark complete'}</button></div><div class="labcoach-output"></div>`;body.insertBefore(c,body.firstChild);c.addEventListener('click',e=>{const a=e.target.dataset.coach;if(!a)return;const o=$('.labcoach-output',c);if(a==='hint1'||a==='hint2'){o.textContent=labHints[i][a==='hint1'?0:1];o.classList.add('show')}if(a==='expected'){const expected=$('.expected',body);o.innerHTML=expected?expected.innerHTML:'Compare the command exit status and policy counters with the stated pass criteria.';o.classList.add('show')}if(a==='complete'){lab.classList.add('completed');labDone[i]=true;store.set('zt-session5-labdone',JSON.stringify(labDone));e.target.textContent='✓ Completed';award('lab-complete-'+i,20);renderRewards()}})});renderRewards();
+
+const sections=$$('main .section');const links=$$('.navlinks a');const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){currentSection=e.target;links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-35% 0px -55%'});sections.forEach(s=>obs.observe(s));
+})();
+</script>
+</body></html>

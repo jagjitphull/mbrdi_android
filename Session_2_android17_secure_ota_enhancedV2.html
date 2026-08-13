@@ -1,0 +1,1507 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>Session 2 — Secure OTA Update Delivery | Android 17 + SWUpdate</title>
+<style>
+:root{
+ --bg:#07111a;--panel:#0d1b29;--panel2:#13273b;--panel3:#1b3249;
+ --text:#eef8ff;--muted:#a9bfd1;--line:#2b4a63;--a:#69ddff;--b:#8cf0b3;
+ --c:#c2a8ff;--warn:#ffd166;--bad:#ff7e8c;--code:#050b12;
+ --shadow:0 16px 44px rgba(0,0,0,.3);--r:18px;--nav:315px
+}
+html[data-theme="light"]{
+ --bg:#f3f8fb;--panel:#fff;--panel2:#edf5fa;--panel3:#e0edf6;
+ --text:#102337;--muted:#526b80;--line:#c5d9e8;--a:#006f9d;--b:#087f5b;
+ --c:#6549c9;--warn:#8b5a00;--bad:#b42338;--code:#eef3f7;--shadow:0 12px 32px rgba(21,55,82,.12)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--text);font:16px/1.64 system-ui,-apple-system,"Segoe UI",sans-serif;background:
+radial-gradient(circle at 90% -8%,rgba(105,221,255,.14),transparent 34%),
+radial-gradient(circle at 0 28%,rgba(194,168,255,.09),transparent 28%),var(--bg)}
+a{color:var(--a)}button,input,select{font:inherit}.top{position:sticky;top:0;z-index:80;display:flex;gap:.55rem;align-items:center;padding:.65rem 1rem;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px)}
+.brand{margin-right:auto;font-weight:900}.brand span{color:var(--a)}.btn,.icon{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:11px;padding:.55rem .76rem;cursor:pointer;transition:.18s}.btn:hover,.icon:hover{border-color:var(--a);transform:translateY(-1px)}.btn.primary{border:0;background:linear-gradient(135deg,var(--a),var(--b));color:#03161e;font-weight:900}.search{width:min(34vw,340px);border:1px solid var(--line);background:var(--panel);color:var(--text);padding:.58rem .8rem;border-radius:11px}
+.layout{display:grid;grid-template-columns:var(--nav) minmax(0,1fr)}aside{position:sticky;top:58px;height:calc(100vh - 58px);overflow:auto;padding:1rem;border-right:1px solid var(--line);background:color-mix(in srgb,var(--panel) 89%,transparent)}aside h2{font-size:.8rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}nav a{display:block;text-decoration:none;color:var(--muted);padding:.43rem .62rem;border-radius:9px}nav a:hover,nav a.active{background:var(--panel2);color:var(--text)}.track{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b))}
+main{min-width:0;max-width:1540px;padding:clamp(1rem,3vw,3rem)}.hero{position:relative;overflow:hidden;padding:clamp(1.4rem,4vw,3.8rem);border:1px solid var(--line);border-radius:28px;background:linear-gradient(145deg,var(--panel),var(--panel2));box-shadow:var(--shadow)}.hero:after{content:"";position:absolute;width:420px;height:420px;border:1px solid rgba(105,221,255,.28);border-radius:50%;right:-170px;top:-205px;box-shadow:0 0 0 55px rgba(105,221,255,.04),0 0 0 110px rgba(105,221,255,.02)}.tag,.pill{display:inline-flex;align-items:center;gap:.35rem;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:.25rem .65rem;font-size:.84rem}h1{font-size:clamp(2.1rem,5.1vw,4.8rem);line-height:1.02;margin:.75rem 0;max-width:1100px}h1 em{font-style:normal;color:var(--a)}.hero p{max-width:990px;color:var(--muted);font-size:1.08rem}.badges{display:flex;gap:.5rem;flex-wrap:wrap}
+section{scroll-margin-top:78px;margin:2.2rem 0;padding:clamp(1rem,2.4vw,2rem);border:1px solid var(--line);border-radius:var(--r);background:var(--panel);box-shadow:var(--shadow)}section>h2{font-size:clamp(1.45rem,3vw,2.3rem);margin:.1rem 0 .45rem}h3{line-height:1.25}.lead,.muted{color:var(--muted)}.small{font-size:.9rem}.tiny{font-size:.79rem}.grid{display:grid;gap:1rem}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{border:1px solid var(--line);background:var(--panel2);border-radius:15px;padding:1rem;min-width:0}.card h3{margin-top:0}.callout{border-left:4px solid var(--a);background:var(--panel2);padding:.9rem 1rem;border-radius:0 12px 12px 0;margin:1rem 0}.callout.good{border-color:var(--b)}.callout.warn{border-color:var(--warn)}.callout.bad{border-color:var(--bad)}
+pre{position:relative;background:var(--code);border:1px solid var(--line);border-radius:14px;padding:1rem;overflow:auto;white-space:pre;line-height:1.44;max-height:620px}code,kbd{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.copy{position:absolute;right:.5rem;top:.5rem;font-size:.74rem}.expected{border-left:3px solid var(--b)}table{width:100%;border-collapse:collapse;display:block;overflow:auto}th,td{padding:.68rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:var(--a);white-space:nowrap}
+.controls{display:flex;gap:.65rem;flex-wrap:wrap;align-items:end}.field{display:grid;gap:.3rem;min-width:150px;flex:1}.field label{font-size:.83rem;color:var(--muted)}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--code);color:var(--text);padding:.58rem}.result{margin-top:1rem;padding:1rem;border:1px dashed var(--line);border-radius:13px;background:var(--code)}.ok{color:var(--b)}.no{color:var(--bad)}.maybe{color:var(--warn)}details{border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:.65rem .85rem;margin:.65rem 0}summary{cursor:pointer;font-weight:800}.tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem}.tab{border:1px solid var(--line);background:var(--panel2);color:var(--muted);padding:.45rem .72rem;border-radius:10px;cursor:pointer}.tab.active{color:var(--text);border-color:var(--a)}.pane{display:none}.pane.active{display:block}
+.flow{display:flex;gap:.65rem;align-items:stretch;overflow:auto;padding:.5rem 0}.flow>.card{min-width:180px;flex:1}.pipeline{display:grid;grid-template-columns:repeat(8,minmax(130px,1fr));gap:.7rem;overflow:auto;padding:.5rem}.stage{min-width:130px;border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:.85rem;text-align:center;transition:.25s}.stage.on{border-color:var(--a);transform:translateY(-5px);box-shadow:0 0 24px rgba(105,221,255,.15)}.stage strong{display:block}.stage span{font-size:.78rem;color:var(--muted)}.packet{width:22px;height:22px;border-radius:50%;background:var(--warn);box-shadow:0 0 20px var(--warn);margin:.8rem 0;transform:translateX(0);transition:transform .65s,background .2s}
+.trust{display:grid;grid-template-columns:repeat(5,1fr);gap:.7rem}.gate{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:.8rem;text-align:center}.gate.pass{border-color:var(--b)}.gate.fail{border-color:var(--bad)}.chain{display:flex;gap:.55rem;align-items:stretch;overflow:auto}.role{min-width:165px;flex:1;border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:.85rem}.role.detect{border-color:var(--bad);box-shadow:inset 0 -4px var(--bad)}.role.pass{border-color:var(--b)}.slotboard{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.slot{border:1px solid var(--line);background:var(--panel2);border-radius:16px;padding:1rem;min-height:160px}.slot.active{border-color:var(--b)}.slot.pending{border-color:var(--warn)}.slot.bad{border-color:var(--bad)}.state-line{height:8px;background:var(--panel3);border-radius:99px;overflow:hidden;margin:.7rem 0}.state-line span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b));transition:.4s}
+.aclgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}.aclcell{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:.8rem;text-align:center}.aclcell.on{border-color:var(--a)}.quiz-q{border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:1rem;margin:.8rem 0}.quiz-q label{display:block;padding:.35rem;border-radius:8px}.quiz-q label:hover{background:var(--panel3)}.checks label{display:flex;gap:.6rem;padding:.55rem;border-bottom:1px dashed var(--line)}.checks input{margin-top:.35rem}.meter{height:11px;border-radius:99px;background:var(--panel3);overflow:hidden}.meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--b),var(--a));transition:.3s}.hidden{display:none!important}.mobile{display:none}footer{padding:2rem 0;color:var(--muted)}
+@media(max-width:1150px){.pipeline{grid-template-columns:repeat(4,minmax(145px,1fr))}.trust,.aclgrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:980px){.layout{display:block}aside{display:none}.mobile{display:inline-flex}.search{width:min(44vw,280px)}.g2,.g3,.g4,.slotboard,.trust,.aclgrid{grid-template-columns:1fr}.pipeline{grid-template-columns:1fr}}
+@media print{.top,aside,.copy,.no-print{display:none!important}.layout{display:block}body{background:white;color:#111}main{max-width:none;padding:0}section,.hero,.card{box-shadow:none;border-color:#bbb;break-inside:avoid}pre{white-space:pre-wrap;background:#f5f5f5;color:#111;max-height:none}.pane{display:block!important}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}body.reduce *{animation:none!important;transition:none!important}
+
+/* ===== Guided-learning enhancement layer ===== */
+:root{--focus-ring:0 0 0 3px color-mix(in srgb,var(--a) 28%,transparent);--success-bg:color-mix(in srgb,var(--b) 12%,var(--panel));--danger-bg:color-mix(in srgb,var(--bad) 11%,var(--panel));}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.top{flex-wrap:wrap}.top .mini-select{width:auto;min-width:105px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:.5rem .58rem}
+.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:2rem;align-items:center}.hero-copy{min-width:0}.hero-visual{border:1px solid color-mix(in srgb,var(--a) 35%,var(--line));border-radius:22px;background:linear-gradient(150deg,color-mix(in srgb,var(--panel3) 74%,transparent),color-mix(in srgb,var(--code) 88%,transparent));padding:1rem;min-height:350px;display:grid;place-items:center;box-shadow:inset 0 0 60px rgba(105,221,255,.05)}
+.hero-svg{width:100%;height:auto;max-height:390px}.hero-svg .route{stroke:var(--a);stroke-width:4;stroke-linecap:round;stroke-dasharray:10 9;animation:routeMove 2.8s linear infinite}.hero-svg .node{fill:var(--panel2);stroke:var(--line);stroke-width:2}.hero-svg .node-secure{stroke:var(--b)}.hero-svg .label{fill:var(--text);font:700 14px system-ui}.hero-svg .sub{fill:var(--muted);font:11px system-ui}.hero-svg .parcel{fill:var(--warn);filter:drop-shadow(0 0 8px color-mix(in srgb,var(--warn) 70%,transparent));animation:parcelPulse 1.6s ease-in-out infinite}
+@keyframes routeMove{to{stroke-dashoffset:-38}}@keyframes parcelPulse{50%{transform:scale(1.13);transform-origin:center}}
+.mission-status{margin-top:1rem;border:1px solid var(--line);background:var(--code);border-radius:14px;padding:.8rem}.mission-status h3{margin:.05rem 0 .55rem;font-size:.95rem}.status-row{display:flex;justify-content:space-between;gap:.5rem;padding:.26rem 0;font-size:.82rem;border-bottom:1px dashed color-mix(in srgb,var(--line) 75%,transparent)}.status-row:last-child{border:0}.status-value{font-weight:800;color:var(--a)}
+.mission-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.mission-card{position:relative;overflow:hidden;border:1px solid var(--line);background:var(--panel2);border-radius:17px;padding:1rem}.mission-card .avatar{font-size:2rem}.mission-card h3{margin:.35rem 0}.mission-card:after{content:"";position:absolute;right:-24px;bottom:-34px;width:90px;height:90px;border-radius:50%;background:color-mix(in srgb,var(--a) 8%,transparent)}
+.mission-brief{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:1rem}.mission-console{border:1px solid var(--line);background:var(--code);border-radius:16px;padding:1rem;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.console-line{display:flex;justify-content:space-between;gap:1rem;padding:.38rem 0;border-bottom:1px dashed var(--line)}.console-line:last-child{border:0}.console-ok{color:var(--b)}.console-warn{color:var(--warn)}
+.notes-box{width:100%;min-height:125px;resize:vertical;border:1px solid var(--line);border-radius:12px;background:var(--code);color:var(--text);padding:.8rem}
+.section-heading{display:flex;align-items:flex-start;gap:.75rem;justify-content:space-between;flex-wrap:wrap}.section-heading h2{margin:.1rem 0 .45rem}.section-tools{display:flex;gap:.4rem;flex-wrap:wrap}.section-tools .btn{font-size:.82rem;padding:.42rem .62rem}.section-tools .speaking{border-color:var(--b);background:var(--success-bg)}
+.voice-panel{position:fixed;z-index:120;right:1rem;top:66px;width:min(420px,calc(100vw - 2rem));border:1px solid var(--line);border-radius:17px;background:color-mix(in srgb,var(--panel) 96%,transparent);box-shadow:var(--shadow);padding:1rem;backdrop-filter:blur(16px)}.voice-panel[hidden]{display:none}.voice-head{display:flex;gap:.7rem;align-items:center}.voice-head strong{margin-right:auto}.voice-controls{display:flex;gap:.45rem;flex-wrap:wrap;margin:.8rem 0}.voice-controls .btn{min-width:54px}.voice-settings{display:grid;grid-template-columns:1fr 110px;gap:.6rem}.voice-settings select{width:100%;border:1px solid var(--line);background:var(--code);color:var(--text);border-radius:10px;padding:.5rem}.voice-now{margin-top:.7rem;max-height:130px;overflow:auto;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line);padding-top:.65rem}.narrating{outline:2px solid color-mix(in srgb,var(--b) 65%,transparent);outline-offset:4px}.narration-mark{background:color-mix(in srgb,var(--warn) 25%,transparent);border-radius:4px;padding:0 .08rem}
+.learning-lens{margin:1rem 0;border:1px solid var(--line);border-radius:16px;background:var(--code);overflow:hidden}.lens-tabs{display:flex;gap:.35rem;flex-wrap:wrap;padding:.65rem;border-bottom:1px solid var(--line);background:var(--panel2)}.lens-tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:10px;padding:.42rem .7rem;cursor:pointer}.lens-tab.active{color:var(--text);border-color:var(--a);background:color-mix(in srgb,var(--a) 10%,var(--panel))}.lens-pane{display:none;padding:1rem}.lens-pane.active{display:block}.lens-pane p{max-width:82ch;margin:.2rem 0}.lens-pane.deep{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.92rem}
+.diagram-card{margin:1rem 0;border:1px solid var(--line);background:linear-gradient(145deg,var(--panel2),var(--code));border-radius:18px;padding:1rem;overflow:auto}.diagram-card h3{margin:.1rem 0 .7rem}.concept-svg{display:block;width:100%;height:auto;min-width:650px;max-height:390px}.concept-svg text{fill:var(--text);font-family:system-ui}.concept-svg .muted-text{fill:var(--muted)}.concept-svg .box{fill:var(--panel);stroke:var(--line);stroke-width:2}.concept-svg .box-good{fill:var(--success-bg);stroke:var(--b);stroke-width:2}.concept-svg .box-warn{fill:color-mix(in srgb,var(--warn) 9%,var(--panel));stroke:var(--warn);stroke-width:2}.concept-svg .box-bad{fill:var(--danger-bg);stroke:var(--bad);stroke-width:2}.concept-svg .arrow{stroke:var(--a);stroke-width:3;fill:none;marker-end:url(#arrowhead)}.concept-svg .arrow-good{stroke:var(--b);stroke-width:3;fill:none;marker-end:url(#arrowheadGood)}.concept-svg .arrow-bad{stroke:var(--bad);stroke-width:3;fill:none;marker-end:url(#arrowheadBad)}
+.remember{display:grid;grid-template-columns:auto 1fr;gap:.7rem;align-items:start;border:1px solid color-mix(in srgb,var(--c) 55%,var(--line));background:color-mix(in srgb,var(--c) 8%,var(--panel2));border-radius:14px;padding:.9rem;margin:1rem 0}.remember .emoji{font-size:1.7rem}.remember strong{display:block;color:var(--c)}
+.character-strip{display:flex;gap:.7rem;overflow:auto;padding:.3rem 0}.character{min-width:185px;border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:.8rem}.character b{display:block;margin:.2rem 0}.character span{font-size:.84rem;color:var(--muted)}
+.lab-journey{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem;margin:1rem 0}.lab-step{border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:.8rem}.lab-step b{display:block;color:var(--a)}.lab-step span{font-size:.84rem;color:var(--muted)}
+.lab-toolbar{position:sticky;top:58px;z-index:30;display:flex;gap:.5rem;flex-wrap:wrap;padding:.65rem;border:1px solid var(--line);border-radius:13px;background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(12px);margin:.8rem 0}.tree{white-space:pre;overflow:auto;background:var(--code);border:1px solid var(--line);border-radius:14px;padding:1rem;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;line-height:1.6}.tree .folder{color:var(--a);font-weight:800}.tree .purpose{color:var(--muted)}
+#labs details{transition:border-color .2s,transform .2s}#labs details:hover{border-color:color-mix(in srgb,var(--a) 60%,var(--line))}#labs details[open]{background:color-mix(in srgb,var(--panel2) 92%,var(--a) 2%)}#labs summary{padding:.25rem 0}.wrap-code pre{white-space:pre-wrap;overflow-wrap:anywhere}.large-code pre{font-size:1.03rem}.hide-code #labs pre:not(.expected){display:none}.hide-code #labs details[open] summary:after{content:"  • code hidden";color:var(--warn);font-weight:500;font-size:.8rem}
+.game-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:1rem}.game-card{border:1px solid var(--line);background:var(--panel2);border-radius:17px;padding:1rem}.match-row{display:grid;grid-template-columns:minmax(175px,.9fr) minmax(230px,1.1fr);gap:.65rem;align-items:center;padding:.55rem 0;border-bottom:1px dashed var(--line)}.match-row:last-child{border:0}.match-row select{width:100%;border:1px solid var(--line);background:var(--code);color:var(--text);border-radius:10px;padding:.5rem}.match-row.correct{background:color-mix(in srgb,var(--b) 8%,transparent)}.match-row.wrong{background:color-mix(in srgb,var(--bad) 8%,transparent)}.design-option{display:block;border:1px solid var(--line);border-radius:12px;padding:.7rem;margin:.55rem 0;cursor:pointer}.design-option:hover{background:var(--panel3)}
+.transcript-dialog{position:fixed;inset:0;z-index:150;display:grid;place-items:center;padding:1rem;background:rgba(0,0,0,.65)}.transcript-dialog[hidden]{display:none}.transcript-card{width:min(780px,100%);max-height:82vh;overflow:auto;border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:var(--shadow);padding:1rem}.transcript-card header{display:flex;align-items:center;gap:1rem}.transcript-card header h3{margin-right:auto}.transcript-text{white-space:pre-wrap;line-height:1.75;color:var(--muted)}
+.glossary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}.glossary-item{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:.8rem}.glossary-item dt{font-weight:900;color:var(--a)}.glossary-item dd{margin:.25rem 0 0;color:var(--muted)}abbr[title]{text-decoration:underline dotted;color:inherit;cursor:help;text-underline-offset:3px}
+.toast{position:fixed;z-index:170;left:50%;bottom:1.2rem;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:.65rem 1rem;box-shadow:var(--shadow);transition:.25s}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:1150px){.hero-grid,.mission-brief,.game-grid{grid-template-columns:1fr}.mission-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lab-journey{grid-template-columns:repeat(2,minmax(0,1fr))}.glossary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.hero-visual{min-height:260px}.mission-grid,.lab-journey,.glossary-grid{grid-template-columns:1fr}.match-row{grid-template-columns:1fr}.voice-settings{grid-template-columns:1fr}.top .mini-select{display:none}.search{order:10;width:100%}.section-heading{display:block}.section-tools{margin:.4rem 0}.concept-svg{min-width:600px}}
+@media print{.voice-panel,.section-tools,.learning-lens .lens-tabs,.lab-toolbar,.game-card button,.notes-box,.toast,.transcript-dialog{display:none!important}.lens-pane{display:block!important}.hero-grid{grid-template-columns:1fr 1fr}.hero-visual{min-height:250px}.diagram-card{overflow:visible}.concept-svg{min-width:0}.mission-grid,.glossary-grid{grid-template-columns:repeat(3,1fr)}}
+
+</style>
+</head>
+<body>
+<header class="top">
+<button class="icon mobile" id="menu">☰</button>
+<div class="brand">Session 2 • <span>Secure OTA Update Delivery</span></div>
+<select class="mini-select" id="learningMode" aria-label="Learning depth"><option value="beginner">Beginner view</option><option value="engineer">Engineer view</option><option value="deep">Deep view</option></select>
+<button class="icon" id="voiceToggle" title="Open narration controls" aria-expanded="false">🔊 Voice</button>
+<input class="search" id="search" placeholder="Search TLS, Uptane, rollback…">
+<button class="icon" id="motion">◫</button>
+<button class="icon" id="theme">☀</button>
+<button class="icon" onclick="print()">⎙</button>
+</header>
+<div class="voice-panel" id="voicePanel" hidden>
+  <div class="voice-head"><span aria-hidden="true">🎙️</span><strong>Optional concept voiceover</strong><button class="icon" id="voiceClose" aria-label="Close narration controls">✕</button></div>
+  <div class="voice-controls">
+    <button class="btn primary" id="voicePlay">▶ Play</button>
+    <button class="btn" id="voicePause">⏸ Pause</button>
+    <button class="btn" id="voiceStop">⏹ Stop</button>
+    <button class="btn" id="voicePrev">⏮ Previous</button>
+    <button class="btn" id="voiceNext">Next ⏭</button>
+  </div>
+  <div class="voice-settings">
+    <label class="field"><span class="tiny muted">Voice</span><select id="voiceSelect" aria-label="Narration voice"></select></label>
+    <label class="field"><span class="tiny muted">Speed</span><select id="voiceRate"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select></label>
+  </div>
+  <div class="voice-now" id="voiceNow">Choose “Explain this section” or press Play while viewing a concept.</div>
+</div>
+<div class="transcript-dialog" id="transcriptDialog" hidden role="dialog" aria-modal="true" aria-labelledby="transcriptTitle">
+  <div class="transcript-card"><header><h3 id="transcriptTitle">Narration transcript</h3><button class="icon" id="transcriptClose" aria-label="Close transcript">✕</button></header><div class="transcript-text" id="transcriptText"></div></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="layout">
+<aside id="toc">
+<h2>Full-day session</h2>
+<nav>
+<a href="#mission">1. Mission briefing</a>
+<a href="#overview">2. Session plan</a>
+<a href="#architecture">3. OTA architecture</a>
+<a href="#tls">4. TLS delivery</a>
+<a href="#signing">5. Signing & hashes</a>
+<a href="#rollback">6. Rollback & recovery</a>
+<a href="#uptane">7. Uptane metadata</a>
+<a href="#swupdate">8. SWUpdate authorization</a>
+<a href="#labs">9. Production lab</a>
+<a href="#cuttlefish">10. Cuttlefish probes</a>
+<a href="#games">11. Attack games</a>
+<a href="#quiz">12. Knowledge check</a>
+<a href="#acceptance">13. Acceptance test</a>
+<a href="#glossary">14. Glossary</a>
+<a href="#sources">15. Sources</a>
+</nav>
+<p class="small muted">Reading progress</p><div class="track"><div class="bar" id="progress"></div></div>
+<div class="mission-status" aria-label="Mission status">
+  <h3>🚗 Vehicle-001 status</h3>
+  <div class="status-row"><span>Current release</span><span class="status-value">1.0.0</span></div>
+  <div class="status-row"><span>Candidate release</span><span class="status-value">2.0.0</span></div>
+  <div class="status-row"><span>Active slot</span><span class="status-value" id="sideActiveSlot">A</span></div>
+  <div class="status-row"><span>Trust gates</span><span class="status-value" id="sideTrustGates">0 / 8</span></div>
+  <div class="status-row"><span>Threat</span><span class="status-value" id="sideThreat">Monitoring</span></div>
+</div>
+</aside>
+
+<main>
+<article class="hero" id="top">
+<div class="hero-grid">
+  <div class="hero-copy">
+    <span class="tag">Ubuntu 24.x KVM • Android 17 Cuttlefish • SWUpdate/Uptane simulation</span>
+    <h1>Secure an OTA update from <em>release key to successful boot</em></h1>
+    <p>Guide Vehicle-001 through a hostile delivery route. Every gate must separately verify transport, authority, exact bytes, device assignment, rollback policy and boot health.</p>
+    <div class="badges"><span class="pill">🎯 Mission-based learning</span><span class="pill">🎙️ Optional voiceover</span><span class="pill">🧪 Positive + negative labs</span><span class="pill">✅ 14-test acceptance run</span></div>
+    <div class="controls no-print" style="margin-top:1rem"><a class="btn primary" href="#mission">Start mission</a><button class="btn" id="heroNarrate">🔊 Hear briefing</button></div>
+  </div>
+  <div class="hero-visual" aria-label="Illustration of a signed OTA package moving from build server to vehicle boot">
+    <svg class="hero-svg" viewBox="0 0 620 420" role="img" aria-labelledby="heroSvgTitle heroSvgDesc">
+      <title id="heroSvgTitle">Secure OTA journey</title><desc id="heroSvgDesc">A signed update travels through repository, TLS, verification and inactive slot before a healthy boot.</desc>
+      <path class="route" d="M92 92 C180 38 230 120 310 92 S445 35 526 93 M526 93 C580 160 500 215 530 280 S470 380 382 332 M382 332 C300 385 242 290 166 333 S55 286 92 215 M92 215 C60 168 53 126 92 92" fill="none"/>
+      <g transform="translate(28 48)"><rect class="node" rx="18" width="128" height="88"/><text class="label" x="64" y="34" text-anchor="middle">Build</text><text class="sub" x="64" y="56" text-anchor="middle">Firmware images</text></g>
+      <g transform="translate(246 48)"><rect class="node node-secure" rx="18" width="128" height="88"/><text class="label" x="64" y="34" text-anchor="middle">Signing vault</text><text class="sub" x="64" y="56" text-anchor="middle">Release authority</text></g>
+      <g transform="translate(464 48)"><rect class="node" rx="18" width="128" height="88"/><text class="label" x="64" y="34" text-anchor="middle">Repository</text><text class="sub" x="64" y="56" text-anchor="middle">Metadata + payload</text></g>
+      <g transform="translate(464 276)"><rect class="node node-secure" rx="18" width="128" height="88"/><text class="label" x="64" y="31" text-anchor="middle">TLS + ACL</text><text class="sub" x="64" y="53" text-anchor="middle">Channel and caller</text></g>
+      <g transform="translate(246 276)"><rect class="node node-secure" rx="18" width="128" height="88"/><text class="label" x="64" y="31" text-anchor="middle">Verifier</text><text class="sub" x="64" y="53" text-anchor="middle">Signature + hash</text></g>
+      <g transform="translate(28 276)"><rect class="node node-secure" rx="18" width="128" height="88"/><text class="label" x="64" y="31" text-anchor="middle">Slot B</text><text class="sub" x="64" y="53" text-anchor="middle">Healthy boot → commit</text></g>
+      <g transform="translate(296 179)"><path class="parcel" d="M-29-22h58v44h-58z"/><path d="M-29-6h58M0-22v44" stroke="#5c4300" stroke-width="3"/><text class="label" x="0" y="51" text-anchor="middle">OTA 2.0.0</text></g>
+    </svg>
+  </div>
+</div>
+</article>
+
+
+<section id="mission" data-search>
+<div class="section-heading"><h2>1. Mission briefing — protect Vehicle-001</h2></div>
+<p class="lead">Your objective is to deploy version 2.0.0 without trusting any single control too much. The route includes intercepted traffic, altered artifacts, replayed metadata, wrong-ECU assignments and a possible failed boot.</p>
+<div class="mission-brief">
+  <div>
+    <div class="mission-grid">
+      <div class="mission-card"><div class="avatar">🔐</div><h3>Vault</h3><p class="muted">Keeps the private release key away from the vehicle and delivery infrastructure.</p></div>
+      <div class="mission-card"><div class="avatar">📦</div><h3>Courier</h3><p class="muted">Moves the update over TLS but cannot decide whether the bytes are an authorized release.</p></div>
+      <div class="mission-card"><div class="avatar">🔎</div><h3>Inspector</h3><p class="muted">Checks signature, expiry, target identity, length and SHA-256 before staging.</p></div>
+      <div class="mission-card"><div class="avatar">🛡️</div><h3>Gatekeeper</h3><p class="muted">Authorizes the vehicle, operator, campaign, software selection and mode.</p></div>
+      <div class="mission-card"><div class="avatar">🔧</div><h3>Mechanic</h3><p class="muted">Uses A/B recovery to preserve the last working system when the new slot fails.</p></div>
+      <div class="mission-card"><div class="avatar">🕰️</div><h3>Replay Rogue</h3><p class="muted">Attempts freeze, rollback and mix-and-match attacks using previously valid data.</p></div>
+    </div>
+  </div>
+  <div class="mission-console" aria-label="Mission parameters">
+    <div class="console-line"><span>Vehicle</span><strong>Vehicle-001</strong></div>
+    <div class="console-line"><span>Target</span><strong>cuttlefish-x86_64</strong></div>
+    <div class="console-line"><span>Current slot</span><strong class="console-ok">A / healthy</strong></div>
+    <div class="console-line"><span>Candidate slot</span><strong class="console-warn">B / untested</strong></div>
+    <div class="console-line"><span>Rollback floor</span><strong>index 1</strong></div>
+    <div class="console-line"><span>New release</span><strong>2.0.0 / index 2</strong></div>
+    <div class="console-line"><span>Win condition</span><strong class="console-ok">PASS=14 FAIL=0</strong></div>
+  </div>
+</div>
+<div class="remember"><div class="emoji">🧠</div><div><strong>Core mental model</strong>TLS protects the delivery road. Signing protects release authority. Hashes bind metadata to exact bytes. Authorization decides who may update which device. A/B recovery protects availability. None of these replaces the others.</div></div>
+<h3>Your mission notes</h3>
+<textarea class="notes-box" id="missionNotes" placeholder="Write observations, questions, commands to retry, or security controls that stopped an attack…"></textarea>
+<p class="tiny muted" id="notesStatus">Notes stay in this browser using local storage.</p>
+</section>
+
+<section id="overview" data-search>
+<h2>2. Session plan and outcomes</h2>
+<table><thead><tr><th>Time</th><th>Module</th><th>Method</th><th>Outcome</th></tr></thead><tbody>
+<tr><td>09:30–10:15</td><td>OTA trust architecture</td><td>Animated pipeline</td><td>Separate transport, authenticity, integrity and boot trust</td></tr>
+<tr><td>10:15–11:15</td><td>TLS delivery channels</td><td>Certificate/token simulator + HTTPS lab</td><td>Reject untrusted servers and unauthorized callers</td></tr>
+<tr><td>11:30–12:30</td><td>Payload signing and hashes</td><td>Signature/hash simulator + tamper lab</td><td>Explain why both checks are required</td></tr>
+<tr><td>12:30–13:00</td><td>Android payload flow</td><td>update_engine model</td><td>Describe metadata-first verification and inactive-slot writes</td></tr>
+<tr><td>14:00–15:00</td><td>Rollback and recovery</td><td>A/B state machine + failure injection</td><td>Stage, test, commit or fall back safely</td></tr>
+<tr><td>15:00–16:00</td><td>Uptane</td><td>Role graph + attack fixtures</td><td>Detect freeze, rollback, mix-and-match and wrong-ECU attacks</td></tr>
+<tr><td>16:15–17:00</td><td>SWUpdate mode ACL</td><td>Signed SWU + operator ACL lab</td><td>Authorize a caller and a software selection/mode independently</td></tr>
+<tr><td>17:00–17:30</td><td>Assessment</td><td>Quiz + acceptance script</td><td>Complete all security gates with zero unexpected successes</td></tr>
+</tbody></table>
+<div class="callout good"><strong>Safe lab boundary:</strong> the production simulation never writes Cuttlefish partitions. It exercises the complete trust decisions on Ubuntu and performs only read-only capability inspection inside Android. Applying a real Android OTA requires a package built and signed for the exact Cuttlefish build.</div>
+</section>
+
+<section id="architecture" data-search>
+<h2>3. OTA architecture and trust boundaries</h2>
+<p class="lead">Press Play to follow a release. A green path means every independent control accepted the update.</p>
+<div class="learning-lens" data-lens="architecture">
+  <div class="lens-tabs"><button class="lens-tab active" data-level="beginner">🚗 Simple analogy</button><button class="lens-tab" data-level="engineer">🧑‍💻 Engineer view</button><button class="lens-tab" data-level="deep">🔬 Deep view</button></div>
+  <div class="lens-pane active" data-level="beginner"><p>Think of the update as a valuable package crossing eight checkpoints. A guard at one checkpoint cannot perform every other guard’s job.</p></div>
+  <div class="lens-pane" data-level="engineer"><p>The trust chain separates build provenance, offline signing, repository state, TLS server identity, campaign authorization, metadata and payload verification, inactive-slot staging, and post-boot health commitment.</p></div>
+  <div class="lens-pane deep" data-level="deep"><p>ACCEPT = TLS_CA ∧ SAN ∧ CERT_TIME ∧ CALLER_ACL ∧ META_SIG ∧ META_POLICY ∧ PAYLOAD_HASH_LENGTH ∧ BOOT_SUCCESS. Failure before staging must leave the active system untouched; failure after staging must preserve a bootable fallback.</p></div>
+</div>
+<div class="pipeline" id="pipeline">
+<div class="stage"><strong>Build</strong><span>Target files / firmware images</span></div>
+<div class="stage"><strong>Offline signing</strong><span>Release key authenticates metadata</span></div>
+<div class="stage"><strong>Repository</strong><span>Versioned metadata and payload</span></div>
+<div class="stage"><strong>TLS channel</strong><span>Server identity + confidentiality</span></div>
+<div class="stage"><strong>Authorization</strong><span>Vehicle, role, campaign, mode</span></div>
+<div class="stage"><strong>Device verifier</strong><span>Signature, expiry, hash, target</span></div>
+<div class="stage"><strong>Inactive slot</strong><span>Write without replacing working system</span></div>
+<div class="stage"><strong>Boot health</strong><span>Commit or roll back</span></div>
+</div>
+<div class="packet" id="otaPacket"></div>
+<div class="controls no-print"><button class="btn primary" id="playPipeline">Play secure delivery</button><button class="btn" id="narratedPipeline">🎙️ Narrated journey</button><button class="btn" id="failPipeline">Inject signature failure</button><button class="btn" id="resetPipeline">Reset</button></div>
+<div class="result" id="pipelineResult">Ready.</div>
+<div class="grid g3">
+<div class="card"><h3>TLS</h3><p>Authenticates the delivery server and protects data in transit. It does not prove that a payload remains authorized after being copied elsewhere.</p></div>
+<div class="card"><h3>Release signature</h3><p>Authenticates signed metadata or payload independently of the transport channel. The device trusts a pinned or rotated public key.</p></div>
+<div class="card"><h3>Cryptographic hash</h3><p>Binds metadata to exact bytes and length. A validly signed manifest must not be combined with a different artifact.</p></div>
+</div>
+<div class="callout warn"><strong>Key rule:</strong> never treat HTTPS as a replacement for payload signing, and never treat a payload signature as caller authorization. These controls defend against different attackers.</div>
+</section>
+
+<section id="tls" data-search>
+<h2>4. TLS-based delivery channels</h2>
+<div class="grid g2">
+<div class="card"><h3>Server-authenticated TLS</h3><p>The updater validates the issuing CA, certificate time window, hostname/IP SAN and certificate chain. The lab uses a private training CA rather than disabling verification.</p></div>
+<div class="card"><h3>Client/update authorization</h3><p>After TLS establishes the server channel, a bearer token, mutual TLS identity or backend-specific credential can authorize the vehicle. The lab uses a bearer token so the two decisions remain visible.</p></div>
+</div>
+<div class="learning-lens" data-lens="tls"><div class="lens-tabs"><button class="lens-tab active" data-level="beginner">🚪 Simple analogy</button><button class="lens-tab" data-level="engineer">🧑‍💻 Engineer view</button><button class="lens-tab" data-level="deep">🔬 Deep view</button></div><div class="lens-pane active" data-level="beginner"><p>The certificate proves you reached the real warehouse. The token proves your vehicle is allowed to collect this update.</p></div><div class="lens-pane" data-level="engineer"><p>TLS validation covers CA trust, SAN/hostname binding and certificate validity. Application authorization then checks a bearer token, mTLS identity or campaign credential.</p></div><div class="lens-pane deep" data-level="deep"><p>Transport decision: chain_valid ∧ name_bound ∧ time_valid. Delivery decision: transport_decision ∧ caller_authorized. Never use <code>-k</code> as a production fix.</p></div></div>
+<div class="diagram-card"><h3>Visual: two independent doors</h3><svg class="concept-svg" viewBox="0 0 920 245" role="img" aria-label="TLS authenticates the server, then application authorization allows the vehicle">
+<defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="var(--a)"/></marker><marker id="arrowheadGood" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="var(--b)"/></marker></defs>
+<rect class="box" x="20" y="70" width="160" height="95" rx="16"/><text x="100" y="105" text-anchor="middle" font-weight="800">Vehicle-001</text><text class="muted-text" x="100" y="130" text-anchor="middle">requests manifest</text>
+<path class="arrow" d="M180 118H285"/><rect class="box-good" x="285" y="45" width="190" height="145" rx="16"/><text x="380" y="80" text-anchor="middle" font-weight="800">Door 1: TLS</text><text class="muted-text" x="380" y="108" text-anchor="middle">Trusted CA</text><text class="muted-text" x="380" y="130" text-anchor="middle">SAN matches</text><text class="muted-text" x="380" y="152" text-anchor="middle">Certificate current</text>
+<path class="arrow-good" d="M475 118H575"/><rect class="box-good" x="575" y="45" width="190" height="145" rx="16"/><text x="670" y="80" text-anchor="middle" font-weight="800">Door 2: Authorization</text><text class="muted-text" x="670" y="112" text-anchor="middle">Token / mTLS identity</text><text class="muted-text" x="670" y="136" text-anchor="middle">Vehicle campaign ACL</text>
+<path class="arrow-good" d="M765 118H865"/><text x="870" y="108" text-anchor="middle" font-size="26">📦</text><text x="870" y="142" text-anchor="middle" font-weight="800">Download</text>
+</svg></div>
+<div class="controls">
+<div class="field"><label>Trusted CA</label><select id="tlsCa"><option value="yes">Yes</option><option value="no">No</option></select></div>
+<div class="field"><label>Hostname/SAN match</label><select id="tlsHost"><option value="yes">Yes</option><option value="no">No</option></select></div>
+<div class="field"><label>Certificate current</label><select id="tlsTime"><option value="yes">Yes</option><option value="no">Expired/not yet valid</option></select></div>
+<div class="field"><label>Authorization token</label><select id="tlsToken"><option value="yes">Valid</option><option value="no">Missing/invalid</option></select></div>
+<button class="btn primary" id="evalTls">Evaluate channel</button>
+</div>
+<div class="trust">
+<div class="gate" data-gate="ca">CA trust</div><div class="gate" data-gate="host">Name binding</div><div class="gate" data-gate="time">Certificate time</div><div class="gate" data-gate="token">Caller authorization</div><div class="gate" data-gate="result">Download</div>
+</div>
+<div class="result" id="tlsResult">Evaluate the channel.</div>
+<div class="callout bad"><strong>Do not teach:</strong> <code>curl -k</code>, disabled certificate validation, or “accept any certificate” as a workaround. Those options intentionally remove server authentication.</div>
+</section>
+
+<section id="signing" data-search>
+<h2>5. Payload signing and hash verification</h2>
+<div class="grid g2">
+<div class="card">
+<h3>Signature verifies authority</h3>
+<p>The private release key stays in the controlled build/signing environment. Devices contain only the corresponding public verification key. Android OTA packages must be signed with a key the device expects.</p>
+</div>
+<div class="card">
+<h3>Hash verifies exact content</h3>
+<p>The signed metadata contains the payload SHA-256 and length. A hash mismatch rejects truncation, corruption or replacement—even when the attacker preserves the original manifest.</p>
+</div>
+</div>
+<div class="learning-lens" data-lens="signing"><div class="lens-tabs"><button class="lens-tab active" data-level="beginner">📦 Simple analogy</button><button class="lens-tab" data-level="engineer">🧑‍💻 Engineer view</button><button class="lens-tab" data-level="deep">🔬 Deep view</button></div><div class="lens-pane active" data-level="beginner"><p>The signature is the release authority’s seal. The hash is the package fingerprint. A genuine seal attached to different contents must still be rejected.</p></div><div class="lens-pane" data-level="engineer"><p>The verifier canonicalizes metadata, validates its signature with a trusted public key, enforces expiry/target/version policy, then checks payload SHA-256 and exact byte length.</p></div><div class="lens-pane deep" data-level="deep"><p>Verify signature over deterministic metadata bytes before trusting any metadata field. Then bind target artifact by both digest and length to detect replacement, corruption and truncation.</p></div></div>
+<div class="diagram-card"><h3>Visual: authority, policy and exact bytes</h3><svg class="concept-svg" viewBox="0 0 920 280" role="img" aria-label="Signed manifest binds authorization fields to exact payload bytes"><defs><marker id="arrowheadGood2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="var(--b)"/></marker></defs>
+<rect class="box-good" x="30" y="35" width="245" height="210" rx="18"/><text x="152" y="72" text-anchor="middle" font-weight="900">Signed manifest</text><text class="muted-text" x="60" y="108">✓ target: cuttlefish-x86_64</text><text class="muted-text" x="60" y="136">✓ version: 2.0.0</text><text class="muted-text" x="60" y="164">✓ expires: 2030-01-01</text><text class="muted-text" x="60" y="192">✓ length + SHA-256</text><text x="152" y="222" text-anchor="middle">🔐 Release signature</text>
+<path d="M275 140H410" stroke="var(--b)" stroke-width="3" fill="none" marker-end="url(#arrowheadGood2)"/><rect class="box" x="410" y="70" width="195" height="140" rx="18"/><text x="508" y="108" text-anchor="middle" font-weight="900">Device verifier</text><text class="muted-text" x="508" y="136" text-anchor="middle">authority + policy</text><text class="muted-text" x="508" y="160" text-anchor="middle">digest + length</text><text x="508" y="188" text-anchor="middle">🔎</text>
+<path d="M605 140H740" stroke="var(--b)" stroke-width="3" fill="none" marker-end="url(#arrowheadGood2)"/><rect class="box-good" x="740" y="80" width="150" height="120" rx="18"/><text x="815" y="120" text-anchor="middle" font-weight="900">Exact payload</text><text class="muted-text" x="815" y="147" text-anchor="middle">accepted bytes</text><text x="815" y="177" text-anchor="middle">📦</text>
+</svg></div>
+<div class="controls">
+<div class="field"><label>Manifest signature</label><select id="sigState"><option value="valid">Valid</option><option value="invalid">Invalid</option></select></div>
+<div class="field"><label>Payload bytes</label><select id="payloadState"><option value="original">Original</option><option value="tampered">Tampered</option><option value="truncated">Truncated</option></select></div>
+<div class="field"><label>Target identity</label><select id="targetState"><option value="match">Matches device</option><option value="wrong">Wrong product/ECU</option></select></div>
+<div class="field"><label>Metadata expiry</label><select id="expiryState"><option value="current">Current</option><option value="expired">Expired</option></select></div>
+<button class="btn primary" id="evalSigning">Verify release</button>
+</div>
+<div class="result" id="signingResult">Verification has not run.</div>
+<div class="flow">
+<div class="card"><strong>1. Canonical metadata</strong><br><span class="muted">Stable byte representation</span></div>
+<div class="card"><strong>2. Verify signature</strong><br><span class="muted">Known public key</span></div>
+<div class="card"><strong>3. Verify target/expiry/version</strong><br><span class="muted">Policy checks</span></div>
+<div class="card"><strong>4. Hash payload</strong><br><span class="muted">SHA-256 + byte length</span></div>
+<div class="card"><strong>5. Stage update</strong><br><span class="muted">Only after all gates pass</span></div>
+</div>
+</section>
+
+<section id="rollback" data-search>
+<h2>6. Rollback protection and secure recovery</h2>
+<div class="grid g2">
+<div class="card"><h3>Boot rollback</h3><p>A/B or Virtual A/B keeps the working version available while the new version is staged. If the new system fails health/boot checks, the bootloader or update stack returns to the previous working state.</p></div>
+<div class="card"><h3>Security rollback protection</h3><p>AVB rollback indices prevent booting an older vulnerable image after a newer rollback index has been committed. On A/B devices, the index must not be advanced until the new slot is marked successful, or the old fallback slot could become unbootable.</p></div>
+</div>
+<div class="learning-lens" data-lens="rollback"><div class="lens-tabs"><button class="lens-tab active" data-level="beginner">🔧 Simple analogy</button><button class="lens-tab" data-level="engineer">🧑‍💻 Engineer view</button><button class="lens-tab" data-level="deep">🔬 Deep view</button></div><div class="lens-pane active" data-level="beginner"><p>Keep driving on the working lane while repairing the spare lane. Switch only after the spare lane proves safe.</p></div><div class="lens-pane" data-level="engineer"><p>Write the candidate image to the inactive slot, mark it pending, boot it with limited attempts, then mark successful or return to the previous slot.</p></div><div class="lens-pane deep" data-level="deep"><p>Do not commit rollback index 2 at staging time. Commit it only after slot B is marked successful, otherwise slot A at index 1 may become ineligible before B is proven bootable.</p></div></div>
+<div class="diagram-card"><h3>Visual: stage, test, commit or recover</h3><svg class="concept-svg" viewBox="0 0 920 260" role="img" aria-label="A/B slot update and recovery flow"><defs><marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="var(--a)"/></marker><marker id="arrowheadGood3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="var(--b)"/></marker><marker id="arrowheadBad3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="var(--bad)"/></marker></defs>
+<rect class="box-good" x="25" y="80" width="160" height="105" rx="17"/><text x="105" y="116" text-anchor="middle" font-weight="900">Slot A</text><text class="muted-text" x="105" y="143" text-anchor="middle">1.0.0 • healthy</text><text x="105" y="169" text-anchor="middle">ACTIVE</text>
+<path d="M185 132H300" stroke="var(--a)" stroke-width="3" marker-end="url(#arrowhead3)"/><text class="muted-text" x="242" y="115" text-anchor="middle">stage 2.0.0</text><rect class="box-warn" x="300" y="80" width="160" height="105" rx="17"/><text x="380" y="116" text-anchor="middle" font-weight="900">Slot B</text><text class="muted-text" x="380" y="143" text-anchor="middle">pending • untested</text><text x="380" y="169" text-anchor="middle">INDEX NOT COMMITTED</text>
+<path d="M460 132H565" stroke="var(--a)" stroke-width="3" marker-end="url(#arrowhead3)"/><rect class="box" x="565" y="80" width="150" height="105" rx="17"/><text x="640" y="116" text-anchor="middle" font-weight="900">Boot + health</text><text class="muted-text" x="640" y="144" text-anchor="middle">limited attempts</text>
+<path d="M715 105H835" stroke="var(--b)" stroke-width="3" marker-end="url(#arrowheadGood3)"/><text x="775" y="88" text-anchor="middle" fill="var(--b)">healthy</text><text x="855" y="104" text-anchor="middle" font-weight="800">Commit B</text><text class="muted-text" x="855" y="126" text-anchor="middle">index 2</text>
+<path d="M640 185C640 235 240 235 105 185" stroke="var(--bad)" stroke-width="3" fill="none" marker-end="url(#arrowheadBad3)"/><text x="390" y="235" text-anchor="middle" fill="var(--bad)">failed twice → return to known-good Slot A</text>
+</svg></div>
+<div class="slotboard">
+<div class="slot active" id="slotA"><h3>Slot A</h3><p>Version <span id="verA">1.0.0</span></p><p>Healthy: <span id="healthA">yes</span></p></div>
+<div class="slot" id="slotB"><h3>Slot B</h3><p>Version <span id="verB">empty</span></p><p>Healthy: <span id="healthB">unknown</span></p></div>
+</div>
+<div class="state-line"><span id="rollbackProgress"></span></div>
+<div class="controls no-print"><button class="btn" id="stageUpdate">Stage 2.0.0</button><button class="btn" id="badBoot">Boot failure</button><button class="btn primary" id="goodBoot">Healthy boot</button><button class="btn" id="resetSlots">Reset</button></div>
+<div class="result" id="slotResult">Active slot A; stored rollback index 1.</div>
+<div class="callout good"><strong>Secure recovery principle:</strong> recovery code and keys must remain independently bootable and verified. Recovery should accept only authorized packages and must not silently bypass rollback policy.</div>
+</section>
+
+<section id="uptane" data-search>
+<h2>7. Uptane framework and metadata security</h2>
+<p class="lead">Uptane uses signed roles and two repositories so one compromised key or service does not automatically authorize an arbitrary image for every ECU.</p>
+<div class="learning-lens" data-lens="uptane"><div class="lens-tabs"><button class="lens-tab active" data-level="beginner">🏢 Simple analogy</button><button class="lens-tab" data-level="engineer">🧑‍💻 Engineer view</button><button class="lens-tab" data-level="deep">🔬 Deep view</button></div><div class="lens-pane active" data-level="beginner"><p>One office says “this software is genuine.” A second office says “this exact ECU is allowed to receive it.” The vehicle requires both answers to agree.</p></div><div class="lens-pane" data-level="engineer"><p>The Image repository describes authentic artifacts and hardware compatibility. The Director repository assigns artifacts to vehicle and ECU identities. Timestamp and snapshot metadata maintain freshness and consistency.</p></div><div class="lens-pane deep" data-level="deep"><p>Acceptance requires valid role signatures, non-expired metadata, monotonically trusted versions, timestamp→snapshot→targets hash/length binding, Director ECU assignment, repository target agreement, and final artifact hash/length verification.</p></div></div>
+<div class="diagram-card"><h3>Visual: two repositories must agree</h3><svg class="concept-svg" viewBox="0 0 920 300" role="img" aria-label="Image and Director repositories agree on a target before the ECU accepts it"><defs><marker id="arrowhead4" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="var(--a)"/></marker><marker id="arrowheadGood4" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="var(--b)"/></marker></defs>
+<rect class="box" x="35" y="35" width="260" height="210" rx="18"/><text x="165" y="73" text-anchor="middle" font-weight="900">Image Repository</text><text class="muted-text" x="70" y="110">• authentic target metadata</text><text class="muted-text" x="70" y="138">• hardware compatibility</text><text class="muted-text" x="70" y="166">• payload hash + length</text><text class="muted-text" x="70" y="194">• freshness + consistency</text><text x="165" y="225" text-anchor="middle">“What software is genuine?”</text>
+<rect class="box" x="625" y="35" width="260" height="210" rx="18"/><text x="755" y="73" text-anchor="middle" font-weight="900">Director Repository</text><text class="muted-text" x="660" y="110">• vehicle campaign assignment</text><text class="muted-text" x="660" y="138">• ECU identifier</text><text class="muted-text" x="660" y="166">• matching target hash</text><text class="muted-text" x="660" y="194">• deployment policy</text><text x="755" y="225" text-anchor="middle">“Who may receive it?”</text>
+<path d="M295 140H400" stroke="var(--a)" stroke-width="3" marker-end="url(#arrowhead4)"/><path d="M625 140H520" stroke="var(--a)" stroke-width="3" marker-end="url(#arrowhead4)"/><rect class="box-good" x="400" y="92" width="120" height="100" rx="18"/><text x="460" y="126" text-anchor="middle" font-weight="900">ECU-001</text><text class="muted-text" x="460" y="151" text-anchor="middle">compare both</text><text x="460" y="178" text-anchor="middle">✅</text><path d="M460 192V270" stroke="var(--b)" stroke-width="3" marker-end="url(#arrowheadGood4)"/><text x="460" y="294" text-anchor="middle" font-weight="900">Accept only when both views agree</text>
+</svg></div>
+<div class="chain" id="uptaneRoles">
+<div class="role" data-role="root"><strong>Root</strong><br><span class="muted">Keys, thresholds and key rotation</span></div>
+<div class="role" data-role="timestamp"><strong>Timestamp</strong><br><span class="muted">Freshness and latest snapshot</span></div>
+<div class="role" data-role="snapshot"><strong>Snapshot</strong><br><span class="muted">Consistent metadata versions</span></div>
+<div class="role" data-role="targets"><strong>Image Targets</strong><br><span class="muted">Artifact hash, length and hardware</span></div>
+<div class="role" data-role="director"><strong>Director Targets</strong><br><span class="muted">Vehicle/ECU assignment</span></div>
+<div class="role" data-role="artifact"><strong>Artifact</strong><br><span class="muted">Exact bytes delivered</span></div>
+</div>
+<div class="controls">
+<div class="field"><label>Attack</label><select id="uptaneAttack"><option value="valid">Valid update</option><option value="freeze">Freeze/expired metadata</option><option value="rollback">Metadata rollback</option><option value="mixmatch">Director/Image mix-and-match</option><option value="wrongEcu">Wrong ECU assignment</option><option value="tamper">Artifact tampering</option></select></div>
+<button class="btn primary" id="runUptane">Verify metadata</button>
+</div>
+<div class="result" id="uptaneResult">Select a scenario.</div>
+<table><thead><tr><th>Role/check</th><th>Security question</th><th>Typical attack detected</th></tr></thead><tbody>
+<tr><td>Root</td><td>Which keys and thresholds are trusted?</td><td>Unauthorized key replacement</td></tr>
+<tr><td>Timestamp</td><td>Is this repository view fresh?</td><td>Freeze attack</td></tr>
+<tr><td>Snapshot</td><td>Do metadata files form one consistent release?</td><td>Rollback and mix-and-match</td></tr>
+<tr><td>Image Targets</td><td>Is the artifact authentic for this hardware?</td><td>Arbitrary/malformed image</td></tr>
+<tr><td>Director Targets</td><td>Was this image assigned to this ECU?</td><td>Wrong-vehicle installation</td></tr>
+</tbody></table>
+</section>
+
+<section id="swupdate" data-search>
+<h2>8. SWUpdate modes, ACL and update authorization</h2>
+<div class="callout warn"><strong>Precise terminology:</strong> SWUpdate software collections and operation modes select a subset such as <code>stable,slot-b</code>. Package signing authenticates <code>sw-description</code> and its artifact hashes. Caller/vehicle authorization is a deployment policy enforced through backend credentials, IPC/socket permissions, allowed/excluded selections and a gateway—not a property of a valid signature alone.</div>
+<div class="learning-lens" data-lens="swupdate"><div class="lens-tabs"><button class="lens-tab active" data-level="beginner">🛡️ Simple analogy</button><button class="lens-tab" data-level="engineer">🧑‍💻 Engineer view</button><button class="lens-tab" data-level="deep">🔬 Deep view</button></div><div class="lens-pane active" data-level="beginner"><p>A genuine repair part is not enough. The mechanic must also be approved for this vehicle and this repair mode.</p></div><div class="lens-pane" data-level="engineer"><p>The signed SWU authenticates its description and artifacts. A separate gateway verifies operator signature, request expiry, vehicle ACL, selection/mode ACL and anti-downgrade policy.</p></div><div class="lens-pane deep" data-level="deep"><p>AUTHORIZED = operator_sig ∧ request_fresh ∧ vehicle_acl ∧ selection_mode_acl ∧ target_version&gt;current_version ∧ sw_description_sig ∧ artifact_hashes.</p></div></div>
+<div class="diagram-card"><h3>Visual: five checks produce one exact command</h3><svg class="concept-svg" viewBox="0 0 920 240" role="img" aria-label="Operator identity, vehicle ACL, selection mode ACL, version policy and package verification authorize an SWUpdate command"><defs><marker id="arrowhead5" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="var(--b)"/></marker></defs>
+<g><rect class="box" x="15" y="25" width="145" height="78" rx="14"/><text x="87" y="57" text-anchor="middle" font-weight="800">Operator</text><text class="muted-text" x="87" y="80" text-anchor="middle">signed request</text></g>
+<g><rect class="box" x="200" y="25" width="145" height="78" rx="14"/><text x="272" y="57" text-anchor="middle" font-weight="800">Vehicle ACL</text><text class="muted-text" x="272" y="80" text-anchor="middle">vehicle-001</text></g>
+<g><rect class="box" x="385" y="25" width="145" height="78" rx="14"/><text x="457" y="57" text-anchor="middle" font-weight="800">Mode ACL</text><text class="muted-text" x="457" y="80" text-anchor="middle">stable, slot-b</text></g>
+<g><rect class="box" x="570" y="25" width="145" height="78" rx="14"/><text x="642" y="57" text-anchor="middle" font-weight="800">Version</text><text class="muted-text" x="642" y="80" text-anchor="middle">2.0.0 &gt; 1.0.0</text></g>
+<g><rect class="box" x="755" y="25" width="145" height="78" rx="14"/><text x="827" y="57" text-anchor="middle" font-weight="800">Signed SWU</text><text class="muted-text" x="827" y="80" text-anchor="middle">hashes match</text></g>
+<path d="M87 103V142H827V103" stroke="var(--b)" stroke-width="3" fill="none"/><path d="M457 142V176" stroke="var(--b)" stroke-width="3" marker-end="url(#arrowhead5)"/><rect class="box-good" x="245" y="176" width="425" height="48" rx="14"/><text x="457" y="207" text-anchor="middle" font-weight="900">swupdate --select stable,slot-b -i update.swu …</text>
+</svg></div>
+<div class="grid g3">
+<div class="card"><h3>Signed SWU</h3><p>The lab signs <code>sw-description</code>; each referenced artifact has a SHA-256 entry. The signature file immediately follows the description in the CPIO archive.</p></div>
+<div class="card"><h3>Selection and mode</h3><p><code>--select stable,slot-b</code> chooses the stable software collection and the inactive-slot mode. The same SWU can contain canary and recovery paths.</p></div>
+<div class="card"><h3>Authorization ACL</h3><p>The operator signs a request. The gateway verifies role, vehicle, mode, expiry and anti-downgrade policy before returning the exact SWUpdate command.</p></div>
+</div>
+<div class="controls">
+<div class="field"><label>Operator role</label><select id="aclRole"><option value="release-manager">Release manager</option><option value="service-tech">Service technician</option></select></div>
+<div class="field"><label>Vehicle</label><select id="aclVehicle"><option value="vehicle-001">vehicle-001</option><option value="vehicle-999">vehicle-999</option></select></div>
+<div class="field"><label>Selection</label><select id="aclSelection"><option value="stable">stable</option><option value="canary">canary</option><option value="recovery">recovery</option></select></div>
+<div class="field"><label>Mode</label><select id="aclMode"><option value="slot-b">slot-b</option><option value="rescue">rescue</option></select></div>
+<div class="field"><label>Version direction</label><select id="aclVersion"><option value="upgrade">2.0.0 over 1.0.0</option><option value="same">1.0.0 over 1.0.0</option><option value="downgrade">0.9.0 over 1.0.0</option></select></div>
+<button class="btn primary" id="evalAcl">Authorize</button>
+</div>
+<div class="aclgrid">
+<div class="aclcell" data-acl="identity">Operator signature</div><div class="aclcell" data-acl="vehicle">Vehicle ACL</div><div class="aclcell" data-acl="mode">Selection/mode ACL</div><div class="aclcell" data-acl="version">Version policy</div>
+</div>
+<div class="result" id="aclResult">Evaluate an update request.</div>
+</section>
+
+<section id="labs" data-search>
+<h2>9. Full production simulation lab</h2>
+<p class="lead">The bootstrap creates a private CA, TLS repository, offline release key, signed manifest, A/B simulator, Uptane repositories, signed SWU package, operator keys and ACL gateway. It writes only below <code>~/ota-secure-lab</code>.</p>
+<div class="lab-journey">
+  <div class="lab-step"><b>1 • Understand</b><span>See the architecture and trust boundaries before copying commands.</span></div>
+  <div class="lab-step"><b>2 • Build</b><span>Create PKI, repository, simulators, metadata and signed packages.</span></div>
+  <div class="lab-step"><b>3 • Attack</b><span>Run expected failures for TLS, tampering, rollback, freeze and ACL.</span></div>
+  <div class="lab-step"><b>4 • Prove</b><span>Complete the acceptance runner with exactly PASS=14 and FAIL=0.</span></div>
+</div>
+<div class="lab-toolbar no-print"><button class="btn" id="toggleCode">🙈 Hide long code</button><button class="btn" id="wrapCode">↩ Wrap code</button><button class="btn" id="largeCode">A+ Larger code</button><button class="btn" id="expandLabs">＋ Expand all labs</button><button class="btn" id="collapseLabs">− Collapse all labs</button></div>
+<div class="grid g2">
+<div><h3>Generated lab workspace</h3><div class="tree"><span class="folder">ota-secure-lab/</span>
+├── <span class="folder">pki/</span>       <span class="purpose"># CA, TLS and release keys</span>
+├── <span class="folder">repo/</span>      <span class="purpose"># manifest, signature and payload</span>
+├── <span class="folder">device/</span>    <span class="purpose"># simulated A/B state and slot images</span>
+├── <span class="folder">uptane/</span>    <span class="purpose"># Image + Director repository metadata</span>
+├── <span class="folder">swupdate/</span>  <span class="purpose"># signed SWU, operators and ACL</span>
+└── <span class="folder">logs/</span>      <span class="purpose"># HTTPS and validation evidence</span></div></div>
+<div><h3>Lab safety contract</h3><div class="card"><p>✅ Writes only under <code>~/ota-secure-lab</code>.</p><p>✅ Uses synthetic payload bytes.</p><p>✅ Cuttlefish probes are read-only.</p><p>⛔ Does not install the synthetic payload into Android partitions.</p><p>⛔ Does not disable TLS verification to make a test pass.</p></div></div>
+</div>
+<div class="callout good"><strong>Validated result:</strong> the acceptance runner completed 14 positive/negative checks with zero failures on Ubuntu Linux using OpenSSL, Python, curl and cpio.</div>
+<h3>Prerequisites</h3>
+<pre><button class="copy btn">Copy</button><code>sudo apt update
+sudo apt install -y   openssl   python3   curl   cpio   coreutils</code></pre>
+<details open><summary>Lab bootstrap — copy once</summary>
+<pre><button class="copy btn">Copy</button><code>#!/usr/bin/env bash
+set -Eeuo pipefail
+BASE=&quot;${OTA_LAB_HOME:-$HOME/ota-secure-lab}&quot;
+rm -rf &quot;$BASE&quot;
+mkdir -p &quot;$BASE&quot;/{pki,repo,device/slots,uptane/keys,uptane/metadata,swupdate,logs}
+chmod 700 &quot;$BASE/pki&quot; &quot;$BASE/uptane/keys&quot;
+for cmd in openssl python3 curl cpio sha256sum; do
+  command -v &quot;$cmd&quot; &gt;/dev/null || {
+    echo &quot;[FAIL] Missing command: $cmd&quot; &gt;&amp;2
+    exit 1
+  }
+done
+
+cat &gt; &quot;$BASE/pki/ca.cnf&quot; &lt;&lt;&#x27;EOF_CA&#x27;
+[req]
+distinguished_name=dn
+x509_extensions=caext
+prompt=no
+[dn]
+CN=OTA Training TLS Root CA
+[caext]
+basicConstraints=critical,CA:TRUE
+keyUsage=critical,keyCertSign,cRLSign
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always
+EOF_CA
+openssl req -x509 -newkey rsa:3072 -sha256 -nodes -days 3650 \
+  -keyout &quot;$BASE/pki/tls-ca.key.pem&quot; \
+  -out &quot;$BASE/pki/tls-ca.cert.pem&quot; \
+  -config &quot;$BASE/pki/ca.cnf&quot; &gt;/dev/null 2&gt;&amp;1
+
+cat &gt; &quot;$BASE/pki/server.cnf&quot; &lt;&lt;&#x27;EOF_SERVER&#x27;
+[req]
+distinguished_name=dn
+prompt=no
+req_extensions=reqext
+[dn]
+CN=localhost
+[reqext]
+subjectAltName=@alt
+extendedKeyUsage=serverAuth
+keyUsage=digitalSignature,keyEncipherment
+basicConstraints=CA:FALSE
+[alt]
+DNS.1=localhost
+IP.1=127.0.0.1
+EOF_SERVER
+openssl req -new -newkey rsa:3072 -nodes \
+  -keyout &quot;$BASE/pki/server.key.pem&quot; \
+  -out &quot;$BASE/pki/server.csr.pem&quot; \
+  -config &quot;$BASE/pki/server.cnf&quot; &gt;/dev/null 2&gt;&amp;1
+openssl x509 -req -sha256 -days 825 \
+  -in &quot;$BASE/pki/server.csr.pem&quot; \
+  -CA &quot;$BASE/pki/tls-ca.cert.pem&quot; \
+  -CAkey &quot;$BASE/pki/tls-ca.key.pem&quot; \
+  -CAcreateserial \
+  -out &quot;$BASE/pki/server.cert.pem&quot; \
+  -extfile &quot;$BASE/pki/server.cnf&quot; \
+  -extensions reqext &gt;/dev/null 2&gt;&amp;1
+
+openssl genpkey -algorithm RSA \
+  -pkeyopt rsa_keygen_bits:3072 \
+  -out &quot;$BASE/pki/release-signing.key.pem&quot; &gt;/dev/null 2&gt;&amp;1
+openssl pkey \
+  -in &quot;$BASE/pki/release-signing.key.pem&quot; \
+  -pubout \
+  -out &quot;$BASE/pki/release-signing.pub.pem&quot; &gt;/dev/null 2&gt;&amp;1
+chmod 600 &quot;$BASE/pki/&quot;*.key.pem
+
+printf &#x27;Android OTA training payload\nversion=2.0.0\nbuild=20260802\n&#x27; \
+  &gt; &quot;$BASE/repo/payload.bin&quot;
+
+python3 - &quot;$BASE&quot; &lt;&lt;&#x27;PY_MANIFEST&#x27;
+import hashlib,json,pathlib,sys
+base=pathlib.Path(sys.argv[1]);payload=base/&#x27;repo/payload.bin&#x27;;raw=payload.read_bytes()
+manifest={
+  &#x27;schema&#x27;:&#x27;com.example.ota-manifest/v1&#x27;,
+  &#x27;target&#x27;:&#x27;cuttlefish-x86_64&#x27;,
+  &#x27;version&#x27;:&#x27;2.0.0&#x27;,
+  &#x27;rollback_index&#x27;:2,
+  &#x27;mode&#x27;:&#x27;stable&#x27;,
+  &#x27;slot_policy&#x27;:&#x27;inactive&#x27;,
+  &#x27;payload&#x27;:{
+    &#x27;file&#x27;:&#x27;payload.bin&#x27;,
+    &#x27;length&#x27;:len(raw),
+    &#x27;sha256&#x27;:hashlib.sha256(raw).hexdigest()
+  },
+  &#x27;expires&#x27;:&#x27;2030-01-01T00:00:00Z&#x27;
+}
+(base/&#x27;repo/manifest.json&#x27;).write_text(json.dumps(manifest,indent=2,sort_keys=True)+&#x27;\n&#x27;)
+(base/&#x27;repo/manifest.canonical.json&#x27;).write_text(json.dumps(manifest,sort_keys=True,separators=(&#x27;,&#x27;,&#x27;:&#x27;)))
+state={
+  &#x27;active_slot&#x27;:&#x27;a&#x27;,&#x27;pending_slot&#x27;:None,&#x27;previous_slot&#x27;:None,
+  &#x27;stored_rollback_index&#x27;:1,&#x27;boot_attempts&#x27;:0,
+  &#x27;slots&#x27;:{
+    &#x27;a&#x27;:{&#x27;version&#x27;:&#x27;1.0.0&#x27;,&#x27;rollback_index&#x27;:1,&#x27;healthy&#x27;:True},
+    &#x27;b&#x27;:None
+  }
+}
+(base/&#x27;device/state.json&#x27;).write_text(json.dumps(state,indent=2,sort_keys=True)+&#x27;\n&#x27;)
+PY_MANIFEST
+openssl dgst -sha256 \
+  -sign &quot;$BASE/pki/release-signing.key.pem&quot; \
+  -out &quot;$BASE/repo/manifest.sig&quot; \
+  &quot;$BASE/repo/manifest.canonical.json&quot;
+cat &gt; &quot;$BASE/https_server.py&quot; &lt;&lt;&#x27;PY_HTTPS&#x27;
+#!/usr/bin/env python3
+import argparse, http.server, os, ssl
+p=argparse.ArgumentParser();p.add_argument(&#x27;--base&#x27;,required=True);p.add_argument(&#x27;--port&#x27;,type=int,default=8444);p.add_argument(&#x27;--token&#x27;,default=&#x27;ota-training-token&#x27;);a=p.parse_args()
+base=os.path.abspath(a.base);os.chdir(os.path.join(base,&#x27;repo&#x27;))
+class H(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        if self.headers.get(&#x27;Authorization&#x27;) != &#x27;Bearer &#x27;+a.token:
+            self.send_response(401);self.send_header(&#x27;WWW-Authenticate&#x27;,&#x27;Bearer&#x27;);self.end_headers();self.wfile.write(b&#x27;authorization required\n&#x27;);return
+        super().do_GET()
+    def log_message(self,fmt,*args):print(&#x27;[HTTPS]&#x27;,fmt%args,flush=True)
+server=http.server.ThreadingHTTPServer((&#x27;127.0.0.1&#x27;,a.port),H)
+ctx=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER);ctx.load_cert_chain(os.path.join(base,&#x27;pki/server.cert.pem&#x27;),os.path.join(base,&#x27;pki/server.key.pem&#x27;))
+server.socket=ctx.wrap_socket(server.socket,server_side=True)
+print(f&#x27;[PASS] TLS OTA server https://127.0.0.1:{a.port}&#x27;,flush=True);server.serve_forever()
+PY_HTTPS
+chmod +x &quot;$BASE/https_server.py&quot;
+cat &gt; &quot;$BASE/verify_release.py&quot; &lt;&lt;&#x27;PY_FILE_1&#x27;
+#!/usr/bin/env python3
+import argparse,datetime,hashlib,json,pathlib,subprocess,sys,tempfile
+p=argparse.ArgumentParser();p.add_argument(&#x27;--base&#x27;,required=True);p.add_argument(&#x27;--manifest&#x27;);p.add_argument(&#x27;--payload&#x27;);p.add_argument(&#x27;--signature&#x27;);p.add_argument(&#x27;--target&#x27;,default=&#x27;cuttlefish-x86_64&#x27;);p.add_argument(&#x27;--minimum-rollback&#x27;,type=int,default=1);a=p.parse_args()
+b=pathlib.Path(a.base); mf=pathlib.Path(a.manifest or b/&#x27;repo/manifest.json&#x27;); payload=pathlib.Path(a.payload or b/&#x27;repo/payload.bin&#x27;); sig=pathlib.Path(a.signature or b/&#x27;repo/manifest.sig&#x27;)
+m=json.loads(mf.read_text()); canonical=json.dumps(m,sort_keys=True,separators=(&#x27;,&#x27;,&#x27;:&#x27;)).encode()
+with tempfile.NamedTemporaryFile() as t:
+ t.write(canonical);t.flush();r=subprocess.run([&#x27;openssl&#x27;,&#x27;dgst&#x27;,&#x27;-sha256&#x27;,&#x27;-verify&#x27;,str(b/&#x27;pki/release-signing.pub.pem&#x27;),&#x27;-signature&#x27;,str(sig),t.name],capture_output=True,text=True)
+ if r.returncode: print(&#x27;[FAIL] manifest signature invalid&#x27;);sys.exit(1)
+print(&#x27;[PASS] manifest signature&#x27;)
+if m[&#x27;target&#x27;]!=a.target: print(&#x27;[FAIL] target mismatch&#x27;);sys.exit(1)
+print(&#x27;[PASS] target authorization&#x27;)
+if m[&#x27;rollback_index&#x27;]&lt;a.minimum_rollback: print(&#x27;[FAIL] rollback index rejected&#x27;);sys.exit(1)
+print(&#x27;[PASS] rollback index&#x27;)
+raw=payload.read_bytes(); got=hashlib.sha256(raw).hexdigest()
+if len(raw)!=m[&#x27;payload&#x27;][&#x27;length&#x27;] or got!=m[&#x27;payload&#x27;][&#x27;sha256&#x27;]: print(&#x27;[FAIL] payload hash/length mismatch&#x27;);sys.exit(1)
+print(&#x27;[PASS] payload hash and length&#x27;)
+exp=datetime.datetime.fromisoformat(m[&#x27;expires&#x27;].replace(&#x27;Z&#x27;,&#x27;+00:00&#x27;))
+if exp&lt;=datetime.datetime.now(datetime.timezone.utc): print(&#x27;[FAIL] manifest expired&#x27;);sys.exit(1)
+print(&#x27;[PASS] manifest expiry&#x27;)
+print(&#x27;[PASS] release accepted&#x27;)
+PY_FILE_1
+chmod +x &quot;$BASE/verify_release.py&quot;
+cat &gt; &quot;$BASE/ab_sim.py&quot; &lt;&lt;&#x27;PY_FILE_2&#x27;
+#!/usr/bin/env python3
+import argparse,hashlib,json,pathlib,subprocess,sys,tempfile
+P=argparse.ArgumentParser();P.add_argument(&#x27;--base&#x27;,required=True);sp=P.add_subparsers(dest=&#x27;cmd&#x27;,required=True)
+sp.add_parser(&#x27;status&#x27;);s=sp.add_parser(&#x27;stage&#x27;);s.add_argument(&#x27;--manifest&#x27;);s.add_argument(&#x27;--payload&#x27;);s.add_argument(&#x27;--signature&#x27;)
+b=sp.add_parser(&#x27;boot&#x27;);b.add_argument(&#x27;--health&#x27;,choices=[&#x27;good&#x27;,&#x27;bad&#x27;],required=True);sp.add_parser(&#x27;reset&#x27;)
+a=P.parse_args();base=pathlib.Path(a.base);statef=base/&#x27;device/state.json&#x27;
+def initial(): return {&#x27;active_slot&#x27;:&#x27;a&#x27;,&#x27;pending_slot&#x27;:None,&#x27;previous_slot&#x27;:None,&#x27;stored_rollback_index&#x27;:1,&#x27;boot_attempts&#x27;:0,&#x27;slots&#x27;:{&#x27;a&#x27;:{&#x27;version&#x27;:&#x27;1.0.0&#x27;,&#x27;rollback_index&#x27;:1,&#x27;healthy&#x27;:True},&#x27;b&#x27;:None}}
+def load(): return json.loads(statef.read_text())
+def save(x): statef.write_text(json.dumps(x,indent=2,sort_keys=True)+&#x27;\n&#x27;)
+def verify(mf,payload,sig,minimum):
+ m=json.loads(mf.read_text()); canon=json.dumps(m,sort_keys=True,separators=(&#x27;,&#x27;,&#x27;:&#x27;)).encode()
+ with tempfile.NamedTemporaryFile() as t:
+  t.write(canon);t.flush();r=subprocess.run([&#x27;openssl&#x27;,&#x27;dgst&#x27;,&#x27;-sha256&#x27;,&#x27;-verify&#x27;,str(base/&#x27;pki/release-signing.pub.pem&#x27;),&#x27;-signature&#x27;,str(sig),t.name],capture_output=True)
+  if r.returncode: raise SystemExit(&#x27;[FAIL] manifest signature&#x27;)
+ raw=payload.read_bytes();
+ if hashlib.sha256(raw).hexdigest()!=m[&#x27;payload&#x27;][&#x27;sha256&#x27;] or len(raw)!=m[&#x27;payload&#x27;][&#x27;length&#x27;]: raise SystemExit(&#x27;[FAIL] payload hash/length&#x27;)
+ if m[&#x27;rollback_index&#x27;]&lt;minimum: raise SystemExit(f&quot;[FAIL] rollback index {m[&#x27;rollback_index&#x27;]} &lt; stored {minimum}&quot;)
+ return m
+if a.cmd==&#x27;reset&#x27;: save(initial());print(&#x27;[PASS] state reset&#x27;);sys.exit()
+state=load()
+if a.cmd==&#x27;status&#x27;: print(json.dumps(state,indent=2,sort_keys=True));sys.exit()
+if a.cmd==&#x27;stage&#x27;:
+ mf=pathlib.Path(a.manifest or base/&#x27;repo/manifest.json&#x27;);pl=pathlib.Path(a.payload or base/&#x27;repo/payload.bin&#x27;);sg=pathlib.Path(a.signature or base/&#x27;repo/manifest.sig&#x27;);m=verify(mf,pl,sg,state[&#x27;stored_rollback_index&#x27;])
+ inactive=&#x27;b&#x27; if state[&#x27;active_slot&#x27;]==&#x27;a&#x27; else &#x27;a&#x27;;(base/f&#x27;device/slots/{inactive}.img&#x27;).write_bytes(pl.read_bytes());state[&#x27;slots&#x27;][inactive]={&#x27;version&#x27;:m[&#x27;version&#x27;],&#x27;rollback_index&#x27;:m[&#x27;rollback_index&#x27;],&#x27;healthy&#x27;:None};state[&#x27;previous_slot&#x27;]=state[&#x27;active_slot&#x27;];state[&#x27;pending_slot&#x27;]=inactive;state[&#x27;boot_attempts&#x27;]=0;save(state);print(f&quot;[PASS] staged {m[&#x27;version&#x27;]} to inactive slot {inactive}&quot;);print(&#x27;[INFO] rollback index is NOT committed until successful boot&#x27;);sys.exit()
+if a.cmd==&#x27;boot&#x27;:
+ if not state[&#x27;pending_slot&#x27;]: print(f&quot;[PASS] normal boot slot {state[&#x27;active_slot&#x27;]}&quot;);sys.exit()
+ p=state[&#x27;pending_slot&#x27;];state[&#x27;boot_attempts&#x27;]+=1
+ if a.health==&#x27;good&#x27;:
+  state[&#x27;slots&#x27;][p][&#x27;healthy&#x27;]=True;state[&#x27;active_slot&#x27;]=p;state[&#x27;stored_rollback_index&#x27;]=max(state[&#x27;stored_rollback_index&#x27;],state[&#x27;slots&#x27;][p][&#x27;rollback_index&#x27;]);state[&#x27;pending_slot&#x27;]=None;state[&#x27;previous_slot&#x27;]=None;state[&#x27;boot_attempts&#x27;]=0;save(state);print(f&quot;[PASS] slot {p} marked successful&quot;);print(f&quot;[PASS] rollback index committed: {state[&#x27;stored_rollback_index&#x27;]}&quot;);sys.exit()
+ state[&#x27;slots&#x27;][p][&#x27;healthy&#x27;]=False
+ if state[&#x27;boot_attempts&#x27;]&gt;=2:
+  old=state[&#x27;previous_slot&#x27;];state[&#x27;active_slot&#x27;]=old;state[&#x27;pending_slot&#x27;]=None;state[&#x27;previous_slot&#x27;]=None;state[&#x27;boot_attempts&#x27;]=0;save(state);print(f&quot;[RECOVERY] boot limit reached; rolled back to slot {old}&quot;)
+ else: save(state);print(f&quot;[WARN] slot {p} health check failed; one retry remains&quot;)
+PY_FILE_2
+chmod +x &quot;$BASE/ab_sim.py&quot;
+cat &gt; &quot;$BASE/uptane_lab.py&quot; &lt;&lt;&#x27;PY_FILE_3&#x27;
+#!/usr/bin/env python3
+import argparse,base64,datetime,hashlib,json,pathlib,subprocess,sys,tempfile
+P=argparse.ArgumentParser();P.add_argument(&#x27;--base&#x27;,required=True);sp=P.add_subparsers(dest=&#x27;cmd&#x27;,required=True);sp.add_parser(&#x27;init&#x27;);v=sp.add_parser(&#x27;verify&#x27;);v.add_argument(&#x27;--ecu&#x27;,default=&#x27;ECU-001&#x27;);a=sp.add_parser(&#x27;attack&#x27;);a.add_argument(&#x27;kind&#x27;,choices=[&#x27;freeze&#x27;,&#x27;rollback&#x27;,&#x27;mixmatch&#x27;,&#x27;wrong-ecu&#x27;]);sp.add_parser(&#x27;reset-trusted&#x27;)
+a=P.parse_args();base=pathlib.Path(a.base);root=base/&#x27;uptane&#x27;;keys=root/&#x27;keys&#x27;;meta=root/&#x27;metadata&#x27;;trusted=root/&#x27;trusted_versions.json&#x27;;roles=[&#x27;root&#x27;,&#x27;timestamp&#x27;,&#x27;snapshot&#x27;,&#x27;targets&#x27;];repos=[&#x27;image&#x27;,&#x27;director&#x27;]
+def run(cmd,**kw): return subprocess.run(cmd,check=True,**kw)
+def canon(x): return json.dumps(x,sort_keys=True,separators=(&#x27;,&#x27;,&#x27;:&#x27;)).encode()
+def keypaths(repo,role): return keys/f&#x27;{repo}_{role}.key.pem&#x27;,keys/f&#x27;{repo}_{role}.pub.pem&#x27;
+def keyid(pub): return hashlib.sha256(pub.read_bytes()).hexdigest()
+def sign_obj(repo,role,signed):
+ key,pub=keypaths(repo,role)
+ with tempfile.NamedTemporaryFile() as data, tempfile.NamedTemporaryFile() as sig:
+  data.write(canon(signed));data.flush();run([&#x27;openssl&#x27;,&#x27;dgst&#x27;,&#x27;-sha256&#x27;,&#x27;-sign&#x27;,str(key),&#x27;-out&#x27;,sig.name,data.name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);raw=pathlib.Path(sig.name).read_bytes()
+ return {&#x27;signatures&#x27;:[{&#x27;keyid&#x27;:keyid(pub),&#x27;sig&#x27;:base64.b64encode(raw).decode()}],&#x27;signed&#x27;:signed}
+def write_meta(repo,role,signed): (meta/repo).mkdir(parents=True,exist_ok=True);(meta/repo/f&#x27;{role}.json&#x27;).write_text(json.dumps(sign_obj(repo,role,signed),indent=2,sort_keys=True)+&#x27;\n&#x27;)
+def info(path):
+ raw=path.read_bytes();obj=json.loads(raw);return {&#x27;version&#x27;:obj[&#x27;signed&#x27;][&#x27;version&#x27;],&#x27;length&#x27;:len(raw),&#x27;hashes&#x27;:{&#x27;sha256&#x27;:hashlib.sha256(raw).hexdigest()}}
+def init():
+ keys.mkdir(parents=True,exist_ok=True);meta.mkdir(parents=True,exist_ok=True)
+ for repo in repos:
+  for role in roles:
+   key,pub=keypaths(repo,role)
+   if not key.exists(): run([&#x27;openssl&#x27;,&#x27;genpkey&#x27;,&#x27;-algorithm&#x27;,&#x27;RSA&#x27;,&#x27;-pkeyopt&#x27;,&#x27;rsa_keygen_bits:2048&#x27;,&#x27;-out&#x27;,str(key)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);run([&#x27;openssl&#x27;,&#x27;pkey&#x27;,&#x27;-in&#x27;,str(key),&#x27;-pubout&#x27;,&#x27;-out&#x27;,str(pub)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+   key.chmod(0o600)
+ expires=&#x27;2030-01-01T00:00:00Z&#x27;
+ for repo in repos:
+  keydata={};roledata={}
+  for role in roles:
+   _,pub=keypaths(repo,role);kid=keyid(pub);keydata[kid]={&#x27;keytype&#x27;:&#x27;rsa&#x27;,&#x27;scheme&#x27;:&#x27;rsassa-pkcs1v15-sha256&#x27;,&#x27;keyval&#x27;:{&#x27;public&#x27;:pub.read_text()}};roledata[role]={&#x27;keyids&#x27;:[kid],&#x27;threshold&#x27;:1}
+  write_meta(repo,&#x27;root&#x27;,{&#x27;_type&#x27;:&#x27;root&#x27;,&#x27;version&#x27;:1,&#x27;expires&#x27;:expires,&#x27;keys&#x27;:keydata,&#x27;roles&#x27;:roledata})
+ artifact=base/&#x27;repo/payload.bin&#x27;;raw=artifact.read_bytes();target={&#x27;length&#x27;:len(raw),&#x27;hashes&#x27;:{&#x27;sha256&#x27;:hashlib.sha256(raw).hexdigest()},&#x27;custom&#x27;:{&#x27;version&#x27;:&#x27;2.0.0&#x27;,&#x27;hardwareIds&#x27;:[&#x27;cuttlefish-x86_64&#x27;]}}
+ write_meta(&#x27;image&#x27;,&#x27;targets&#x27;,{&#x27;_type&#x27;:&#x27;targets&#x27;,&#x27;version&#x27;:3,&#x27;expires&#x27;:expires,&#x27;targets&#x27;:{&#x27;payload.bin&#x27;:target}})
+ write_meta(&#x27;image&#x27;,&#x27;snapshot&#x27;,{&#x27;_type&#x27;:&#x27;snapshot&#x27;,&#x27;version&#x27;:5,&#x27;expires&#x27;:expires,&#x27;meta&#x27;:{&#x27;targets.json&#x27;:info(meta/&#x27;image/targets.json&#x27;)}})
+ write_meta(&#x27;image&#x27;,&#x27;timestamp&#x27;,{&#x27;_type&#x27;:&#x27;timestamp&#x27;,&#x27;version&#x27;:7,&#x27;expires&#x27;:expires,&#x27;meta&#x27;:{&#x27;snapshot.json&#x27;:info(meta/&#x27;image/snapshot.json&#x27;)}})
+ dtarget=dict(target);dtarget[&#x27;custom&#x27;]={&#x27;version&#x27;:&#x27;2.0.0&#x27;,&#x27;ecuIdentifiers&#x27;:[&#x27;ECU-001&#x27;],&#x27;hardwareIds&#x27;:[&#x27;cuttlefish-x86_64&#x27;]}
+ write_meta(&#x27;director&#x27;,&#x27;targets&#x27;,{&#x27;_type&#x27;:&#x27;targets&#x27;,&#x27;version&#x27;:4,&#x27;expires&#x27;:expires,&#x27;targets&#x27;:{&#x27;payload.bin&#x27;:dtarget}})
+ write_meta(&#x27;director&#x27;,&#x27;snapshot&#x27;,{&#x27;_type&#x27;:&#x27;snapshot&#x27;,&#x27;version&#x27;:6,&#x27;expires&#x27;:expires,&#x27;meta&#x27;:{&#x27;targets.json&#x27;:info(meta/&#x27;director/targets.json&#x27;)}})
+ write_meta(&#x27;director&#x27;,&#x27;timestamp&#x27;,{&#x27;_type&#x27;:&#x27;timestamp&#x27;,&#x27;version&#x27;:8,&#x27;expires&#x27;:expires,&#x27;meta&#x27;:{&#x27;snapshot.json&#x27;:info(meta/&#x27;director/snapshot.json&#x27;)}})
+ if not trusted.exists(): trusted.write_text(json.dumps({f&#x27;{r}_{x}&#x27;:0 for r in repos for x in roles},indent=2,sort_keys=True)+&#x27;\n&#x27;)
+ print(&#x27;[PASS] Uptane metadata initialized&#x27;)
+def verify_sig(doc,pem):
+ sig=base64.b64decode(doc[&#x27;signatures&#x27;][0][&#x27;sig&#x27;]);
+ with tempfile.NamedTemporaryFile() as data,tempfile.NamedTemporaryFile() as sf:
+  data.write(canon(doc[&#x27;signed&#x27;]));data.flush();sf.write(sig);sf.flush();r=subprocess.run([&#x27;openssl&#x27;,&#x27;dgst&#x27;,&#x27;-sha256&#x27;,&#x27;-verify&#x27;,pem,&#x27;-signature&#x27;,sf.name,data.name],capture_output=True)
+ return r.returncode==0
+def parse_exp(s): return datetime.datetime.fromisoformat(s.replace(&#x27;Z&#x27;,&#x27;+00:00&#x27;))
+def verify_repo(repo,versions):
+ docs={r:json.loads((meta/repo/f&#x27;{r}.json&#x27;).read_text()) for r in roles}
+ # Bootstrap root with pinned root public key, then trust role keys distributed by root metadata.
+ if not verify_sig(docs[&#x27;root&#x27;],str(keypaths(repo,&#x27;root&#x27;)[1])): raise ValueError(f&#x27;{repo} root signature&#x27;)
+ root_signed=docs[&#x27;root&#x27;][&#x27;signed&#x27;];now=datetime.datetime.now(datetime.timezone.utc)
+ if parse_exp(root_signed[&#x27;expires&#x27;])&lt;=now: raise ValueError(f&#x27;{repo} root expired&#x27;)
+ for role in roles:
+  d=docs[role];v=d[&#x27;signed&#x27;][&#x27;version&#x27;];floor=versions[f&#x27;{repo}_{role}&#x27;]
+  if v&lt;floor: raise ValueError(f&#x27;{repo} {role} metadata rollback {v} &lt; {floor}&#x27;)
+  if parse_exp(d[&#x27;signed&#x27;][&#x27;expires&#x27;])&lt;=now: raise ValueError(f&#x27;{repo} {role} expired&#x27;)
+  kid=root_signed[&#x27;roles&#x27;][role][&#x27;keyids&#x27;][0];pem=root_signed[&#x27;keys&#x27;][kid][&#x27;keyval&#x27;][&#x27;public&#x27;]
+  with tempfile.NamedTemporaryFile(&#x27;w&#x27;) as pf:
+   pf.write(pem);pf.flush()
+   if not verify_sig(d,pf.name): raise ValueError(f&#x27;{repo} {role} signature&#x27;)
+ def match(ref,path,label):
+  raw=path.read_bytes()
+  if ref[&#x27;length&#x27;]!=len(raw) or ref[&#x27;hashes&#x27;][&#x27;sha256&#x27;]!=hashlib.sha256(raw).hexdigest(): raise ValueError(f&#x27;{repo} {label} hash/length mismatch&#x27;)
+  if ref[&#x27;version&#x27;]!=json.loads(raw)[&#x27;signed&#x27;][&#x27;version&#x27;]: raise ValueError(f&#x27;{repo} {label} version mismatch&#x27;)
+ match(docs[&#x27;timestamp&#x27;][&#x27;signed&#x27;][&#x27;meta&#x27;][&#x27;snapshot.json&#x27;],meta/repo/&#x27;snapshot.json&#x27;,&#x27;snapshot&#x27;)
+ match(docs[&#x27;snapshot&#x27;][&#x27;signed&#x27;][&#x27;meta&#x27;][&#x27;targets.json&#x27;],meta/repo/&#x27;targets.json&#x27;,&#x27;targets&#x27;)
+ for role in roles: versions[f&#x27;{repo}_{role}&#x27;]=docs[role][&#x27;signed&#x27;][&#x27;version&#x27;]
+ return docs
+if a.cmd==&#x27;init&#x27;: init();sys.exit()
+if a.cmd==&#x27;reset-trusted&#x27;: trusted.write_text(json.dumps({f&#x27;{r}_{x}&#x27;:0 for r in repos for x in roles},indent=2,sort_keys=True)+&#x27;\n&#x27;);print(&#x27;[PASS] trusted metadata versions reset&#x27;);sys.exit()
+if a.cmd==&#x27;attack&#x27;:
+ init();kind=a.kind
+ if kind==&#x27;freeze&#x27;:
+  d=json.loads((meta/&#x27;image/timestamp.json&#x27;).read_text())[&#x27;signed&#x27;];d[&#x27;expires&#x27;]=&#x27;2020-01-01T00:00:00Z&#x27;;write_meta(&#x27;image&#x27;,&#x27;timestamp&#x27;,d)
+ elif kind==&#x27;rollback&#x27;:
+  # Simulate replay of an older, correctly signed snapshot and matching timestamp.
+  d=json.loads((meta/&#x27;image/snapshot.json&#x27;).read_text())[&#x27;signed&#x27;];d[&#x27;version&#x27;]=1;write_meta(&#x27;image&#x27;,&#x27;snapshot&#x27;,d);t=json.loads((meta/&#x27;image/timestamp.json&#x27;).read_text())[&#x27;signed&#x27;];t[&#x27;meta&#x27;][&#x27;snapshot.json&#x27;]=info(meta/&#x27;image/snapshot.json&#x27;);write_meta(&#x27;image&#x27;,&#x27;timestamp&#x27;,t)
+ elif kind==&#x27;mixmatch&#x27;:
+  d=json.loads((meta/&#x27;director/targets.json&#x27;).read_text())[&#x27;signed&#x27;];d[&#x27;targets&#x27;][&#x27;payload.bin&#x27;][&#x27;hashes&#x27;][&#x27;sha256&#x27;]=&#x27;0&#x27;*64;write_meta(&#x27;director&#x27;,&#x27;targets&#x27;,d);s=json.loads((meta/&#x27;director/snapshot.json&#x27;).read_text())[&#x27;signed&#x27;];s[&#x27;meta&#x27;][&#x27;targets.json&#x27;]=info(meta/&#x27;director/targets.json&#x27;);write_meta(&#x27;director&#x27;,&#x27;snapshot&#x27;,s);t=json.loads((meta/&#x27;director/timestamp.json&#x27;).read_text())[&#x27;signed&#x27;];t[&#x27;meta&#x27;][&#x27;snapshot.json&#x27;]=info(meta/&#x27;director/snapshot.json&#x27;);write_meta(&#x27;director&#x27;,&#x27;timestamp&#x27;,t)
+ elif kind==&#x27;wrong-ecu&#x27;:
+  d=json.loads((meta/&#x27;director/targets.json&#x27;).read_text())[&#x27;signed&#x27;];d[&#x27;targets&#x27;][&#x27;payload.bin&#x27;][&#x27;custom&#x27;][&#x27;ecuIdentifiers&#x27;]=[&#x27;ECU-999&#x27;];write_meta(&#x27;director&#x27;,&#x27;targets&#x27;,d);s=json.loads((meta/&#x27;director/snapshot.json&#x27;).read_text())[&#x27;signed&#x27;];s[&#x27;meta&#x27;][&#x27;targets.json&#x27;]=info(meta/&#x27;director/targets.json&#x27;);write_meta(&#x27;director&#x27;,&#x27;snapshot&#x27;,s);t=json.loads((meta/&#x27;director/timestamp.json&#x27;).read_text())[&#x27;signed&#x27;];t[&#x27;meta&#x27;][&#x27;snapshot.json&#x27;]=info(meta/&#x27;director/snapshot.json&#x27;);write_meta(&#x27;director&#x27;,&#x27;timestamp&#x27;,t)
+ print(f&#x27;[PASS] attack fixture created: {kind}&#x27;);sys.exit()
+versions=json.loads(trusted.read_text())
+try:
+ image=verify_repo(&#x27;image&#x27;,versions);director=verify_repo(&#x27;director&#x27;,versions)
+ it=image[&#x27;targets&#x27;][&#x27;signed&#x27;][&#x27;targets&#x27;][&#x27;payload.bin&#x27;];dt=director[&#x27;targets&#x27;][&#x27;signed&#x27;][&#x27;targets&#x27;][&#x27;payload.bin&#x27;]
+ if a.ecu not in dt[&#x27;custom&#x27;][&#x27;ecuIdentifiers&#x27;]: raise ValueError(f&#x27;Director did not authorize ECU {a.ecu}&#x27;)
+ if it[&#x27;length&#x27;]!=dt[&#x27;length&#x27;] or it[&#x27;hashes&#x27;]!=dt[&#x27;hashes&#x27;]: raise ValueError(&#x27;Director/Image target mismatch&#x27;)
+ payload=(base/&#x27;repo/payload.bin&#x27;).read_bytes()
+ if len(payload)!=it[&#x27;length&#x27;] or hashlib.sha256(payload).hexdigest()!=it[&#x27;hashes&#x27;][&#x27;sha256&#x27;]: raise ValueError(&#x27;target artifact mismatch&#x27;)
+ trusted.write_text(json.dumps(versions,indent=2,sort_keys=True)+&#x27;\n&#x27;)
+ print(&#x27;[PASS] root and delegated role signatures&#x27;);print(&#x27;[PASS] expiry and metadata rollback checks&#x27;);print(&#x27;[PASS] timestamp → snapshot → targets binding&#x27;);print(&#x27;[PASS] Director ECU authorization&#x27;);print(&#x27;[PASS] Director/Image repository agreement&#x27;);print(&#x27;[PASS] target hash and length&#x27;);print(&#x27;[PASS] Uptane metadata accepted&#x27;)
+except ValueError as e: print(f&#x27;[FAIL] {e}&#x27;);sys.exit(1)
+PY_FILE_3
+chmod +x &quot;$BASE/uptane_lab.py&quot;
+cat &gt; &quot;$BASE/swupdate_lab.py&quot; &lt;&lt;&#x27;PY_FILE_4&#x27;
+#!/usr/bin/env python3
+import argparse,base64,datetime,hashlib,json,pathlib,re,subprocess,sys,tempfile
+P=argparse.ArgumentParser();P.add_argument(&#x27;--base&#x27;,required=True);sp=P.add_subparsers(dest=&#x27;cmd&#x27;,required=True);sp.add_parser(&#x27;init&#x27;);r=sp.add_parser(&#x27;request&#x27;);r.add_argument(&#x27;--operator&#x27;,choices=[&#x27;release-manager&#x27;,&#x27;service-tech&#x27;],required=True);r.add_argument(&#x27;--vehicle&#x27;,default=&#x27;vehicle-001&#x27;);r.add_argument(&#x27;--selection&#x27;,required=True);r.add_argument(&#x27;--mode&#x27;,required=True);r.add_argument(&#x27;--target-version&#x27;,default=&#x27;2.0.0&#x27;);r.add_argument(&#x27;--current-version&#x27;,default=&#x27;1.0.0&#x27;);v=sp.add_parser(&#x27;authorize&#x27;);v.add_argument(&#x27;--request&#x27;,default=None);a=P.parse_args();base=pathlib.Path(a.base);d=base/&#x27;swupdate&#x27;;ops=d/&#x27;operators&#x27;
+def run(x,**kw):return subprocess.run(x,check=True,**kw)
+def canon(x):return json.dumps(x,sort_keys=True,separators=(&#x27;,&#x27;,&#x27;:&#x27;)).encode()
+def sign(path,key,out):run([&#x27;openssl&#x27;,&#x27;dgst&#x27;,&#x27;-sha256&#x27;,&#x27;-sign&#x27;,str(key),&#x27;-out&#x27;,str(out),str(path)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+def verify_bytes(data,sig,pub):
+ with tempfile.NamedTemporaryFile() as f:
+  f.write(data);f.flush();r=subprocess.run([&#x27;openssl&#x27;,&#x27;dgst&#x27;,&#x27;-sha256&#x27;,&#x27;-verify&#x27;,str(pub),&#x27;-signature&#x27;,str(sig),f.name],capture_output=True)
+ return r.returncode==0
+def version(x):return tuple(int(v) for v in re.findall(r&#x27;\d+&#x27;,x))
+def init():
+ d.mkdir(parents=True,exist_ok=True);ops.mkdir(exist_ok=True)
+ for name in [&#x27;release-manager&#x27;,&#x27;service-tech&#x27;]:
+  key=ops/f&#x27;{name}.key.pem&#x27;;pub=ops/f&#x27;{name}.pub.pem&#x27;
+  if not key.exists():run([&#x27;openssl&#x27;,&#x27;genpkey&#x27;,&#x27;-algorithm&#x27;,&#x27;RSA&#x27;,&#x27;-pkeyopt&#x27;,&#x27;rsa_keygen_bits:2048&#x27;,&#x27;-out&#x27;,str(key)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);run([&#x27;openssl&#x27;,&#x27;pkey&#x27;,&#x27;-in&#x27;,str(key),&#x27;-pubout&#x27;,&#x27;-out&#x27;,str(pub)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);key.chmod(0o600)
+ acl={&#x27;release-manager&#x27;:{&#x27;vehicles&#x27;:[&#x27;*&#x27;],&#x27;allowed&#x27;:{&#x27;stable&#x27;:[&#x27;slot-b&#x27;],&#x27;canary&#x27;:[&#x27;slot-b&#x27;]}},&#x27;service-tech&#x27;:{&#x27;vehicles&#x27;:[&#x27;vehicle-001&#x27;],&#x27;allowed&#x27;:{&#x27;recovery&#x27;:[&#x27;rescue&#x27;]}}}
+ (d/&#x27;acl.json&#x27;).write_text(json.dumps(acl,indent=2,sort_keys=True)+&#x27;\n&#x27;)
+ (d/&#x27;rootfs.bin&#x27;).write_bytes((base/&#x27;repo/payload.bin&#x27;).read_bytes());(d/&#x27;rescue.bin&#x27;).write_text(&#x27;signed recovery payload\n&#x27;)
+ h1=hashlib.sha256((d/&#x27;rootfs.bin&#x27;).read_bytes()).hexdigest();h2=hashlib.sha256((d/&#x27;rescue.bin&#x27;).read_bytes()).hexdigest()
+ desc=f&#x27;&#x27;&#x27;software =\n{{\n  version = &quot;2.0.0&quot;;\n  hardware-compatibility: [ &quot;demo-board-revA&quot; ];\n  stable: {{ slot-b: {{ images: ({{ filename = &quot;rootfs.bin&quot;; device = &quot;/dev/null&quot;; type = &quot;raw&quot;; sha256 = &quot;{h1}&quot;; }}); }}; }};\n  canary: {{ slot-b: {{ images: ({{ filename = &quot;rootfs.bin&quot;; device = &quot;/dev/null&quot;; type = &quot;raw&quot;; sha256 = &quot;{h1}&quot;; }}); }}; }};\n  recovery: {{ rescue: {{ images: ({{ filename = &quot;rescue.bin&quot;; device = &quot;/dev/null&quot;; type = &quot;raw&quot;; sha256 = &quot;{h2}&quot;; }}); }}; }};\n}};\n&#x27;&#x27;&#x27;
+ (d/&#x27;sw-description&#x27;).write_text(desc);sign(d/&#x27;sw-description&#x27;,base/&#x27;pki/release-signing.key.pem&#x27;,d/&#x27;sw-description.sig&#x27;)
+ subprocess.run(&quot;printf &#x27;%s\\n&#x27; sw-description sw-description.sig rootfs.bin rescue.bin | cpio -o -H crc &gt; update.swu&quot;,shell=True,cwd=d,check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+ print(&#x27;[PASS] signed SWU, modes and ACL initialized&#x27;)
+def make_request():
+ exp=(datetime.datetime.now(datetime.timezone.utc)+datetime.timedelta(minutes=30)).isoformat().replace(&#x27;+00:00&#x27;,&#x27;Z&#x27;)
+ req={&#x27;operator&#x27;:a.operator,&#x27;role&#x27;:a.operator,&#x27;vehicle_id&#x27;:a.vehicle,&#x27;selection&#x27;:a.selection,&#x27;mode&#x27;:a.mode,&#x27;target_version&#x27;:a.target_version,&#x27;current_version&#x27;:a.current_version,&#x27;expires&#x27;:exp,&#x27;nonce&#x27;:&#x27;training-001&#x27;}
+ p=d/&#x27;request.json&#x27;;p.write_text(json.dumps(req,indent=2,sort_keys=True)+&#x27;\n&#x27;);c=d/&#x27;request.canonical.json&#x27;;c.write_bytes(canon(req));sign(c,ops/f&#x27;{a.operator}.key.pem&#x27;,d/&#x27;request.sig&#x27;);print(f&#x27;[PASS] signed request: {a.operator} -&gt; {a.selection},{a.mode}&#x27;)
+def authorize():
+ reqp=pathlib.Path(a.request) if a.request else d/&#x27;request.json&#x27;;req=json.loads(reqp.read_text());role=req[&#x27;role&#x27;];pub=ops/f&#x27;{role}.pub.pem&#x27;
+ if not pub.exists() or not verify_bytes(canon(req),d/&#x27;request.sig&#x27;,pub):raise ValueError(&#x27;operator request signature&#x27;)
+ if datetime.datetime.fromisoformat(req[&#x27;expires&#x27;].replace(&#x27;Z&#x27;,&#x27;+00:00&#x27;))&lt;=datetime.datetime.now(datetime.timezone.utc):raise ValueError(&#x27;authorization request expired&#x27;)
+ acl=json.loads((d/&#x27;acl.json&#x27;).read_text());rule=acl.get(role)
+ if not rule:raise ValueError(&#x27;unknown role&#x27;)
+ if &#x27;*&#x27; not in rule[&#x27;vehicles&#x27;] and req[&#x27;vehicle_id&#x27;] not in rule[&#x27;vehicles&#x27;]:raise ValueError(&#x27;vehicle ACL&#x27;)
+ if req[&#x27;selection&#x27;] not in rule[&#x27;allowed&#x27;] or req[&#x27;mode&#x27;] not in rule[&#x27;allowed&#x27;][req[&#x27;selection&#x27;]]:raise ValueError(&#x27;selection/mode ACL&#x27;)
+ if version(req[&#x27;target_version&#x27;])&lt;=version(req[&#x27;current_version&#x27;]):raise ValueError(&#x27;downgrade or reinstall rejected&#x27;)
+ desc=(d/&#x27;sw-description&#x27;).read_bytes()
+ if not verify_bytes(desc,d/&#x27;sw-description.sig&#x27;,base/&#x27;pki/release-signing.pub.pem&#x27;):raise ValueError(&#x27;sw-description signature&#x27;)
+ text=desc.decode();pattern=rf&#x27;{re.escape(req[&quot;selection&quot;])}\s*:\s*\{{.*?{re.escape(req[&quot;mode&quot;])}\s*:\s*\{{(.*?)\}}\s*;\s*\}}\s*;&#x27;;m=re.search(pattern,text,re.S)
+ if not m:raise ValueError(&#x27;requested SWUpdate selection/mode absent&#x27;)
+ block=m.group(1)
+ for filename,expected in re.findall(r&#x27;filename\s*=\s*&quot;([^&quot;]+)&quot;;.*?sha256\s*=\s*&quot;([0-9a-f]{64})&quot;;&#x27;,block,re.S):
+  f=d/filename
+  if not f.exists() or hashlib.sha256(f.read_bytes()).hexdigest()!=expected:raise ValueError(f&#x27;artifact hash {filename}&#x27;)
+ print(&#x27;[PASS] operator signature&#x27;);print(&#x27;[PASS] request expiry and nonce format&#x27;);print(&#x27;[PASS] vehicle and selection/mode ACL&#x27;);print(&#x27;[PASS] anti-downgrade authorization&#x27;);print(&#x27;[PASS] signed sw-description&#x27;);print(&#x27;[PASS] artifact hashes&#x27;);print(f&#x27;[AUTHORIZED] swupdate --select {req[&quot;selection&quot;]},{req[&quot;mode&quot;]} -i update.swu -k release-signing.pub.pem&#x27;)
+if a.cmd==&#x27;init&#x27;:init()
+elif a.cmd==&#x27;request&#x27;:make_request()
+else:
+ try:authorize()
+ except ValueError as e:print(f&#x27;[DENIED] {e}&#x27;);sys.exit(1)
+PY_FILE_4
+chmod +x &quot;$BASE/swupdate_lab.py&quot;
+
+&quot;$BASE/uptane_lab.py&quot; --base &quot;$BASE&quot; init
+&quot;$BASE/uptane_lab.py&quot; --base &quot;$BASE&quot; reset-trusted
+&quot;$BASE/swupdate_lab.py&quot; --base &quot;$BASE&quot; init
+
+cat &gt; &quot;$BASE/validate_all.sh&quot; &lt;&lt;&#x27;VALIDATE&#x27;
+#!/usr/bin/env bash
+set -Eeuo pipefail
+BASE=&quot;${OTA_LAB_HOME:-$HOME/ota-secure-lab}&quot;
+PORT=&quot;${OTA_LAB_PORT:-18444}&quot;
+TOKEN=&quot;${OTA_LAB_TOKEN:-ota-training-token}&quot;
+PASS=0
+FAIL=0
+pass(){ echo &quot;[PASS] $1&quot;; PASS=$((PASS+1)); }
+fail(){ echo &quot;[FAIL] $1&quot; &gt;&amp;2; FAIL=$((FAIL+1)); }
+expect_fail(){
+  local label=&quot;$1&quot;; shift
+  if &quot;$@&quot; &gt;/tmp/ota-lab-negative.log 2&gt;&amp;1; then
+    fail &quot;$label unexpectedly succeeded&quot;
+  else
+    pass &quot;$label rejected&quot;
+  fi
+}
+
+&quot;$BASE/verify_release.py&quot; --base &quot;$BASE&quot; &gt;/dev/null &amp;&amp; \
+  pass &#x27;signed manifest and payload accepted&#x27; || fail &#x27;release verification&#x27;
+
+cp &quot;$BASE/repo/payload.bin&quot; &quot;$BASE/repo/payload.tampered.bin&quot;
+printf &#x27;tamper\n&#x27; &gt;&gt; &quot;$BASE/repo/payload.tampered.bin&quot;
+expect_fail &#x27;tampered payload&#x27; \
+  &quot;$BASE/verify_release.py&quot; --base &quot;$BASE&quot; \
+  --payload &quot;$BASE/repo/payload.tampered.bin&quot;
+
+python3 &quot;$BASE/https_server.py&quot; \
+  --base &quot;$BASE&quot; --port &quot;$PORT&quot; --token &quot;$TOKEN&quot; \
+  &gt;&quot;$BASE/logs/https-validation.log&quot; 2&gt;&amp;1 &amp;
+SERVER_PID=$!
+cleanup(){ kill &quot;$SERVER_PID&quot; 2&gt;/dev/null || true; }
+trap cleanup EXIT
+for _ in $(seq 1 30); do
+  curl -ks &quot;https://127.0.0.1:$PORT/&quot; &gt;/dev/null 2&gt;&amp;1 &amp;&amp; break
+  sleep .1
+done
+expect_fail &#x27;untrusted TLS server certificate&#x27; \
+  curl --fail --silent --show-error \
+  &quot;https://127.0.0.1:$PORT/manifest.json&quot;
+expect_fail &#x27;missing delivery authorization token&#x27; \
+  curl --fail --silent --show-error \
+  --cacert &quot;$BASE/pki/tls-ca.cert.pem&quot; \
+  &quot;https://127.0.0.1:$PORT/manifest.json&quot;
+curl --fail --silent --show-error \
+  --cacert &quot;$BASE/pki/tls-ca.cert.pem&quot; \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  &quot;https://127.0.0.1:$PORT/manifest.json&quot; \
+  -o &quot;$BASE/repo/downloaded-manifest.json&quot; &amp;&amp; \
+  pass &#x27;authorized TLS delivery&#x27; || fail &#x27;authorized TLS delivery&#x27;
+cleanup;trap - EXIT
+
+&quot;$BASE/ab_sim.py&quot; --base &quot;$BASE&quot; reset &gt;/dev/null
+&quot;$BASE/ab_sim.py&quot; --base &quot;$BASE&quot; stage &gt;/dev/null
+&quot;$BASE/ab_sim.py&quot; --base &quot;$BASE&quot; boot --health bad &gt;/dev/null
+&quot;$BASE/ab_sim.py&quot; --base &quot;$BASE&quot; boot --health bad \
+  | grep -q &#x27;\[RECOVERY\]&#x27; &amp;&amp; pass &#x27;failed slot rollback&#x27; || fail &#x27;failed slot rollback&#x27;
+&quot;$BASE/ab_sim.py&quot; --base &quot;$BASE&quot; reset &gt;/dev/null
+&quot;$BASE/ab_sim.py&quot; --base &quot;$BASE&quot; stage &gt;/dev/null
+&quot;$BASE/ab_sim.py&quot; --base &quot;$BASE&quot; boot --health good \
+  | grep -q &#x27;rollback index committed: 2&#x27; &amp;&amp; pass &#x27;successful slot commit&#x27; || fail &#x27;successful slot commit&#x27;
+
+&quot;$BASE/uptane_lab.py&quot; --base &quot;$BASE&quot; init &gt;/dev/null
+&quot;$BASE/uptane_lab.py&quot; --base &quot;$BASE&quot; reset-trusted &gt;/dev/null
+&quot;$BASE/uptane_lab.py&quot; --base &quot;$BASE&quot; verify &gt;/dev/null &amp;&amp; \
+  pass &#x27;valid Uptane metadata&#x27; || fail &#x27;valid Uptane metadata&#x27;
+&quot;$BASE/uptane_lab.py&quot; --base &quot;$BASE&quot; attack rollback &gt;/dev/null
+expect_fail &#x27;Uptane metadata rollback&#x27; \
+  &quot;$BASE/uptane_lab.py&quot; --base &quot;$BASE&quot; verify
+for ATTACK in freeze mixmatch wrong-ecu; do
+  &quot;$BASE/uptane_lab.py&quot; --base &quot;$BASE&quot; init &gt;/dev/null
+  &quot;$BASE/uptane_lab.py&quot; --base &quot;$BASE&quot; reset-trusted &gt;/dev/null
+  &quot;$BASE/uptane_lab.py&quot; --base &quot;$BASE&quot; attack &quot;$ATTACK&quot; &gt;/dev/null
+  expect_fail &quot;Uptane $ATTACK attack&quot; \
+    &quot;$BASE/uptane_lab.py&quot; --base &quot;$BASE&quot; verify
+done
+&quot;$BASE/uptane_lab.py&quot; --base &quot;$BASE&quot; init &gt;/dev/null
+&quot;$BASE/uptane_lab.py&quot; --base &quot;$BASE&quot; reset-trusted &gt;/dev/null
+
+&quot;$BASE/swupdate_lab.py&quot; --base &quot;$BASE&quot; init &gt;/dev/null
+&quot;$BASE/swupdate_lab.py&quot; --base &quot;$BASE&quot; request \
+  --operator release-manager --selection stable --mode slot-b &gt;/dev/null
+&quot;$BASE/swupdate_lab.py&quot; --base &quot;$BASE&quot; authorize &gt;/dev/null &amp;&amp; \
+  pass &#x27;authorized SWUpdate mode&#x27; || fail &#x27;authorized SWUpdate mode&#x27;
+&quot;$BASE/swupdate_lab.py&quot; --base &quot;$BASE&quot; request \
+  --operator service-tech --selection stable --mode slot-b &gt;/dev/null
+expect_fail &#x27;unauthorized SWUpdate mode&#x27; \
+  &quot;$BASE/swupdate_lab.py&quot; --base &quot;$BASE&quot; authorize
+
+printf &#x27;\nSummary: PASS=%d FAIL=%d\n&#x27; &quot;$PASS&quot; &quot;$FAIL&quot;
+(( FAIL == 0 ))
+VALIDATE
+chmod +x &quot;$BASE/validate_all.sh&quot;
+
+echo &quot;[PASS] Secure OTA training lab created at $BASE&quot;
+echo &quot;Run: $BASE/validate_all.sh&quot;
+</code></pre>
+</details>
+<pre><button class="copy btn">Copy</button><code>cat > "$HOME/setup-ota-secure-lab.sh" &lt;&lt;'BOOTSTRAP'
+# Paste the complete bootstrap content from above here.
+BOOTSTRAP
+
+chmod +x "$HOME/setup-ota-secure-lab.sh"
+"$HOME/setup-ota-secure-lab.sh"</code></pre>
+<div class="callout warn">The placeholder command above shows the destination. Use the section’s Copy button to copy the complete bootstrap, then save it as the named file.</div>
+
+<details><summary>Lab 1 — TLS trust and delivery authorization</summary>
+<pre><button class="copy btn">Copy</button><code>BASE="$HOME/ota-secure-lab"
+PORT=18444
+TOKEN='ota-training-token'
+
+python3 "$BASE/https_server.py"   --base "$BASE"   --port "$PORT"   --token "$TOKEN"   >"$BASE/logs/https.log" 2>&1 &
+
+SERVER_PID=$!
+trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+sleep 1
+
+# Expected failure: private CA is not trusted by default.
+curl --fail   "https://127.0.0.1:$PORT/manifest.json"
+
+# Expected failure: server is trusted, but caller is not authorized.
+curl --fail   --cacert "$BASE/pki/tls-ca.cert.pem"   "https://127.0.0.1:$PORT/manifest.json"
+
+# Expected success: CA trust plus application authorization.
+curl --fail   --cacert "$BASE/pki/tls-ca.cert.pem"   -H "Authorization: Bearer $TOKEN"   "https://127.0.0.1:$PORT/manifest.json" |
+  python3 -m json.tool
+
+kill "$SERVER_PID"
+trap - EXIT</code></pre>
+</details>
+
+<details><summary>Lab 2 — Signature, hash and tamper rejection</summary>
+<pre><button class="copy btn">Copy</button><code>BASE="$HOME/ota-secure-lab"
+
+"$BASE/verify_release.py"   --base "$BASE"
+
+cp "$BASE/repo/payload.bin"    "$BASE/repo/payload.tampered.bin"
+
+printf 'malicious change
+'   >> "$BASE/repo/payload.tampered.bin"
+
+# Expected failure.
+"$BASE/verify_release.py"   --base "$BASE"   --payload "$BASE/repo/payload.tampered.bin"</code></pre>
+<pre class="expected"><code>[PASS] manifest signature
+[PASS] payload hash and length
+[PASS] release accepted
+
+[FAIL] payload hash/length mismatch</code></pre>
+</details>
+
+<details><summary>Lab 3 — A/B fallback and rollback-index commit</summary>
+<pre><button class="copy btn">Copy</button><code>BASE="$HOME/ota-secure-lab"
+
+# Failed release: fallback to slot A.
+"$BASE/ab_sim.py" --base "$BASE" reset
+"$BASE/ab_sim.py" --base "$BASE" stage
+"$BASE/ab_sim.py" --base "$BASE" boot --health bad
+"$BASE/ab_sim.py" --base "$BASE" boot --health bad
+"$BASE/ab_sim.py" --base "$BASE" status
+
+# Successful release: slot B becomes active and index 2 is committed.
+"$BASE/ab_sim.py" --base "$BASE" reset
+"$BASE/ab_sim.py" --base "$BASE" stage
+"$BASE/ab_sim.py" --base "$BASE" boot --health good
+"$BASE/ab_sim.py" --base "$BASE" status</code></pre>
+<pre class="expected"><code>[RECOVERY] boot limit reached; rolled back to slot a
+...
+[PASS] slot b marked successful
+[PASS] rollback index committed: 2</code></pre>
+</details>
+
+<details><summary>Lab 4 — Uptane attacks</summary>
+<pre><button class="copy btn">Copy</button><code>BASE="$HOME/ota-secure-lab"
+
+"$BASE/uptane_lab.py" --base "$BASE" init
+"$BASE/uptane_lab.py" --base "$BASE" reset-trusted
+"$BASE/uptane_lab.py" --base "$BASE" verify
+
+# Metadata rollback needs an already trusted higher version.
+"$BASE/uptane_lab.py" --base "$BASE" attack rollback
+"$BASE/uptane_lab.py" --base "$BASE" verify
+
+# Restore, then test independent attack fixtures.
+for ATTACK in freeze mixmatch wrong-ecu; do
+  "$BASE/uptane_lab.py" --base "$BASE" init
+  "$BASE/uptane_lab.py" --base "$BASE" reset-trusted
+  "$BASE/uptane_lab.py" --base "$BASE" attack "$ATTACK"
+
+  # Each verification is expected to fail.
+  "$BASE/uptane_lab.py" --base "$BASE" verify || true
+done</code></pre>
+<pre class="expected"><code>[FAIL] image snapshot metadata rollback 1 &lt; 5
+[FAIL] image timestamp expired
+[FAIL] Director/Image target mismatch
+[FAIL] Director did not authorize ECU ECU-001</code></pre>
+</details>
+
+<details><summary>Lab 5 — SWUpdate package, mode and ACL authorization</summary>
+<pre><button class="copy btn">Copy</button><code>BASE="$HOME/ota-secure-lab"
+
+"$BASE/swupdate_lab.py" --base "$BASE" init
+
+# Authorized production request.
+"$BASE/swupdate_lab.py"   --base "$BASE" request   --operator release-manager   --selection stable   --mode slot-b
+
+"$BASE/swupdate_lab.py"   --base "$BASE" authorize
+
+# Expected denial: service technician cannot select stable,slot-b.
+"$BASE/swupdate_lab.py"   --base "$BASE" request   --operator service-tech   --selection stable   --mode slot-b
+
+"$BASE/swupdate_lab.py"   --base "$BASE" authorize</code></pre>
+<pre class="expected"><code>[AUTHORIZED] swupdate --select stable,slot-b ...
+[DENIED] selection/mode ACL</code></pre>
+<p>When a native SWUpdate binary built with signed-image support is available, an additional non-installing check can be performed:</p>
+<pre><button class="copy btn">Copy</button><code>swupdate -c -n   -i "$BASE/swupdate/update.swu"   -k "$BASE/pki/release-signing.pub.pem"   -e 'stable,slot-b'</code></pre>
+</details>
+
+<details open><summary>Lab 6 — One-command trainee acceptance run</summary>
+<pre><button class="copy btn">Copy</button><code>OTA_LAB_HOME="$HOME/ota-secure-lab"   "$HOME/ota-secure-lab/validate_all.sh"</code></pre>
+<pre class="expected"><code>[PASS] signed manifest and payload accepted
+[PASS] tampered payload rejected
+[PASS] untrusted TLS server certificate rejected
+[PASS] missing delivery authorization token rejected
+[PASS] authorized TLS delivery
+[PASS] failed slot rollback
+[PASS] successful slot commit
+[PASS] valid Uptane metadata
+[PASS] Uptane metadata rollback rejected
+[PASS] Uptane freeze attack rejected
+[PASS] Uptane mixmatch attack rejected
+[PASS] Uptane wrong-ecu attack rejected
+[PASS] authorized SWUpdate mode
+[PASS] unauthorized SWUpdate mode rejected
+
+Summary: PASS=14 FAIL=0</code></pre>
+</details>
+</section>
+
+<section id="cuttlefish" data-search>
+<div class="section-heading"><h2>10. Android 17 Cuttlefish capability probes</h2></div>
+<p class="lead">This lab now reflects the <strong>actual Android 17 / API 37 Cuttlefish VM results</strong>. The goal is to classify each signal correctly instead of turning every unavailable utility path into a false failure.</p>
+
+<div class="callout good"><strong>Observed VM verdict:</strong> the OTA environment is healthy enough to continue. A/B and compressed Virtual A/B are enabled, the active slot is <code>_a</code>, <code>android.hardware.boot.IBootControl/default</code> is registered, and <code>update_engine_client</code> is exposed. The remaining <code>bootctl</code> problem is specifically a <strong>client/interface acquisition issue</strong>, not evidence that the Boot Control service is absent.</div>
+
+<h3>What the real VM proved</h3>
+<table><thead><tr><th>Probe</th><th>Observed result</th><th>Training classification</th></tr></thead><tbody>
+<tr><td>Android release / API</td><td><code>17</code> / <code>37</code></td><td><strong class="ok">PASS</strong> — expected course image.</td></tr>
+<tr><td>Build type</td><td><code>userdebug</code></td><td><strong class="ok">PASS</strong> — appropriate lab build.</td></tr>
+<tr><td><code>ro.build.ab_update</code></td><td><code>true</code></td><td><strong class="ok">PASS</strong> — A/B OTA enabled.</td></tr>
+<tr><td><code>ro.virtual_ab.enabled</code></td><td><code>true</code></td><td><strong class="ok">PASS</strong> — Virtual A/B enabled.</td></tr>
+<tr><td><code>ro.virtual_ab.compression.enabled</code></td><td><code>true</code></td><td><strong class="ok">PASS</strong> — compressed snapshots enabled.</td></tr>
+<tr><td><code>ro.boot.slot_suffix</code></td><td><code>_a</code></td><td><strong class="ok">PASS</strong> — current slot determined read-only.</td></tr>
+<tr><td>Boot Control Binder service</td><td><code>android.hardware.boot.IBootControl/default</code></td><td><strong class="ok">PRESENT</strong> — AIDL service is registered.</td></tr>
+<tr><td><code>bootctl</code></td><td>Binary present; direct client query is intentionally skipped in the normal trainee probe</td><td><strong class="maybe">INFO</strong> — use <code>ro.boot.slot_suffix</code> for the validated read-only slot check.</td></tr>
+<tr><td><code>ro.boot.verifiedbootstate</code></td><td><code>orange</code></td><td><strong class="maybe">INFO</strong> — unlocked development Verified Boot state.</td></tr>
+<tr><td><code>avbctl get-verity</code></td><td>Not executed in the normal trainee probe on this image layout</td><td><strong class="maybe">INFO</strong> — use boot properties for read-only Verified Boot evidence.</td></tr>
+<tr><td><code>update_engine_client --help</code></td><td>Client and OTA actions exposed</td><td><strong class="ok">PASS</strong> — real Android update-engine client is available.</td></tr>
+</tbody></table>
+
+<div class="grid g3">
+  <div class="card"><h3>① Service registration</h3><p><code>service list</code> proves that <code>IBootControl/default</code> is registered with Binder. That is stronger evidence than assuming the HAL is missing because <code>bootctl</code> failed.</p></div>
+  <div class="card"><h3>② Client acquisition</h3><p><code>bootctl</code> still has to discover and obtain the interface it expects. Failure here can involve declaration, client compatibility, service-manager access, or image configuration.</p></div>
+  <div class="card"><h3>③ Reliable fallback</h3><p>For this read-only lab, <code>ro.boot.slot_suffix=_a</code> is sufficient to identify the running slot while the <code>bootctl</code> path is investigated separately.</p></div>
+</div>
+
+<div class="flow">
+  <div class="card"><strong>A/B properties</strong><br><span class="muted">PASS</span></div>
+  <div class="card"><strong>IBootControl service</strong><br><span class="muted">REGISTERED</span></div>
+  <div class="card"><strong>bootctl client</strong><br><span class="muted">cannot acquire interface</span></div>
+  <div class="card"><strong>slot fallback</strong><br><span class="muted"><code>_a</code> from boot property</span></div>
+  <div class="card"><strong>update_engine</strong><br><span class="muted">AVAILABLE</span></div>
+</div>
+
+<div class="remember"><div class="emoji">🧠</div><div><strong>Field rule</strong><code>service registered</code> ≠ <code>every client can acquire it</code>. Diagnose the service, its declaration/access path, and the client independently.</div></div>
+
+<h3>Recommended read-only capability probe</h3>
+<pre><button class="copy btn">Copy</button><code>RUNTIME="${RUNTIME:-$HOME/src}"
+ADB="${ADB:-$RUNTIME/bin/adb}"
+SERIAL="${SERIAL:-0.0.0.0:6520}"
+
+"$ADB" connect "$SERIAL" &gt;/dev/null 2&gt;&amp;1 || true
+"$ADB" -s "$SERIAL" get-state || {
+  echo "[FAIL] ADB device is not reachable: $SERIAL"
+  exit 1
+}
+
+echo
+echo "=== BUILD / OTA PROPERTIES ==="
+for PROP in \
+  ro.build.version.release \
+  ro.build.version.sdk \
+  ro.build.type \
+  ro.build.ab_update \
+  ro.boot.slot_suffix \
+  ro.boot.slot \
+  ro.virtual_ab.enabled \
+  ro.virtual_ab.compression.enabled \
+  ro.boot.verifiedbootstate \
+  ro.boot.vbmeta.device_state \
+  ro.boot.flash.locked \
+  ro.boot.veritymode \
+  ro.boot.avb_version
+do
+  VALUE="$("$ADB" -s "$SERIAL" shell getprop "$PROP" | tr -d '\r')"
+  printf '%-38s %s\n' "$PROP" "${VALUE:-&lt;not exposed&gt;}"
+done
+
+echo
+echo "=== CURRENT SLOT (ERROR-FREE READ-ONLY METHOD) ==="
+SLOT_SUFFIX="$("$ADB" -s "$SERIAL" shell getprop ro.boot.slot_suffix 2&gt;/dev/null | tr -d '\r')"
+SLOT_NAME="$("$ADB" -s "$SERIAL" shell getprop ro.boot.slot 2&gt;/dev/null | tr -d '\r')"
+
+if [ -n "$SLOT_SUFFIX" ]; then
+  echo "[PASS] current slot: $SLOT_SUFFIX (from ro.boot.slot_suffix)"
+elif [ -n "$SLOT_NAME" ]; then
+  echo "[PASS] current slot: $SLOT_NAME (from ro.boot.slot)"
+else
+  echo "[SKIP] current-slot boot property is not exposed"
+fi
+
+BOOTCTL_PATH="$("$ADB" -s "$SERIAL" shell 'command -v bootctl 2&gt;/dev/null' | tr -d '\r')"
+if [ -n "$BOOTCTL_PATH" ]; then
+  echo "[INFO] bootctl binary is present: $BOOTCTL_PATH"
+  echo "[INFO] direct bootctl slot query intentionally skipped on this validated Cuttlefish image"
+else
+  echo "[INFO] bootctl binary is not exposed; property-based slot check remains sufficient"
+fi
+
+echo
+echo "=== BOOT / UPDATE SERVICES ==="
+SERVICES="$("$ADB" -s "$SERIAL" shell 'service list' 2&gt;/dev/null)"
+printf '%s\n' "$SERVICES" | grep -Ei 'android\.hardware\.boot|update_engine|boot' || \
+  echo "[INFO] no matching service names found"
+
+if printf '%s\n' "$SERVICES" | grep -q 'android.hardware.boot.IBootControl/default'; then
+  echo "[PASS] AIDL Boot Control service is registered"
+else
+  echo "[INFO] default AIDL Boot Control service not seen in service list"
+fi
+
+echo
+echo "=== BOOT CONTROL SUMMARY ==="
+if printf '%s\n' "$SERVICES" | grep -q 'android.hardware.boot.IBootControl/default'; then
+  echo "[PASS] Boot Control AIDL service is registered"
+  echo "[INFO] bootctl HAL query is not required for this trainee capability check"
+else
+  echo "[INFO] Boot Control AIDL service was not listed; continue with property-based slot evidence"
+fi
+
+echo
+echo "=== VERIFIED BOOT / AVB ==="
+VBSTATE="$("$ADB" -s "$SERIAL" shell getprop ro.boot.verifiedbootstate | tr -d '\r')"
+case "$VBSTATE" in
+  green)  echo "[PASS] Verified Boot state: GREEN" ;;
+  yellow) echo "[INFO] Verified Boot state: YELLOW" ;;
+  orange) echo "[INFO] Verified Boot state: ORANGE (unlocked development state)" ;;
+  red)    echo "[WARN] Verified Boot state: RED" ;;
+  *)      echo "[INFO] Verified Boot state not exposed: ${VBSTATE:-&lt;empty&gt;}" ;;
+esac
+
+AVBCTL_PATH="$("$ADB" -s "$SERIAL" shell 'command -v avbctl 2&gt;/dev/null' | tr -d '\r')"
+if [ -n "$AVBCTL_PATH" ]; then
+  echo "[INFO] avbctl binary is present: $AVBCTL_PATH"
+  echo "[INFO] avbctl get-verity intentionally skipped on this validated Cuttlefish image layout"
+else
+  echo "[INFO] avbctl is not exposed; Verified Boot properties above remain the safe read-only probe"
+fi
+
+echo
+echo "=== UPDATE ENGINE CLIENT ==="
+if "$ADB" -s "$SERIAL" shell 'command -v update_engine_client' 2&gt;/dev/null | grep -q '/'; then
+  echo "[PASS] update_engine_client is present"
+  "$ADB" -s "$SERIAL" shell 'update_engine_client --help' 2&gt;&amp;1 | head -n 80
+else
+  echo "[SKIP] update_engine_client not installed/exposed"
+fi</code></pre>
+
+<div class="callout good"><strong>Expected result on the validated VM:</strong><pre class="expected"><code>ro.build.version.release               17
+ro.build.version.sdk                   37
+ro.build.type                          userdebug
+ro.build.ab_update                     true
+ro.boot.slot_suffix                    _a
+ro.virtual_ab.enabled                  true
+ro.virtual_ab.compression.enabled      true
+ro.boot.verifiedbootstate              orange
+
+[PASS] current slot: _a (from ro.boot.slot_suffix)
+[INFO] bootctl binary is present: /system/bin/bootctl
+[INFO] direct bootctl slot query intentionally skipped on this validated Cuttlefish image
+[PASS] AIDL Boot Control service is registered
+[PASS] Boot Control AIDL service is registered
+[INFO] Verified Boot state: ORANGE (unlocked development state)
+[INFO] avbctl get-verity intentionally skipped on this validated Cuttlefish image layout
+[PASS] update_engine_client is present</code></pre></div>
+
+<h3>Boot Control troubleshooting — registered service, failing client</h3>
+<p>The normal trainee probe deliberately avoids the failing <code>bootctl</code> client path. Use this section only when an instructor wants to investigate the underlying Cuttlefish HAL/client behavior. All potentially noisy commands below suppress their expected stderr so they do not look like lab failures.</p>
+
+<pre><button class="copy btn">Copy</button><code># 1. Confirm the Binder service registration.
+"$ADB" -s "$SERIAL" shell \
+  'service list | grep -F "android.hardware.boot.IBootControl/default" || true'
+
+# 2. Look for the Boot Control HAL process.
+"$ADB" -s "$SERIAL" shell \
+  'ps -A | grep -Ei "boot.*service|hardware\.boot|boot_control" || true'
+
+# 3. Inspect VINTF declarations for the AIDL Boot HAL.
+"$ADB" -s "$SERIAL" shell '
+for D in /vendor/etc/vintf /odm/etc/vintf /product/etc/vintf \
+         /system/etc/vintf /system_ext/etc/vintf; do
+  [ -d "$D" ] || continue
+  grep -R -n -A8 -B3 "android.hardware.boot" "$D" 2&gt;/dev/null || true
+done
+'
+
+# 4. Optional silent bootctl probe. No raw error text is shown to trainees.
+if "$ADB" -s "$SERIAL" shell 'bootctl hal-info' &gt;/dev/null 2&gt;&amp;1; then
+  echo "[PASS] bootctl can acquire the Boot Control interface"
+else
+  echo "[INFO] bootctl client path is unavailable on this image; property fallback remains valid"
+fi
+
+# 5. Inspect relevant logs only when troubleshooting is required.
+"$ADB" -s "$SERIAL" shell '
+logcat -d -b all 2&gt;/dev/null | \
+  grep -Ei "BootControlClient|IBootControl|boot.?control|bootctrl|hardware\.boot|vintf" | \
+  tail -120
+' || true
+
+# 6. Optional instructor-only comparison on a userdebug image.
+#    Root adbd changes the debugging context; it is NOT required for the trainee lab.
+"$ADB" -s "$SERIAL" root &gt;/dev/null 2&gt;&amp;1 || true
+sleep 2
+"$ADB" -s "$SERIAL" shell 'id' 2&gt;/dev/null || true
+if "$ADB" -s "$SERIAL" shell 'bootctl get-current-slot' &gt;/dev/null 2&gt;&amp;1; then
+  echo "[PASS] bootctl works with root adbd"
+else
+  echo "[INFO] bootctl remains unavailable with root adbd; investigate VINTF/client configuration if required"
+fi</code></pre>
+
+<details open><summary>Boot Control decision tree</summary>
+<table><thead><tr><th>Observation</th><th>What it proves</th><th>Next action</th></tr></thead><tbody>
+<tr><td><code>IBootControl/default</code> absent from <code>service list</code></td><td>The default Binder service is not registered through this probe.</td><td>Inspect service startup, packages, logs and VINTF.</td></tr>
+<tr><td><code>IBootControl/default</code> present + <code>bootctl</code> works</td><td>Service registration and client acquisition both work.</td><td><strong>PASS</strong>; use <code>bootctl</code>.</td></tr>
+<tr><td><code>IBootControl/default</code> present + optional silent <code>bootctl</code> probe does not pass</td><td>The HAL service exists, but this client path is not usable on the current image.</td><td><strong>INFO</strong> only for the trainee lab; use the slot property. Investigate VINTF/client details only as an instructor exercise.</td></tr>
+<tr><td>Normal shell fails, root shell works</td><td>Privilege / SELinux / service-manager access becomes a strong suspect.</td><td>Inspect denials and service access policy; do not disable SELinux as a shortcut.</td></tr>
+<tr><td>Normal shell and root shell both fail</td><td>Simple shell privilege is unlikely to be the whole explanation.</td><td>Focus on VINTF/client/service configuration.</td></tr>
+<tr><td><code>ro.boot.slot_suffix=_a</code></td><td>The active boot suffix is available read-only.</td><td><strong>PASS</strong> current-slot discovery even while <code>bootctl</code> is investigated.</td></tr>
+</tbody></table>
+</details>
+
+<h3>AVB / Verified Boot interpretation</h3>
+<div class="grid g2">
+  <div class="card"><h3>🟠 ORANGE is information, not a lab failure</h3><p>Your image reports <code>ro.boot.verifiedbootstate=orange</code>. For this development Cuttlefish environment, record it as an <strong>unlocked development state</strong>. A production vehicle target would normally require its intended locked/verified trust state.</p></div>
+  <div class="card"><h3>🔎 Avoid the noisy <code>avbctl</code> path here</h3><p>On this validated Cuttlefish image, the normal trainee probe does not execute <code>avbctl get-verity</code>. Verified Boot state is collected from read-only boot properties instead, avoiding a known image-layout-specific error while preserving the concept being taught.</p></div>
+</div>
+
+<pre><button class="copy btn">Copy</button><code>echo "=== VERIFIED BOOT PROPERTIES ==="
+for PROP in \
+  ro.boot.verifiedbootstate \
+  ro.boot.vbmeta.device_state \
+  ro.boot.flash.locked \
+  ro.boot.veritymode \
+  ro.boot.avb_version \
+  ro.boot.vbmeta.digest
+do
+  VALUE="$("$ADB" -s "$SERIAL" shell getprop "$PROP" | tr -d '\r')"
+  printf '%-35s %s\n' "$PROP" "${VALUE:-&lt;not exposed&gt;}"
+done</code></pre>
+
+<h3>Why <code>update_engine_client</code> matters</h3>
+<div class="callout good"><strong>Strong positive capability result:</strong> the VM exposes the real Android Update Engine client. Its help output includes operations such as <code>--verify</code>, <code>--allocate</code>, <code>--update</code>, <code>--follow</code>, <code>--merge</code>, <code>--resume</code>, <code>--suspend</code> and <code>--switch_slot</code>. This makes the image useful for studying the actual OTA control surface even though this course deliberately avoids applying a mismatched synthetic payload.</div>
+<table><thead><tr><th>Client option</th><th>Concept to teach</th></tr></thead><tbody>
+<tr><td><code>--verify</code></td><td>Check whether supplied payload metadata is applicable before installation.</td></tr>
+<tr><td><code>--allocate</code></td><td>Prepare space/resources required for the payload.</td></tr>
+<tr><td><code>--update</code> + <code>--follow</code></td><td>Start and observe an OTA transaction on a correctly matched test payload.</td></tr>
+<tr><td><code>--merge</code></td><td>Virtual A/B post-reboot snapshot merge lifecycle.</td></tr>
+<tr><td><code>--suspend</code> / <code>--resume</code></td><td>Control an in-progress update lifecycle.</td></tr>
+<tr><td><code>--switch_slot</code></td><td>Slot switching control; understand it conceptually here rather than changing the training VM casually.</td></tr>
+</tbody></table>
+
+<div class="callout good"><strong>Error-free trainee rule:</strong> the main capability probe uses only commands validated to return cleanly on this Cuttlefish environment. Commands known to emit image-specific errors are either skipped or run silently in the instructor-only troubleshooting path. A trainee should therefore see <strong>PASS / INFO / SKIP</strong> classifications rather than raw <code>bootctl</code> or <code>avbctl</code> errors.</div>
+
+<div class="callout warn"><strong>Safety boundary:</strong> these probes are intended for inspection and diagnosis. Do not change the active boot slot, mark slots unbootable, disable verification, or apply the synthetic Ubuntu training payload to Cuttlefish. A real Android OTA package must match the exact source build, target, partition layout and signing configuration.</div>
+</section>
+
+<section id="games" data-search>
+<div class="section-heading"><h2>11. Attack games — choose the defence</h2></div>
+<p class="lead">These exercises test whether you can identify the first control that should stop an attack. Some architectures fail because they rely on one strong-looking control for every security decision.</p>
+<div class="game-grid">
+  <div class="game-card">
+    <h3>🎯 Match each attack to its primary defence</h3>
+    <div id="matchGame">
+      <div class="match-row" data-answer="Timestamp expiry"><strong>Freeze old repository state</strong><select><option value="">Choose defence…</option><option>TLS certificate validation</option><option>Timestamp expiry</option><option>Payload compression</option><option>Linux permissions</option></select></div>
+      <div class="match-row" data-answer="Payload hash and length"><strong>Replace payload bytes</strong><select><option value="">Choose defence…</option><option>Payload hash and length</option><option>Hostname SAN</option><option>Boot retry counter</option><option>Operator role</option></select></div>
+      <div class="match-row" data-answer="Director ECU assignment"><strong>Send image to wrong ECU</strong><select><option value="">Choose defence…</option><option>Director ECU assignment</option><option>TLS encryption</option><option>CPIO archive order</option><option>Certificate key usage</option></select></div>
+      <div class="match-row" data-answer="Rollback index"><strong>Boot older vulnerable image</strong><select><option value="">Choose defence…</option><option>Rollback index</option><option>Bearer token</option><option>SHA-256 alone</option><option>DNS lookup</option></select></div>
+      <div class="match-row" data-answer="TLS CA and SAN validation"><strong>Impersonate OTA server</strong><select><option value="">Choose defence…</option><option>TLS CA and SAN validation</option><option>Inactive slot</option><option>Director Targets</option><option>SWU software collection</option></select></div>
+      <div class="match-row" data-answer="Operator and mode ACL"><strong>Technician requests stable slot</strong><select><option value="">Choose defence…</option><option>Operator and mode ACL</option><option>Payload length</option><option>Root role rotation</option><option>Boot health check</option></select></div>
+    </div>
+    <button class="btn primary" id="gradeMatch">Check defences</button><div class="result" id="matchResult">Choose one defence for every attack.</div>
+  </div>
+  <div class="game-card">
+    <h3>🕵️ Find the weakest architecture</h3>
+    <label class="design-option"><input type="radio" name="weakDesign" value="a"> <strong>A.</strong> HTTPS download only</label>
+    <label class="design-option"><input type="radio" name="weakDesign" value="b"> <strong>B.</strong> HTTPS + signed metadata + exact payload hash + caller ACL + rollback protection</label>
+    <label class="design-option"><input type="radio" name="weakDesign" value="c"> <strong>C.</strong> Signed metadata and payload hash delivered over verified TLS</label>
+    <button class="btn primary" id="gradeDesign">Reveal analysis</button><div class="result" id="designResult">Select the architecture with the largest trust gap.</div>
+    <div class="remember"><div class="emoji">💡</div><div><strong>Look for missing responsibilities</strong>A design may use strong cryptography and still lack device authorization, freshness, anti-downgrade or recovery.</div></div>
+  </div>
+</div>
+</section>
+
+<section id="quiz" data-search>
+<h2>12. Knowledge check</h2>
+<form id="quizForm">
+<div class="quiz-q" data-answer="b"><strong>1. Why sign the payload when it is already downloaded over HTTPS?</strong>
+<label><input type="radio" name="q1" value="a"> To make the file smaller</label>
+<label><input type="radio" name="q1" value="b"> To preserve artifact authority independently of the transport channel</label>
+<label><input type="radio" name="q1" value="c"> To replace all authorization policy</label></div>
+<div class="quiz-q" data-answer="c"><strong>2. When should an A/B device commit the new rollback index?</strong>
+<label><input type="radio" name="q2" value="a"> Before downloading the payload</label>
+<label><input type="radio" name="q2" value="b"> Immediately after writing the inactive slot</label>
+<label><input type="radio" name="q2" value="c"> After the new slot is marked successful</label></div>
+<div class="quiz-q" data-answer="a"><strong>3. Which Uptane role primarily detects a freeze attack?</strong>
+<label><input type="radio" name="q3" value="a"> Timestamp</label>
+<label><input type="radio" name="q3" value="b"> Artifact filename</label>
+<label><input type="radio" name="q3" value="c"> Bootloader slot name</label></div>
+<div class="quiz-q" data-answer="b"><strong>4. What does Director Targets add?</strong>
+<label><input type="radio" name="q4" value="a"> TLS encryption</label>
+<label><input type="radio" name="q4" value="b"> Vehicle/ECU-specific authorization</label>
+<label><input type="radio" name="q4" value="c"> Linux file permissions</label></div>
+<div class="quiz-q" data-answer="c"><strong>5. What does SWUpdate <code>stable,slot-b</code> describe?</strong>
+<label><input type="radio" name="q5" value="a"> An operator identity</label>
+<label><input type="radio" name="q5" value="b"> A certificate chain</label>
+<label><input type="radio" name="q5" value="c"> A software collection and operation mode</label></div>
+<div class="quiz-q" data-answer="a"><strong>6. A valid SWU signature should still be denied when:</strong>
+<label><input type="radio" name="q6" value="a"> The caller is not authorized for the requested vehicle/mode</label>
+<label><input type="radio" name="q6" value="b"> The CA is trusted</label>
+<label><input type="radio" name="q6" value="c"> The payload hash matches</label></div>
+<button type="button" class="btn primary" id="gradeQuiz">Grade quiz</button>
+</form>
+<div class="result" id="quizResult">Complete all six questions.</div>
+</section>
+
+<section id="acceptance" data-search>
+<h2>13. Full trainee acceptance test</h2>
+<div class="card checks" id="checks">
+<label><input type="checkbox" data-k="arch"> Explain channel security versus artifact security</label>
+<label><input type="checkbox" data-k="tls"> Reject an untrusted TLS server and a missing token</label>
+<label><input type="checkbox" data-k="sig"> Verify a signed manifest with the release public key</label>
+<label><input type="checkbox" data-k="hash"> Reject a tampered payload by SHA-256 and length</label>
+<label><input type="checkbox" data-k="slot"> Demonstrate failed-slot fallback</label>
+<label><input type="checkbox" data-k="index"> Explain why the rollback index commits after successful boot</label>
+<label><input type="checkbox" data-k="root"> Explain Uptane root, timestamp, snapshot and targets roles</label>
+<label><input type="checkbox" data-k="director"> Explain Director versus Image repository responsibilities</label>
+<label><input type="checkbox" data-k="attacks"> Reject freeze, rollback, mix-and-match and wrong-ECU fixtures</label>
+<label><input type="checkbox" data-k="swu"> Inspect the SWU archive order and signed <code>sw-description</code></label>
+<label><input type="checkbox" data-k="acl"> Allow and deny SWUpdate modes using signed operator requests</label>
+<label><input type="checkbox" data-k="cuttlefish"> Explain the registered Boot Control service vs bootctl client-acquisition failure, confirm slot _a, interpret AVB orange correctly, and inspect update-engine capabilities</label>
+<label><input type="checkbox" data-k="validate"> Complete the 14-test runner with <code>FAIL=0</code></label>
+<label><input type="checkbox" data-k="quiz"> Score at least 80% on the knowledge check</label>
+</div>
+<div class="meter"><span id="meter"></span></div>
+<div class="result" id="checkResult">0 of 14 acceptance items complete.</div>
+</section>
+
+
+<section id="glossary" data-search>
+<div class="section-heading"><h2>14. Visual glossary and memory hooks</h2></div>
+<dl class="glossary-grid">
+  <div class="glossary-item"><dt>CA</dt><dd>Certificate Authority trusted to issue or anchor TLS certificates.</dd></div>
+  <div class="glossary-item"><dt>SAN</dt><dd>Subject Alternative Name binding a certificate to the requested DNS name or IP address.</dd></div>
+  <div class="glossary-item"><dt>Release signature</dt><dd>Cryptographic proof that authorized release metadata was signed by a trusted key.</dd></div>
+  <div class="glossary-item"><dt>SHA-256</dt><dd>A digest used here to bind metadata to exact artifact bytes.</dd></div>
+  <div class="glossary-item"><dt>A/B slots</dt><dd>Two bootable system locations that let the device stage an update without destroying its current working system.</dd></div>
+  <div class="glossary-item"><dt>Rollback index</dt><dd>A monotonic security version floor preventing an older vulnerable image from booting after commitment.</dd></div>
+  <div class="glossary-item"><dt>Uptane Timestamp</dt><dd>Freshness metadata used to detect frozen or expired repository views.</dd></div>
+  <div class="glossary-item"><dt>Uptane Snapshot</dt><dd>Metadata binding a release to consistent versions, hashes and lengths of other metadata.</dd></div>
+  <div class="glossary-item"><dt>Image Targets</dt><dd>Describes authentic artifacts, hashes, lengths and compatible hardware.</dd></div>
+  <div class="glossary-item"><dt>Director Targets</dt><dd>Assigns an artifact to specific vehicles and ECUs.</dd></div>
+  <div class="glossary-item"><dt>Boot Control HAL</dt><dd>Android HAL for A/B boot-slot state. A Binder service may be registered while a particular client such as <code>bootctl</code> still fails to acquire/use the interface; service registration, VINTF declaration/access, and client behavior must be diagnosed separately.</dd></div>
+  <div class="glossary-item"><dt>SWU</dt><dd>SWUpdate archive containing <code>sw-description</code>, its signature and referenced artifacts.</dd></div>
+  <div class="glossary-item"><dt>Selection, mode</dt><dd>A software collection and operation mode such as <code>stable,slot-b</code>.</dd></div>
+</dl>
+<div class="character-strip"><div class="character">🔐 <b>Signature asks</b><span>Who authorized this metadata?</span></div><div class="character">🔎 <b>Hash asks</b><span>Are these the exact bytes?</span></div><div class="character">🛡️ <b>ACL asks</b><span>May this caller update this target?</span></div><div class="character">🕰️ <b>Timestamp asks</b><span>Is this repository view still fresh?</span></div><div class="character">🔧 <b>A/B asks</b><span>Can we recover if the candidate fails?</span></div></div>
+</section>
+
+<section id="sources" data-search>
+<h2>15. Technical verification and sources</h2>
+<div id="runtimeStatus" class="callout warn"><strong>Interactive runtime:</strong> Initializing…</div>
+<div id="selfTest" class="callout">Running simulator self-tests…</div>
+<ul>
+<li><a href="https://source.android.com/docs/core/ota">AOSP OTA updates</a> and <a href="https://source.android.com/docs/core/ota/virtual_ab">Virtual A/B</a>.</li>
+<li><a href="https://android.googlesource.com/platform/system/update_engine/">AOSP update_engine</a> — metadata verification, payload hash/signature verification and inactive-slot flow.</li>
+<li><a href="https://source.android.com/docs/core/ota/sign_builds">AOSP release signing</a> and <a href="https://source.android.com/docs/core/ota/tools">OTA package tools</a>.</li>
+<li><a href="https://source.android.com/docs/security/features/verifiedboot">Android Verified Boot</a> and <a href="https://source.android.com/docs/security/features/verifiedboot/boot-flow">A/B boot flow</a>.</li>
+<li><a href="https://android.googlesource.com/platform/system/extras/+/master/bootctl/bootctl.cpp">AOSP bootctl source</a> — shows that <code>Failed to get bootctl module.</code> is emitted when the Boot Control client/service cannot be obtained.</li>
+<li><a href="https://android.googlesource.com/device/google/cuttlefish/+/master/shared/device.mk">AOSP Cuttlefish device configuration</a> — Boot Control HAL packaging varies with Cuttlefish build/configuration.</li>
+<li><a href="https://uptane.org/docs/latest/standard/uptane-standard">Uptane Standard 2.1.0</a> and deployment best practices.</li>
+<li><a href="https://sbabic.github.io/swupdate/signed_images.html">SWUpdate signed images</a>, <a href="https://sbabic.github.io/swupdate/sw-description.html">software collections/modes</a>, and <a href="https://sbabic.github.io/swupdate/swupdate-best-practise.html">best practices</a>.</li>
+</ul>
+<div class="callout warn"><strong>Validation scope:</strong> the 14-test Ubuntu simulation was executed successfully. The Cuttlefish commands are read-only and capability-based. This document does not claim that a synthetic training payload is a valid Android <code>update_engine</code> payload or that a native SWUpdate binary is installed on every Ubuntu VM.</div>
+<p class="small muted">Single-file offline HTML. External source links require network access.</p>
+</section>
+<footer><strong>Session 2 — Secure OTA Update Delivery</strong><br>Full-day interactive production simulation for Android 17 and embedded Linux update security.</footer>
+</main>
+</div>
+
+<script>
+const $=(s,p=document)=>p.querySelector(s), $$=(s,p=document)=>[...p.querySelectorAll(s)];
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+const safeStore=(()=>{const m={};try{localStorage.setItem("__ota_test","1");localStorage.removeItem("__ota_test");return{get:k=>localStorage.getItem(k),set:(k,v)=>localStorage.setItem(k,String(v))}}catch(e){return{get:k=>Object.prototype.hasOwnProperty.call(m,k)?m[k]:null,set:(k,v)=>m[k]=String(v)}}})();
+const saved=safeStore.get("ota-theme");if(saved)document.documentElement.dataset.theme=saved;
+$("#theme").onclick=()=>{let h=document.documentElement;h.dataset.theme=h.dataset.theme==="dark"?"light":"dark";safeStore.set("ota-theme",h.dataset.theme)};
+$("#motion").onclick=()=>document.body.classList.toggle("reduce");
+$("#menu").onclick=()=>{let t=$("#toc");t.style.display=t.style.display==="block"?"none":"block";Object.assign(t.style,{position:"fixed",zIndex:90,top:"58px",left:0,width:"315px"})};
+$$(".copy").forEach(x=>x.onclick=async()=>{let c=x.parentElement.querySelector("code");if(!c)return;try{await navigator.clipboard.writeText(c.innerText);let t=x.textContent;x.textContent="Copied";setTimeout(()=>x.textContent=t,850)}catch(e){x.textContent="Select"}});
+$("#search").oninput=e=>{let q=e.target.value.trim().toLowerCase();$$("[data-search]").forEach(s=>s.classList.toggle("hidden",!!q&&!s.innerText.toLowerCase().includes(q)))};
+const secs=$$("main section"),links=$$("nav a");
+if("IntersectionObserver" in window){
+  const ob=new IntersectionObserver(
+    es=>es.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(a=>a.classList.toggle(
+          "active",
+          a.getAttribute("href")==="#"+e.target.id
+        ));
+      }
+    }),
+    {rootMargin:"-20% 0px -70% 0px"}
+  );
+  secs.forEach(s=>ob.observe(s));
+}
+addEventListener("scroll",()=>{let d=document.documentElement,m=d.scrollHeight-d.clientHeight;$("#progress").style.width=(m?d.scrollTop/m*100:0)+"%"},{passive:true});
+
+async function pipeline(fail=false){
+ const stages=$$(".stage"),p=$("#otaPacket");p.style.background="var(--warn)";$("#pipelineResult").textContent="Release started.";
+ for(let i=0;i<stages.length;i++){stages.forEach((s,j)=>s.classList.toggle("on",j===i));p.style.transform=`translateX(${Math.min(i*118,820)}px)`;await delay(430);if(fail&&i===5){p.style.background="var(--bad)";$("#pipelineResult").innerHTML="<strong class='no'>REJECTED:</strong> device signature verification failed before slot staging.";return}}
+ p.style.background="var(--b)";$("#pipelineResult").innerHTML="<strong class='ok'>COMMITTED:</strong> delivery, authorization, verification, staging and boot health all passed."
+}
+$("#playPipeline").onclick=()=>pipeline(false);$("#failPipeline").onclick=()=>pipeline(true);$("#resetPipeline").onclick=()=>{$$(".stage").forEach(s=>s.classList.remove("on"));$("#otaPacket").style.transform="translateX(0)";$("#otaPacket").style.background="var(--warn)";$("#pipelineResult").textContent="Ready."};
+
+function tlsDecision(ca,host,time,token){if(!ca)return["ca","Certificate chain is not rooted in a trusted CA."];if(!host)return["host","Certificate SAN does not match the requested host/IP."];if(!time)return["time","Certificate is outside its validity window."];if(!token)return["token","TLS succeeded, but the caller lacks update authorization."];return["result","Trusted and authorized TLS download."]}
+$("#evalTls").onclick=()=>{let vals=[$("#tlsCa").value==="yes",$("#tlsHost").value==="yes",$("#tlsTime").value==="yes",$("#tlsToken").value==="yes"],r=tlsDecision(...vals);$$(".gate").forEach(g=>{g.classList.remove("pass","fail");let order=["ca","host","time","token","result"],idx=order.indexOf(g.dataset.gate),stop=order.indexOf(r[0]);if(idx<stop||(idx===stop&&r[0]==="result"))g.classList.add("pass");if(idx===stop&&r[0]!=="result")g.classList.add("fail")});$("#tlsResult").innerHTML=`<strong class="${r[0]==="result"?"ok":"no"}">${r[0]==="result"?"ALLOW":"BLOCK"}</strong><br>${r[1]}`};
+
+function signingDecision(sig,payload,target,expiry){if(sig!=="valid")return["Manifest signature invalid."];if(expiry!=="current")return["Signed metadata is expired."];if(target!=="match")return["Target/device assignment mismatch."];if(payload!=="original")return[payload==="tampered"?"Payload SHA-256 mismatch.":"Payload length/hash mismatch caused by truncation."];return null}
+$("#evalSigning").onclick=()=>{let r=signingDecision($("#sigState").value,$("#payloadState").value,$("#targetState").value,$("#expiryState").value);$("#signingResult").innerHTML=r?`<strong class="no">REJECT</strong><br>${r[0]}`:`<strong class="ok">ACCEPT</strong><br>Signature, policy fields, SHA-256 and byte length all match.`};
+
+let slot={active:"a",pending:null,attempts:0,index:1,a:{version:"1.0.0",healthy:true},b:null};
+function drawSlots(msg){$("#slotA").className="slot"+(slot.active==="a"?" active":"")+((slot.pending==="a")?" pending":"");$("#slotB").className="slot"+(slot.active==="b"?" active":"")+((slot.pending==="b")?" pending":"")+((slot.b&&slot.b.healthy===false)?" bad":"");$("#verA").textContent=slot.a?slot.a.version:"empty";$("#verB").textContent=slot.b?slot.b.version:"empty";$("#healthA").textContent=slot.a?String(slot.a.healthy):"unknown";$("#healthB").textContent=slot.b?String(slot.b.healthy):"unknown";$("#rollbackProgress").style.width=(slot.index/2*100)+"%";$("#slotResult").innerHTML=msg+`<br>Active slot ${slot.active.toUpperCase()}; stored rollback index ${slot.index}.`}
+$("#stageUpdate").onclick=()=>{let inactive=slot.active==="a"?"b":"a";slot[inactive]={version:"2.0.0",healthy:null,index:2};slot.pending=inactive;slot.attempts=0;drawSlots("<strong class='maybe'>STAGED:</strong> index 2 is not committed yet.")};
+$("#badBoot").onclick=()=>{if(!slot.pending)return drawSlots("No pending update.");slot.attempts++;slot[slot.pending].healthy=false;if(slot.attempts>=2){let failed=slot.pending;slot.pending=null;slot.attempts=0;drawSlots(`<strong class='no'>RECOVERY:</strong> slot ${failed.toUpperCase()} failed twice; previous slot retained.`)}else drawSlots("<strong class='maybe'>RETRY:</strong> first health check failed.")};
+$("#goodBoot").onclick=()=>{if(!slot.pending)return drawSlots("No pending update.");slot[slot.pending].healthy=true;slot.active=slot.pending;slot.pending=null;slot.attempts=0;slot.index=2;drawSlots("<strong class='ok'>SUCCESS:</strong> new slot marked successful; rollback index committed.")};
+$("#resetSlots").onclick=()=>{slot={active:"a",pending:null,attempts:0,index:1,a:{version:"1.0.0",healthy:true},b:null};drawSlots("State reset.")};
+
+const uptaneMap={
+ valid:["artifact","All signatures, expiry, versions, repository links, ECU assignment and artifact hash match.",true],
+ freeze:["timestamp","Timestamp metadata is expired or stale.",false],
+ rollback:["snapshot","Locally trusted metadata version is newer than the replayed snapshot.",false],
+ mixmatch:["director","Director and Image repository target hashes/lengths disagree.",false],
+ wrongEcu:["director","Director Targets does not authorize this ECU.",false],
+ tamper:["artifact","Downloaded artifact hash or length differs from Image Targets.",false]
+};
+$("#runUptane").onclick=()=>{let r=uptaneMap[$("#uptaneAttack").value];$$(".role").forEach(x=>{x.classList.remove("detect","pass");if(r[2])x.classList.add("pass");else if(x.dataset.role===r[0])x.classList.add("detect")});$("#uptaneResult").innerHTML=`<strong class="${r[2]?"ok":"no"}">${r[2]?"ACCEPT":"REJECT"}</strong><br>${r[1]}`};
+
+function aclDecision(role,vehicle,selection,mode,version){
+ if(version!=="upgrade")return["version","Downgrade or reinstall policy rejected the request."];
+ if(role==="release-manager"){if(!["stable","canary"].includes(selection)||mode!=="slot-b")return["mode","Release manager ACL allows stable/canary with slot-b only."];return["ok","Authorized production selection."]}
+ if(vehicle!=="vehicle-001")return["vehicle","Service technician is not assigned to this vehicle."];
+ if(selection!=="recovery"||mode!=="rescue")return["mode","Service technician ACL allows recovery,rescue only."];
+ return["ok","Authorized service recovery selection."]
+}
+$("#evalAcl").onclick=()=>{let r=aclDecision($("#aclRole").value,$("#aclVehicle").value,$("#aclSelection").value,$("#aclMode").value,$("#aclVersion").value);let order=["identity","vehicle","mode","version"];$$(".aclcell").forEach(x=>x.classList.remove("on"));order.forEach(x=>$(`.aclcell[data-acl="${x}"]`).classList.add("on"));$("#aclResult").innerHTML=`<strong class="${r[0]==="ok"?"ok":"no"}">${r[0]==="ok"?"AUTHORIZED":"DENIED"}</strong><br>${r[1]}`};
+
+$("#gradeQuiz").onclick=()=>{let qs=$$(".quiz-q"),correct=0,answered=0;qs.forEach(q=>{let n=q.querySelector("input"),p=$(`input[name="${n.name}"]:checked`);if(p){answered++;if(p.value===q.dataset.answer)correct++}});let pct=Math.round(correct/qs.length*100);$("#quizResult").innerHTML=`<strong>${correct}/${qs.length} correct (${pct}%)</strong><br>${answered<qs.length?"Some questions are unanswered.":pct>=80?"Pass — trainee threshold met.":"Review the modules and retry."}`};
+
+const checks=$$("#checks input");function updateChecks(){let n=checks.filter(c=>c.checked).length;$("#meter").style.width=n/checks.length*100+"%";$("#checkResult").innerHTML=`<strong>${n} of ${checks.length}</strong> acceptance items complete.${n===checks.length?" Ready for sign-off.":""}`}
+checks.forEach(c=>{c.checked=safeStore.get("ota-"+c.dataset.k)==="1";c.onchange=()=>{safeStore.set("ota-"+c.dataset.k,c.checked?"1":"0");updateChecks()}});updateChecks();
+
+function selfTests(){
+ const tests=[
+ ["TLS valid",tlsDecision(true,true,true,true)[0]==="result"],
+ ["TLS token rejection",tlsDecision(true,true,true,false)[0]==="token"],
+ ["Signing tamper",signingDecision("valid","tampered","match","current")[0].includes("SHA-256")],
+ ["Signing valid",signingDecision("valid","original","match","current")===null],
+ ["Uptane freeze",uptaneMap.freeze[0]==="timestamp"],
+ ["Uptane wrong ECU",uptaneMap.wrongEcu[0]==="director"],
+ ["ACL release manager",aclDecision("release-manager","vehicle-999","stable","slot-b","upgrade")[0]==="ok"],
+ ["ACL service denial",aclDecision("service-tech","vehicle-001","stable","slot-b","upgrade")[0]==="mode"]
+ ];let n=tests.filter(x=>x[1]).length;$("#selfTest").className="callout "+(n===tests.length?"good":"bad");$("#selfTest").innerHTML=`<strong>Simulator self-test: ${n}/${tests.length} passed.</strong><br>${tests.filter(x=>!x[1]).map(x=>x[0]).join(", ")||"TLS, signing, Uptane and ACL decision models are internally consistent."}`;window.__simulationTests={passed:n,total:tests.length,tests}
+}
+selfTests();drawSlots("Active slot A; no update pending.");$("#runtimeStatus").className="callout good";$("#runtimeStatus").innerHTML="<strong>Interactive runtime:</strong> All controls initialized successfully.";window.__session2Ready=true;
+
+/* ===== Guided-learning enhancement runtime ===== */
+const narrationScripts={
+ mission:{title:"Mission briefing",text:"Your mission is to update Vehicle-001 from version 1.0.0 to version 2.0.0 without trusting a single security control to do every job. TLS authenticates the delivery server. A release signature proves authority. Hash and length checks bind metadata to exact bytes. Uptane checks freshness, repository consistency and ECU assignment. Authorization decides which operator and vehicle may use a software mode. Finally, A B slots preserve the working system until the candidate proves healthy."},
+ overview:{title:"Session plan",text:"The session moves from architecture to transport security, payload verification, Android update flow, rollback and recovery, Uptane metadata, SWUpdate authorization, practical labs and final acceptance. The lab is deliberately safe: it simulates all trust decisions on Ubuntu and uses read-only Cuttlefish probes."},
+ architecture:{title:"OTA architecture",text:"A secure release crosses eight independent stages. The build produces images. Offline signing authenticates release metadata. The repository publishes versioned metadata and payloads. TLS authenticates the server. Authorization checks the vehicle and campaign. The device verifies signature, policy fields, hash and length. Only then does it write the inactive slot. A healthy boot commits the release; a failure returns to the known-good slot."},
+ tls:{title:"TLS delivery",text:"TLS and update authorization are separate decisions. First, the updater verifies that the certificate chain reaches a trusted certificate authority, that the requested name matches the certificate subject alternative name, and that the certificate is current. Then the backend checks a token, mutual TLS identity or other credential to decide whether this vehicle may download the update. Disabling verification with curl k removes server authentication and is not a repair."},
+ signing:{title:"Signing and hashes",text:"The release signature answers who authorized the metadata. The hash and byte length answer whether the downloaded artifact is exactly the one described by that metadata. The device must also enforce expiry, target identity, version and rollback policy. A valid signature does not make expired metadata, a wrong target or altered bytes acceptable."},
+ rollback:{title:"Rollback and recovery",text:"An A B device writes the candidate release to the inactive slot while preserving the active working system. The candidate receives limited boot attempts and health checks. If it succeeds, the device marks it successful and commits the new rollback index. If it fails, the device returns to the previous slot. Committing the rollback index too early can make the fallback slot unbootable."},
+ uptane:{title:"Uptane metadata",text:"Uptane separates authentic software information from vehicle-specific deployment authorization. The Image repository states which artifact is genuine and compatible. The Director repository states which vehicle and ECU may receive it. Root metadata defines trusted keys. Timestamp detects frozen views. Snapshot binds a consistent set of metadata. Targets binds artifacts by identity, hash and length. The ECU accepts only when both repositories and the downloaded bytes agree."},
+ swupdate:{title:"SWUpdate authorization",text:"A signed SWU package authenticates sw-description and the hashes of its artifacts. It does not automatically authorize every caller to install every software collection. The gateway separately verifies the operator signature, request expiry, vehicle assignment, selection and mode permission, anti-downgrade policy, signed description and artifact hashes. Only then does it produce the exact SWUpdate command."},
+ labs:{title:"Production simulation lab",text:"The bootstrap creates a private training certificate authority, TLS repository, offline release key, signed manifest, A B simulator, Uptane repositories, signed SWU package, operator keys and an authorization gateway. It writes only below the ota-secure-lab directory. Run expected failures as evidence that security controls reject bad states, then run the acceptance script and require fourteen passes and zero failures."},
+ cuttlefish:{title:"Cuttlefish probes",text:"This validated Android seventeen API thirty seven userdebug image has A B and compressed Virtual A B enabled, is currently on slot A, registers the default AIDL Boot Control service, and exposes update engine client. Bootctl still cannot acquire the Boot Control interface, so that path is investigated separately through Binder service registration, VINTF declarations, logs and an optional root comparison. Verified Boot reports orange, which is recorded as an unlocked development state. The AVB control utility failure is treated as a skipped probe, not proof that AVB is absent."},
+ games:{title:"Attack games",text:"For each attack, identify the first control designed to stop it. Freeze attacks are detected by freshness metadata. Payload replacement is detected by hash and length. Wrong ECU delivery is stopped by Director assignment. Older vulnerable images are blocked by rollback indices. Server impersonation is stopped by TLS certificate validation. Unauthorized technicians are stopped by operator and mode access control."},
+ quiz:{title:"Knowledge check",text:"The questions test separation of responsibilities: HTTPS does not replace release signing, rollback indices commit only after successful boot, Timestamp metadata detects freeze attacks, Director Targets authorizes specific ECUs, SWUpdate selections and modes choose package paths, and a valid package still requires caller authorization."},
+ acceptance:{title:"Acceptance test",text:"Use the checklist as a practical sign-off. A learner should explain each trust boundary, demonstrate positive and negative TLS cases, reject tampering, show failed-slot fallback, detect Uptane attacks, authorize and deny SWUpdate modes, inspect Cuttlefish capabilities, complete the fourteen-test runner and score at least eighty percent."},
+ glossary:{title:"Glossary",text:"Remember the questions each control asks. The certificate authority and subject alternative name establish the real TLS server. The release signature proves authority. SHA-256 and length bind exact bytes. A B slots preserve availability. The rollback index prevents old vulnerable images. Uptane Timestamp provides freshness, Snapshot provides consistency, Image Targets describes authentic artifacts, and Director Targets assigns them to ECUs."},
+ sources:{title:"Technical verification",text:"The document distinguishes its validation scope. The fourteen-test Ubuntu simulation was executed successfully. Cuttlefish commands are read-only and capability based. The synthetic training payload is not claimed to be a valid Android update engine payload, and a native SWUpdate binary is not assumed to exist on every Ubuntu virtual machine."}
+};
+const narratableIds=Object.keys(narrationScripts);
+let voiceState={id:null,utterance:null,paused:false,index:0};
+const synth=window.speechSynthesis;
+function showToast(message){const t=$("#toast");if(!t)return;t.textContent=message;t.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.remove("show"),1800)}
+function currentNarratable(){let best=null,bestDist=Infinity;narratableIds.forEach(id=>{let el=document.getElementById(id);if(!el)return;let r=el.getBoundingClientRect(),d=Math.abs(r.top-110);if(r.bottom>80&&d<bestDist){best=id;bestDist=d}});return best||"mission"}
+function populateVoices(){if(!synth)return;let voices=synth.getVoices();let sel=$("#voiceSelect");if(!sel)return;let saved=safeStore.get("ota-voice");sel.innerHTML="";voices.forEach((v,i)=>{let o=document.createElement("option");o.value=String(i);o.textContent=`${v.name} (${v.lang})`;if(saved===v.name)o.selected=true;sel.appendChild(o)});if(!voices.length){let o=document.createElement("option");o.textContent="System default";sel.appendChild(o)}}
+function selectedVoice(){let voices=synth?synth.getVoices():[];let i=parseInt($("#voiceSelect")?.value||"-1",10);return voices[i]||null}
+function stopNarration(silent=false){if(synth)synth.cancel();voiceState.utterance=null;voiceState.paused=false;$$('.narrating').forEach(x=>x.classList.remove('narrating'));$$('.section-tools .speaking').forEach(x=>x.classList.remove('speaking'));if(!silent&&$("#voiceNow"))$("#voiceNow").textContent="Narration stopped."}
+function speakPromise(text,id){return new Promise(resolve=>{if(!synth||!('SpeechSynthesisUtterance'in window)){resolve();return}stopNarration(true);let u=new SpeechSynthesisUtterance(text);let v=selectedVoice();if(v){u.voice=v;safeStore.set("ota-voice",v.name)}u.rate=parseFloat($("#voiceRate")?.value||"1");u.onend=()=>{voiceState.utterance=null;resolve()};u.onerror=()=>{voiceState.utterance=null;resolve()};voiceState.utterance=u;voiceState.id=id;let el=document.getElementById(id);if(el)el.classList.add('narrating');synth.speak(u)})}
+function narrate(id){let item=narrationScripts[id];if(!item)return;if(!synth||!('SpeechSynthesisUtterance'in window)){showToast("Voiceover is not supported in this browser.");return}stopNarration(true);voiceState.id=id;voiceState.index=Math.max(0,narratableIds.indexOf(id));let u=new SpeechSynthesisUtterance(item.text);let v=selectedVoice();if(v){u.voice=v;safeStore.set("ota-voice",v.name)}u.rate=parseFloat($("#voiceRate")?.value||"1");u.onstart=()=>{let el=document.getElementById(id);if(el){el.classList.add('narrating');el.scrollIntoView({behavior:'smooth',block:'start'})}$("#voiceNow").innerHTML=`<strong>${item.title}</strong><br>${item.text}`;let b=document.querySelector(`[data-narrate="${id}"]`);if(b)b.classList.add('speaking')};u.onend=()=>{let el=document.getElementById(id);if(el)el.classList.remove('narrating');let b=document.querySelector(`[data-narrate="${id}"]`);if(b)b.classList.remove('speaking');voiceState.utterance=null;voiceState.paused=false};u.onerror=()=>{$("#voiceNow").textContent="Narration could not start. Try another installed voice.";voiceState.utterance=null};voiceState.utterance=u;synth.speak(u)}
+function showTranscript(id){let item=narrationScripts[id];if(!item)return;$("#transcriptTitle").textContent=item.title+" — transcript";$("#transcriptText").textContent=item.text;$("#transcriptDialog").hidden=false}
+function prepareSectionTools(){narratableIds.forEach(id=>{let sec=document.getElementById(id);if(!sec)return;let wrap=sec.querySelector(':scope > .section-heading'),h=wrap?wrap.querySelector('h2'):sec.querySelector(':scope > h2');if(!h)return;if(!wrap){wrap=document.createElement('div');wrap.className='section-heading';h.parentNode.insertBefore(wrap,h);wrap.appendChild(h)}if(wrap.querySelector('.section-tools'))return;let tools=document.createElement('div');tools.className='section-tools no-print';tools.innerHTML=`<button class="btn" data-narrate="${id}">🔊 Explain this section</button><button class="btn" data-transcript="${id}">📄 Transcript</button>`;wrap.appendChild(tools)});$$('[data-narrate]').forEach(b=>b.onclick=()=>narrate(b.dataset.narrate));$$('[data-transcript]').forEach(b=>b.onclick=()=>showTranscript(b.dataset.transcript))}
+prepareSectionTools();
+if(synth){populateVoices();speechSynthesis.onvoiceschanged=populateVoices}else{$("#voiceToggle").disabled=true;$("#voiceToggle").title="Speech synthesis is unavailable"}
+$("#voiceToggle").onclick=()=>{let p=$("#voicePanel");p.hidden=!p.hidden;$("#voiceToggle").setAttribute('aria-expanded',String(!p.hidden));if(!p.hidden)populateVoices()};$("#voiceClose").onclick=()=>{$("#voicePanel").hidden=true;$("#voiceToggle").setAttribute('aria-expanded','false')};
+$("#voicePlay").onclick=()=>{if(synth&&synth.paused){synth.resume();voiceState.paused=false;$("#voiceNow").prepend('▶ ')}else narrate(voiceState.id||currentNarratable())};
+$("#voicePause").onclick=()=>{if(!synth)return;if(synth.speaking&&!synth.paused){synth.pause();voiceState.paused=true;$("#voiceNow").prepend('⏸ ')}else if(synth.paused){synth.resume();voiceState.paused=false}};
+$("#voiceStop").onclick=()=>stopNarration();$("#voicePrev").onclick=()=>{let i=(voiceState.index-1+narratableIds.length)%narratableIds.length;narrate(narratableIds[i])};$("#voiceNext").onclick=()=>{let i=(voiceState.index+1)%narratableIds.length;narrate(narratableIds[i])};
+$("#voiceRate").onchange=e=>safeStore.set('ota-voice-rate',e.target.value);let savedRate=safeStore.get('ota-voice-rate');if(savedRate)$("#voiceRate").value=savedRate;
+$("#transcriptClose").onclick=()=>$("#transcriptDialog").hidden=true;$("#transcriptDialog").onclick=e=>{if(e.target===$("#transcriptDialog"))$("#transcriptDialog").hidden=true};
+$("#heroNarrate").onclick=()=>narrate('mission');
+addEventListener('beforeunload',()=>stopNarration(true));
+
+function setLens(lens,level){lens.querySelectorAll('.lens-tab').forEach(b=>b.classList.toggle('active',b.dataset.level===level));lens.querySelectorAll('.lens-pane').forEach(p=>p.classList.toggle('active',p.dataset.level===level))}
+$$('.learning-lens').forEach(lens=>lens.querySelectorAll('.lens-tab').forEach(b=>b.onclick=()=>{setLens(lens,b.dataset.level);safeStore.set('ota-learning-mode',b.dataset.level);$("#learningMode").value=b.dataset.level}));
+function applyLearningMode(level){$$('.learning-lens').forEach(l=>setLens(l,level));safeStore.set('ota-learning-mode',level)}
+let savedMode=safeStore.get('ota-learning-mode')||'beginner';$("#learningMode").value=savedMode;applyLearningMode(savedMode);$("#learningMode").onchange=e=>applyLearningMode(e.target.value);
+
+const stageNarration=["The build stage produces target files and firmware images.","Offline signing uses the release key to authenticate metadata.","The repository publishes versioned metadata and the payload.","TLS validates the delivery server and protects the channel.","Authorization checks the vehicle, operator, campaign and requested mode.","The device verifies signature, expiry, target identity, payload hash and byte length.","Only after all checks pass does the updater write the inactive slot.","A healthy boot commits the release. A failure rolls back to the previous working slot."];
+async function narratedPipeline(){let stages=$$('.stage'),p=$("#otaPacket");stopNarration(true);$("#pipelineResult").textContent="Narrated secure delivery started.";for(let i=0;i<stages.length;i++){stages.forEach((s,j)=>s.classList.toggle('on',j===i));p.style.transform=`translateX(${Math.min(i*118,820)}px)`;p.style.background='var(--warn)';$("#voiceNow").innerHTML=`<strong>${stages[i].querySelector('strong').textContent}</strong><br>${stageNarration[i]}`;await speakPromise(stageNarration[i],'architecture');await delay(160)}p.style.background='var(--b)';$("#pipelineResult").innerHTML="<strong class='ok'>COMMITTED:</strong> every independent gate passed and boot health was confirmed.";$("#sideTrustGates").textContent='8 / 8';$("#sideThreat").textContent='Contained'}
+$("#narratedPipeline").onclick=narratedPipeline;
+
+const note=$("#missionNotes");note.value=safeStore.get('ota-mission-notes')||'';let noteTimer;note.oninput=()=>{clearTimeout(noteTimer);$("#notesStatus").textContent='Saving…';noteTimer=setTimeout(()=>{safeStore.set('ota-mission-notes',note.value);$("#notesStatus").textContent='Saved locally in this browser.'},350)};
+
+$("#toggleCode").onclick=()=>{document.body.classList.toggle('hide-code');$("#toggleCode").textContent=document.body.classList.contains('hide-code')?'👀 Show long code':'🙈 Hide long code'};
+$("#wrapCode").onclick=()=>{document.body.classList.toggle('wrap-code');$("#wrapCode").textContent=document.body.classList.contains('wrap-code')?'↔ Keep code lines':'↩ Wrap code'};
+$("#largeCode").onclick=()=>document.body.classList.toggle('large-code');
+$("#expandLabs").onclick=()=>$$('#labs details').forEach(d=>d.open=true);$("#collapseLabs").onclick=()=>$$('#labs details').forEach(d=>d.open=false);
+
+$("#gradeMatch").onclick=()=>{let rows=$$('#matchGame .match-row'),correct=0;rows.forEach(r=>{let good=r.querySelector('select').value===r.dataset.answer;r.classList.toggle('correct',good);r.classList.toggle('wrong',!good);if(good)correct++});let pct=Math.round(correct/rows.length*100);$("#matchResult").innerHTML=`<strong class="${correct===rows.length?'ok':'maybe'}">${correct}/${rows.length} correct (${pct}%)</strong><br>${correct===rows.length?'All attacks matched to their primary defence.':'Review which security responsibility each control owns.'}`};
+$("#gradeDesign").onclick=()=>{let picked=$('input[name="weakDesign"]:checked');if(!picked){$("#designResult").innerHTML='<strong class="maybe">Choose A, B or C.</strong>';return}if(picked.value==='a')$("#designResult").innerHTML='<strong class="ok">Correct: A is the weakest.</strong><br>Verified HTTPS protects the route but does not preserve release authority after transport, bind the manifest to exact bytes, authorize a vehicle, prevent rollback or provide recovery.';else if(picked.value==='c')$("#designResult").innerHTML='<strong class="maybe">C is incomplete, but not the weakest.</strong><br>It still lacks explicit caller/vehicle authorization, freshness and rollback recovery. Architecture A lacks even artifact authenticity and integrity.';else $("#designResult").innerHTML='<strong class="no">B is the strongest option.</strong><br>It explicitly combines independent transport, artifact, authorization and rollback controls.'};
+
+// Keep the side mission dashboard synchronized with existing simulators.
+const oldTlsClick=$("#evalTls").onclick;$("#evalTls").onclick=()=>{oldTlsClick();let all=[$("#tlsCa").value,$("#tlsHost").value,$("#tlsTime").value,$("#tlsToken").value].every(v=>v==='yes');$("#sideTrustGates").textContent=all?'4 / 8':'0 / 8';$("#sideThreat").textContent=all?'Channel trusted':'Channel blocked'};
+const oldSigningClick=$("#evalSigning").onclick;$("#evalSigning").onclick=()=>{oldSigningClick();let ok=$("#sigState").value==='valid'&&$("#payloadState").value==='original'&&$("#targetState").value==='match'&&$("#expiryState").value==='current';$("#sideTrustGates").textContent=ok?'6 / 8':'4 / 8';$("#sideThreat").textContent=ok?'Artifact trusted':'Artifact rejected'};
+const originalDrawSlots=drawSlots;drawSlots=function(msg){originalDrawSlots(msg);$("#sideActiveSlot").textContent=slot.active.toUpperCase();if(slot.active==='b'&&slot.index===2){$("#sideTrustGates").textContent='8 / 8';$("#sideThreat").textContent='Release committed'}};
+
+// Explain outputs after simulator actions.
+const outputHints={pipelineResult:'Architecture result',tlsResult:'TLS decision',signingResult:'Artifact decision',slotResult:'Boot state',uptaneResult:'Metadata decision',aclResult:'Authorization decision'};
+Object.keys(outputHints).forEach(id=>{let el=document.getElementById(id);if(el)el.setAttribute('aria-live','polite')});
+
+</script>
+</body>
+</html>
