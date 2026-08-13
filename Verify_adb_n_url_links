@@ -1,0 +1,22 @@
+  https://ci.android.com/builds/branches/aosp-android-latest-release/grid?legacy=1
+  
+  
+ADB=/opt/cuttlefish/android16/bin/adb
+SERIAL=0.0.0.0:6520
+
+$ADB -s "$SERIAL" get-state
+$ADB -s "$SERIAL" shell getprop ro.build.version.release
+$ADB -s "$SERIAL" shell getprop ro.build.version.sdk
+$ADB -s "$SERIAL" shell getprop sys.boot_completed
+
+$ADB -s "$SERIAL" shell getprop ro.build.type
+$ADB -s "$SERIAL" shell getprop ro.debuggable
+$ADB -s "$SERIAL" shell getenforce
+
+$ADB -s "$SERIAL" shell ip addr
+$ADB -s "$SERIAL" shell ip route
+
+$ADB -s "$SERIAL" get-state
+
+$ADB -s "$SERIAL" shell 'echo "Android=$(getprop ro.build.version.release) API=$(getprop ro.build.version.sdk) Boot=$(getprop sys.boot_completed) SELinux=$(getenforce)"'
+
